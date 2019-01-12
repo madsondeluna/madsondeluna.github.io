@@ -1,0 +1,52 @@
+<html lang="pt-BR">
+<head>
+<meta name="generator" content="Hugo 0.25" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="O incrível site pessoal de Matheus Bonela">
+<meta name="apple-mobile-web-app-title" content="Bonela">
+<meta name="application-name" content="Bonela">
+<meta name="theme-color" content="#ffffff">
+<title>matheus bonela</title>
+<link rel="canonical" href="https://bone.la/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+<link rel="stylesheet" href="https://bone.la/css/reset.css?t=2017-07-28%2011%3a31%3a00.652198564%20-0300%20-03">
+<link rel="stylesheet" href="https://bone.la/css/main.css?t=2017-07-28%2011%3a31%3a00.652198564%20-0300%20-03">
+<link rel="apple-touch-icon" sizes="180x180" href="https://bone.la/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bone.la/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bone.la/favicon-16x16.png">
+<link rel="manifest" href="https://bone.la/manifest.json">
+<link rel="mask-icon" href="https://bone.la/safari-pinned-tab.svg" color="#818181">
+</head>
+<section class="header">
+<div class="container">
+<div class="content"><a href="https://bone.la/"><img class="avatar" src="https://bone.la/img/matt.jpg" srcset="https://bone.la/img/matt.jpg 1x"></a><a href="https://bone.la/"><div class="name">matheus bonela</div></a>
+<h3 class="self-intro">Em breve, aqui, uma descrição razoável. Acho.</h3>
+<nav>
+<ul>
+<li class="nav-home"><a href="https://bone.la/"><span>Home</span></a></li>
+<li class="nav-blog"><a href="https://blog.bone.la/"><span>Blog</span></a></li>
+<li class="nav-sobre"><a href="https://bone.la/sobre/"><span>Sobre</span></a></li>
+<li><a href="/cdn-cgi/l/email-protection#a8c5c9dcc0cddddbe8cac7c6cd86c4c9"><img class="icon" src="https://bone.la/img/email.svg" alt="Me mande um email!" /></a></li>
+</ul>
+</nav>
+</div>
+</div>
+</section>
+<section class="main">
+<div class="footer">
+Finalmente o rodapé! Eu amo escrever coisas no rodapé.<br /><br />
+Neste recinto nós somos contra todo tipo de Javascript então esse site não utiliza nenhum.<br />
+A única coisa que ele chama são umas fonte bonita porque eu gosto muito de tipografia bonita.<br />
+Minimalismo é isso. Não as tuas quinze bibliotecas de 4MB pra animar o texto.<br />
+<br />
+Não tem nenhum direito reservado não. Sei lá pra que alguém ia querer copiar alguma coisa daqui.<br /><br />
+Nenhum animal foi ferido durante a produção desta página. <br />Pelo contrário, um animal me feriu enquanto eu a produzia. Preciso cortar as unhas desse gato.
+</div>
+</section>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>
