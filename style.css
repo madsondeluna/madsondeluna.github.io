@@ -221,7 +221,7 @@ main section:last-of-type {
 }
 
 /* Footer */
-footer {
+/*footer {
     background: #eef4ff;
     color: #333;
     font-size: 0.9rem;
@@ -237,7 +237,7 @@ footer {
 footer p {
     margin: 0;
     padding: 0;
-}
+}/
 
 /* Fade-in Animation */
 .fade-in {
