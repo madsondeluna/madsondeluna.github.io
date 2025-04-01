@@ -110,7 +110,7 @@ main section:last-of-type {
 }
 
 .logo-icon {
-  width: 120px;      /* Largura desejada */
+  width: 60px;      /* Largura desejada */
   height: auto;      /* Mantém a proporção automaticamente */
   margin-bottom: 10px; /* Espaço entre o ícone e o título */
 }
