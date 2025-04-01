@@ -224,9 +224,13 @@ main section:last-of-type {
 footer {
     background: #eef4ff;
     color: #333;
-    text-align: center;
-    padding: 0.9rem 0; 
     font-size: 0.9rem;
+    
+    display: flex;               /* ativa o flexbox */
+    justify-content: center;     /* centraliza horizontalmente */
+    align-items: center;         /* centraliza verticalmente */
+    padding: 0.9rem 0;           /* espaçamento vertical mantido */
+
 }
 
 /* Fade-in Animation */
