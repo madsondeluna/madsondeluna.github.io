@@ -225,11 +225,10 @@ footer {
     background: #eef4ff;
     color: #333;
     font-size: 0.9rem;
-    
     display: flex;               /* ativa o flexbox */
     justify-content: center;     /* centraliza horizontalmente */
     align-items: center;         /* centraliza verticalmente */
-    padding: 0.2rem 0;           /* espaçamento vertical mantido */
+    padding: 0.1rem 0;           /* espaçamento vertical mantido */
 
 }
 
