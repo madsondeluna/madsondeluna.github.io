@@ -225,9 +225,9 @@ footer {
     background: #555;
     color: #ccc;
     text-align: center;
-    padding: 0.9rem 0;
+    padding: 0.9rem 0; 
     font-size: 0.9rem;
-}
+} # padding: 0.9rem 0; Antes tava em 1.5
 
 /* Fade-in Animation */
 .fade-in {
