@@ -221,15 +221,13 @@ main section:last-of-type {
 }
 
 /* Footer */
-/*footer {
-    background: #eef4ff;
+footer {
     color: #333;
     font-size: 0.9rem;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0.5rem 0;
-    width: 100%;
     box-sizing: border-box;
     margin: 0;
 }
@@ -237,7 +235,7 @@ main section:last-of-type {
 footer p {
     margin: 0;
     padding: 0;
-}/
+}
 
 /* Fade-in Animation */
 .fade-in {
