@@ -109,6 +109,12 @@ main section:last-of-type {
     border-bottom: none;
 }
 
+.logo-icon {
+  width: 120px;      /* Largura desejada */
+  height: auto;      /* Mantém a proporção automaticamente */
+  margin-bottom: 10px; /* Espaço entre o ícone e o título */
+}
+
 /* Hero Section */
 .hero {
     background-color: #eef4ff; /* Subtle light blue background for highlight */
