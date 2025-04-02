@@ -4,20 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador de Slides PDF - Aula 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
     <style>
-        /* Estilos para fazer o iframe ocupar mais espaço */
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        iframe { border: none; width: 100%; height: 100%; }
+        /* Reset básico e aplica a fonte */
+        *, *::before, *::after {
+            box-sizing: border-box; /* Faz padding/border não aumentar o tamanho total */
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Usa 100% da altura da viewport */
+            font-family: 'Roboto', sans-serif; /* Usa a fonte importada ou sans-serif padrão */
+            background-color: #f4f4f4; /* Um fundo cinza claro suave */
+            display: flex; /* Usa flexbox para organizar o layout */
+            flex-direction: column; /* Organiza os itens verticalmente */
+        }
+
+        /* Container para o cabeçalho (título e botão) */
+        .header-container {
+            padding: 15px 20px; /* Espaçamento interno */
+            background-color: #fff; /* Fundo branco para o cabeçalho */
+            text-align: center; /* Centraliza o conteúdo */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+            flex-shrink: 0; /* Impede que o cabeçalho encolha */
+        }
+
+        /* Estilo minimalista para o título H1 */
+        h1 {
+            font-size: 1.5em; /* Tamanho um pouco menor */
+            font-weight: 300; /* Peso mais leve da fonte */
+            color: #333; /* Cor escura, mas não preto puro */
+            margin: 0 0 10px 0; /* Remove margem superior/inferior padrão e adiciona espaço abaixo */
+        }
+
+        /* Estilo para o botão de download */
+        .download-button {
+            display: inline-block; /* Permite definir padding/margin */
+            background-color: #007bff; /* Cor de fundo azul */
+            color: white; /* Cor do texto */
+            padding: 8px 18px; /* Espaçamento interno */
+            text-decoration: none; /* Remove sublinhado do link */
+            border-radius: 4px; /* Cantos arredondados */
+            font-weight: 400; /* Peso normal da fonte */
+            font-size: 0.9em;
+            transition: background-color 0.2s ease; /* Transição suave na cor */
+            border: none; /* Sem borda */
+            cursor: pointer; /* Cursor de mãozinha */
+        }
+
+        /* Efeito ao passar o mouse sobre o botão */
+        .download-button:hover {
+            background-color: #0056b3; /* Azul um pouco mais escuro */
+        }
+
+        /* Estilo para o iframe ocupar o restante do espaço */
+        .iframe-container {
+            flex-grow: 1; /* Faz este container ocupar todo o espaço restante */
+            overflow: hidden; /* Esconde barras de rolagem se o iframe não couber perfeitamente (raro) */
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: block; /* Remove espaço extra abaixo do iframe */
+        }
     </style>
 </head>
 <body>
 
-    <h1>Visualizando Slides da Aula 2 (PDF)</h1>
+    <div class="header-container">
+        <h1>Visualizando Slides da Aula 1</h1>
+        <a href="meus_slides.pdf" class="download-button" download="Slides_Aula1.pdf">
+            Baixar PDF
+        </a>
+    </div>
 
-    <iframe src="aula2/docking.pdf" title="Slides da Aula 2 em PDF">
-        Seu navegador não suporta iframes ou não consegue exibir PDFs.
-        <a href="meus_slides.pdf">Baixe o PDF aqui</a>.
-    </iframe>
+    <div class="iframe-container">
+        <iframe src="meus_slides.pdf" title="Slides da Aula 1 em PDF">
+            Seu navegador não suporta iframes ou não consegue exibir PDFs.
+            <a href="meus_slides.pdf">Baixe o PDF aqui</a>.
+        </iframe>
+    </div>
 
 </body>
 </html>
