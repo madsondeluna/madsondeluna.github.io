@@ -51,3 +51,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+// --- CÓDIGO ADICIONADO/ATUALIZADO PARA ESCONDER IMAGEM E SUBTÍTULO AO ROLAR ---
+
+    // Seleciona os elementos pelo ID (para imagem) e classe/seletor (para subtítulo)
+    const profileIcon = document.getElementById('profile-icon'); 
+    // (Certifique-se que sua imagem no HTML tem id="profile-icon" OU ajuste o seletor aqui se usar outra coisa, como .logo-icon)
+    const subtitleText = document.querySelector('header .subtitle'); 
+    
+    // Define a partir de quantos pixels de rolagem os elementos devem sumir
+    const scrollThreshold = 50; // Ajuste este valor conforme desejar (ex: 30, 70)
+    const hiddenClassName = 'header-element-hidden'; // Classe CSS definida no style.css para o estado oculto
+
+    // Função que verifica a rolagem e aplica/remove a classe de ocultar
+    function handleHeaderVisibility() {
+        // Verifica se os elementos realmente existem na página antes de manipulá-los para evitar erros
+        const iconExists = profileIcon != null;
+        const subtitleExists = subtitleText != null;
+
+        // Verifica a posição da rolagem vertical da janela
+        if (window.scrollY > scrollThreshold) {
+            // Se rolou além do limite, adiciona a classe para esconder os elementos
+            // (O CSS cuida da animação de fade/translate)
+            if (iconExists) profileIcon.classList.add(hiddenClassName);
+            if (subtitleExists) subtitleText.classList.add(hiddenClassName);
+        } else {
+            // Se está perto do topo (rolagem menor ou igual ao limite), remove a classe para mostrar os elementos
+            if (iconExists) profileIcon.classList.remove(hiddenClassName);
+            if (subtitleExists) subtitleText.classList.remove(hiddenClassName);
+        }
+    }
+
+    // Adiciona um "ouvinte" que chama a função handleHeaderVisibility toda vez que o evento 'scroll' ocorrer na janela
+    window.addEventListener('scroll', handleHeaderVisibility);
+
+    // Chama a função uma vez assim que a página carrega (e o script roda) para definir o estado inicial correto
+    // (Importante caso a página carregue já com alguma rolagem, ou para garantir que estejam visíveis no topo)
+    handleHeaderVisibility(); 
+    
