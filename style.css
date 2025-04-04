@@ -99,18 +99,6 @@ header nav ul li a:hover {
     color: #007bff;
 }
 
-/* ADICIONE ESTE BLOCO */
-
-/* Aplica a transição e estado inicial para AMBOS os elementos */
-#profile-icon, /* <= Use #profile-icon se você adicionou esse ID à sua imagem no HTML */
-/* OU use .logo-icon se a sua imagem no HTML tem class="logo-icon" -> .logo-icon, */
-header .subtitle { /* Seleciona o subtítulo dentro do header */
-    opacity: 1;
-    transform: translateY(0); /* Posição inicial */
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out; /* Anima opacidade e posição */
-    will-change: opacity, transform; /* Otimização */
-}
-
 /* Main Sections */
 main section {
     padding: 4rem 0;
@@ -253,15 +241,6 @@ footer {
 footer p {
     margin: 0;
     padding: 0;
-}
-
-/* ADICIONE ESTE BLOCO */
-
-/* Classe para esconder AMBOS os elementos */
-.header-element-hidden { 
-    opacity: 0; /* Torna invisível */
-    transform: translateY(-15px); /* Move um pouco para cima ao sumir */
-    pointer-events: none; /* Impede cliques quando invisível */
 }
 
 /* Fade-in Animation */

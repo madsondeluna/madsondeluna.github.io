@@ -1,28 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ... (seu código IntersectionObserver e smooth scroll) ...
+    const observerOptions = {
+        root: null, // relative to the viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of the element is visible
+    };
 
-    const profileIcon = document.getElementById('profile-icon'); // Ou document.querySelector('.logo-icon')
-    const subtitleText = document.querySelector('header .subtitle');
-    const hiddenClassName = 'header-element-hidden';
-
-    function handleHeaderVisibility() {
-        if (profileIcon && subtitleText) {
-            const scrollThreshold = 50;
-            if (window.scrollY > scrollThreshold) {
-                profileIcon.classList.add(hiddenClassName);
-                subtitleText.classList.add(hiddenClassName);
-            } else {
-                profileIcon.classList.remove(hiddenClassName);
-                subtitleText.classList.remove(hiddenClassName);
+    const observerCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optional: Stop observing the element once it's visible
+                // observer.unobserve(entry.target);
             }
-        }
-    }
+            // Optional: Remove 'visible' class if element scrolls out of view
+            // else {
+            //     entry.target.classList.remove('visible');
+            // }
+        });
+    };
 
-    window.addEventListener('scroll', handleHeaderVisibility);
-    handleHeaderVisibility();
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    // Melhoria no smooth scroll para header dinâmico
+    // Select all elements you want to fade in
+    const elementsToFadeIn = document.querySelectorAll('.fade-in');
+    elementsToFadeIn.forEach(el => {
+        observer.observe(el);
+    });
+
+    // Smooth scroll for navigation links
     const navLinks = document.querySelectorAll('header nav a[href^="#"]');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -31,9 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetElement = document.querySelector(targetId);
 
             if (targetElement) {
+                // Calculate position considering the sticky header height
                 const headerOffset = document.querySelector('header').offsetHeight;
                 const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20; // Extra 20px buffer
 
                 window.scrollTo({
                     top: offsetPosition,
@@ -42,4 +49,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
 });
