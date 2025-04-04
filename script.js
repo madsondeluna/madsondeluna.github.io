@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ... (seu código IntersectionObserver e smooth scroll) ...
 
-    // --- CÓDIGO ATUALIZADO PARA ESCONDER IMAGEM E SUBTÍTULO AO ROLAR ---
-
-    const profileIcon = document.getElementById('profile-icon');
+    const profileIcon = document.getElementById('profile-icon'); // Ou document.querySelector('.logo-icon')
     const subtitleText = document.querySelector('header .subtitle');
     const hiddenClassName = 'header-element-hidden';
 
