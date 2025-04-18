@@ -317,9 +317,7 @@ header.compact nav {
 }
 
 header.compact .logo-icon {
-    width: 40px;
-    opacity: 0.8;
-    margin-bottom: 0;
+    display: none;
 }
 
 header.compact h1 {
