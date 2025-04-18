@@ -315,12 +315,12 @@ header.compact nav {
     overflow: hidden;
     pointer-events: none;
 }
-
-header.compact .logo-icon {
-    display: none;
+/* alterei aqui */
+header.compact .logo-icon { 
+    display: none; 
 }
 
 header.compact h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0;
+    font-size: 1.5rem; /* alterei aqui */
+    margin-bottom: 0;  
 }
