@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 0.1 // Trigger when 10% of the element is visible
     };
 
+    // Rolagem suave ao clicar em "Madson Aragão"
+    const topLink = document.getElementById('top-link');
+    topLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+
     const observerCallback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {

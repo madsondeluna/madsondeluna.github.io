@@ -324,3 +324,10 @@ header.compact h1 {
     font-size: 1.5rem; /* alterei aqui */
     margin-bottom: 0;  
 }
+
+/* Estilização do link no título para parecer texto normal */
+#top-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
