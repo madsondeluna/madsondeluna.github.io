@@ -317,13 +317,11 @@ header.compact nav {
 }
 
 header.compact .logo-icon {
-    width: 0px;
-    opacity: 0.8;
-    margin-bottom: 0;
+    display: none;
 }
 
 header.compact h1 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 0;
 }
 
@@ -344,14 +342,6 @@ header.compact h1 {
     width: 100%;
     height: 100%;
     border: 0;
-}
-
-/* Ajuste de margens laterais em telas pequenas */
-@media (max-width: 600px) {
-    .video-container {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
 }
 
 
