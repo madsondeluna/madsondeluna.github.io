@@ -288,3 +288,15 @@ footer p {
         font-size: 1.5rem;
     }
 }
+
+/* Versão compacta do header */
+header.compact .subtitle,
+header.compact nav,
+header.compact .logo-icon {
+    display: none;
+}
+
+header.compact h1 {
+    font-size: 1.4rem;
+    transition: font-size 0.3s ease;
+}
