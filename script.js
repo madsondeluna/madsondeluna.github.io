@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
 // Detectar rolagem e aplicar/remover classe 'compact'
 window.addEventListener("scroll", function () {
     const header = document.querySelector("header");
