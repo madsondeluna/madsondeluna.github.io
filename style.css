@@ -289,14 +289,41 @@ footer p {
     }
 }
 
-/* Versão compacta do header */
+/* Transições suaves ao alternar o header */
+header {
+    transition: padding 0.3s ease, background-color 0.3s ease;
+}
+
+header h1 {
+    transition: font-size 0.3s ease, margin 0.3s ease;
+}
+
+.logo-icon {
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+header .subtitle,
+header nav {
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+
+/* Efeito visual ao esconder elementos */
 header.compact .subtitle,
-header.compact nav,
+header.compact nav {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 header.compact .logo-icon {
-    display: none;
+    width: 40px;
+    opacity: 0.8;
+    margin-bottom: 0;
 }
 
 header.compact h1 {
     font-size: 1.4rem;
-    transition: font-size 0.3s ease;
+    margin-bottom: 0;
 }
+
