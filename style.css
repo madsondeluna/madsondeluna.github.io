@@ -289,25 +289,25 @@ footer p {
     }
 }
 
-/* Transições suaves ao alternar o header */
+/* Transição suave no header em scroll */
 header {
-    transition: padding 0.3s ease, background-color 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 header h1 {
-    transition: font-size 0.3s ease, margin 0.3s ease;
+    transition: font-size 0.4s ease, margin 0.4s ease;
 }
 
 .logo-icon {
-    transition: width 0.3s ease, opacity 0.3s ease;
+    transition: width 0.4s ease, opacity 0.4s ease;
 }
 
 header .subtitle,
 header nav {
-    transition: opacity 0.3s ease, max-height 0.3s ease;
+    transition: opacity 0.4s ease, max-height 0.4s ease;
 }
 
-/* Efeito visual ao esconder elementos */
+/* Estado compactado (após scroll para baixo) */
 header.compact .subtitle,
 header.compact nav {
     opacity: 0;
