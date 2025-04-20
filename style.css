@@ -41,7 +41,7 @@ a {
 }
 
 a:hover {
-    color: #0056b3; /* Darker blue on hover */
+    color: #334b65; /* Darker blue on hover */
 }
 
 ul {
@@ -96,7 +96,7 @@ header nav ul li a {
 }
 
 header nav ul li a:hover {
-    color: #007bff;
+    color: #3c5877;
 }
 
 /* Main Sections */
@@ -110,9 +110,9 @@ main section:last-of-type {
 }
 
 .logo-icon {
-  width: 100px;      /* Largura desejada */
+  width: 150px;      /* Largura desejada */
   height: auto;      /* Mantém a proporção automaticamente */
-  margin-bottom: 10px; /* Espaço entre o ícone e o título */
+  margin-bottom: 7px; /* Espaço entre o ícone e o título */
 }
 
 /* Hero Section */
