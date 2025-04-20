@@ -35,7 +35,7 @@ p {
 }
 
 a {
-    color: #2d3d4f; /* Blue as highlight color */
+    color: rgb(55, 106, 183); /* Blue as highlight color */
     text-decoration: none;
     transition: color 0.3s ease; /* Smooth transition for hover */
 }
@@ -203,7 +203,7 @@ main section:last-of-type {
     content: '›'; /* Use a different marker */
     position: absolute;
     left: 0;
-    color: #555;
+    color: rgb(55, 106, 183);
     font-weight: bold;
     top: -1px; /* Fine-tune vertical position */
 }
