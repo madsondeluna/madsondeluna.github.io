@@ -328,6 +328,6 @@ header.compact h1 {
 /* Estilização do link no título para parecer texto normal */
 #top-link {
     text-decoration: none;
-    ccolor: #33406f;
+    color: #33406f;
     cursor: pointer;
 }
