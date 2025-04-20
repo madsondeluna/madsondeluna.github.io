@@ -361,7 +361,7 @@ header.compact h1 {
 
 /* Hover effect for the prompt box */
 .fake-prompt-snippet:hover {
-     background-color: #00A800; /* A DOS-like green on hover */
+     background-color: #005aa8; /* A DOS-like green on hover */
      color: #000000; /* Black text on hover */
 }
 
