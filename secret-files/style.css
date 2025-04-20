@@ -1,0 +1,56 @@
+body {
+    background-color: #000000; /* Black background */
+    color: #CCCCCC; /* Light gray text */
+    font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace; /* Monospaced font */
+    font-size: 16px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+}
+
+#terminal {
+    padding: 15px;
+    height: 100vh; /* Full viewport height */
+    box-sizing: border-box; /* Include padding in height */
+    overflow-y: auto; /* Add scroll if content overflows */
+}
+
+p {
+    margin: 0 0 5px 0; /* Minimal spacing between lines */
+    white-space: pre-wrap; /* Preserve whitespace like in DOS */
+}
+
+a {
+    color: #00FF00; /* Bright green for links */
+    text-decoration: none; /* No underline */
+}
+
+a:hover {
+    background-color: #00FF00; /* Green background on hover */
+    color: #000000; /* Black text on hover */
+}
+
+.cursor {
+    background-color: #CCCCCC; /* Match text color */
+    color: #000000; /* Black inside cursor */
+    animation: blink 1s step-end infinite;
+    display: inline-block; /* Needed for animation */
+    width: 10px; /* Adjust width as needed */
+}
+
+/* Blinking animation for the cursor */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Simple tab simulation */
+.tab {
+    display: inline-block;
+    width: 2em; /* Adjust width as needed */
+}
+
+.tab-more {
+    display: inline-block;
+    width: 4em; /* Adjust width as needed */
+}
