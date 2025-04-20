@@ -146,7 +146,7 @@ main section:last-of-type {
 
 .skill-category h3 {
     font-size: 1.1rem;
-    color: #3d5064; /* Category title with highlight color */
+    color: #7daddf; /* Category title with highlight color */
     margin-bottom: 0.8rem;
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 0.3rem;
@@ -164,7 +164,7 @@ main section:last-of-type {
     content: '•';
     position: absolute;
     left: 0;
-    color: #6f8caa;
+    color: #5899de;
     font-size: 1.1rem;
     line-height: inherit;
 }
@@ -185,7 +185,7 @@ main section:last-of-type {
 }
 
 .experience-item p em, .education-item p em {
-    color: #555;
+    color: hsl(212, 44%, 58%);
     font-style: italic;
     font-size: 0.9rem;
     display: block;
