@@ -27,7 +27,7 @@ a {
 
 a:hover {
     background-color: #0084ff; /* Green background on hover */
-    color: #000000; /* Black text on hover */
+    color: #ffffff; /* Black text on hover */
 }
 
 .cursor {
