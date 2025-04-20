@@ -35,7 +35,7 @@ p {
 }
 
 a {
-    color: #007bff; /* Blue as highlight color */
+    color: #2d3d4f; /* Blue as highlight color */
     text-decoration: none;
     transition: color 0.3s ease; /* Smooth transition for hover */
 }
@@ -146,7 +146,7 @@ main section:last-of-type {
 
 .skill-category h3 {
     font-size: 1.1rem;
-    color: #007bff; /* Category title with highlight color */
+    color: #3d5064; /* Category title with highlight color */
     margin-bottom: 0.8rem;
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 0.3rem;
@@ -164,7 +164,7 @@ main section:last-of-type {
     content: '•';
     position: absolute;
     left: 0;
-    color: #007bff;
+    color: #6f8caa;
     font-size: 1.1rem;
     line-height: inherit;
 }
@@ -328,6 +328,6 @@ header.compact h1 {
 /* Estilização do link no título para parecer texto normal */
 #top-link {
     text-decoration: none;
-    ccolor: #1a1a1a;
+    ccolor: #33406f;
     cursor: pointer;
 }
