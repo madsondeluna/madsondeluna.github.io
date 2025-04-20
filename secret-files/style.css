@@ -21,12 +21,12 @@ p {
 }
 
 a {
-    color: #00FF00; /* Bright green for links */
+    color: #0084ff; /* Bright green for links */
     text-decoration: none; /* No underline */
 }
 
 a:hover {
-    background-color: #00FF00; /* Green background on hover */
+    background-color: #0084ff; /* Green background on hover */
     color: #000000; /* Black text on hover */
 }
 
