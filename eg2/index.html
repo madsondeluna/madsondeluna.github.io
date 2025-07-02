@@ -75,7 +75,7 @@
     <div class="absolute top-0 left-0 w-full h-full" id="starfield"></div>
 
     <div class="relative min-h-screen flex flex-col items-center justify-center p-4 z-10">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center tracking-widest text-shadow-lg shadow-blue-400">Stellar Evolution: Journey to a Black Hole</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center tracking-widest text-shadow-lg shadow-blue-400">Journey to a Black Hole</h1>
 
         <div class="w-full max-w-5xl aspect-video rounded-2xl overflow-hidden glass-panel shadow-2xl shadow-blue-500/20">
             <canvas id="simulationCanvas"></canvas>
@@ -198,8 +198,7 @@
                 const result = await response.json();
                 
                 if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    aiResponseText.textContent = text;
+                    aiResponseText.textContent = result.candidates[0].content.parts[0].text;
                 } else {
                     throw new Error("Invalid response structure from API.");
                 }
@@ -214,12 +213,17 @@
         }
 
         // --- Utility Functions ---
+        let centerX, centerY;
         function resizeCanvas() {
             const container = canvas.parentElement;
             const dpr = window.devicePixelRatio || 1;
             canvas.width = container.clientWidth * dpr;
             canvas.height = container.clientHeight * dpr;
             ctx.scale(dpr, dpr);
+            
+            // Use logical size for centering calculations
+            centerX = container.clientWidth / 2;
+            centerY = container.clientHeight / 2;
         }
 
         // --- Particle Systems ---
@@ -228,8 +232,8 @@
             for (let i = 0; i < count; i++) {
                 const radius = Math.random() * 2;
                 const angle = Math.random() * Math.PI * 2;
-                const distance = (canvas.width / 10) + Math.random() * 50;
-                newParticles.push({ x: canvas.width/2 + Math.cos(angle)*distance, y: canvas.height/2 + Math.sin(angle)*distance, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, radius: radius, alpha: Math.random(), angle: angle, distance: distance, speed: (Math.random()*0.005)+0.002 });
+                const distance = (centerX / 5) + Math.random() * 50;
+                newParticles.push({ x: centerX + Math.cos(angle)*distance, y: centerY + Math.sin(angle)*distance, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, radius: radius, alpha: Math.random(), angle: angle, distance: distance, speed: (Math.random()*0.005)+0.002 });
             }
             return newParticles;
         }
@@ -238,7 +242,7 @@
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = Math.random() * 5 + 2;
-                newParticles.push({ x: canvas.width/2, y: canvas.height/2, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, radius: Math.random()*2.5+1, alpha: 1, decay: Math.random()*0.01+0.01 });
+                newParticles.push({ x: centerX, y: centerY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, radius: Math.random()*2.5+1, alpha: 1, decay: Math.random()*0.01+0.01 });
             }
             return newParticles;
         }
@@ -256,29 +260,29 @@
         // --- Drawing Functions ---
         function drawProtostar(progress) {
             particles.forEach(p => {
-                p.angle += p.speed; p.distance -= 0.05; p.x = canvas.width/2 + Math.cos(p.angle)*p.distance; p.y = canvas.height/2 + Math.sin(p.angle)*p.distance; p.alpha = Math.min(1, p.alpha+0.005);
+                p.angle += p.speed; p.distance -= 0.05; p.x = centerX + Math.cos(p.angle)*p.distance; p.y = centerY + Math.sin(p.angle)*p.distance; p.alpha = Math.min(1, p.alpha+0.005);
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fillStyle = `rgba(255, 229, 180, ${p.alpha})`; ctx.fill();
             });
             const glowRadius = 10 + 20 * progress;
-            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, glowRadius);
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)'); gradient.addColorStop(0.5, 'rgba(255, 204, 102, 0.5)'); gradient.addColorStop(1, 'rgba(255, 153, 51, 0)');
-            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
         }
         function drawMainSequenceStar() {
             const radius = 30;
-            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, radius);
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); gradient.addColorStop(0.2, 'rgba(200, 220, 255, 1)'); gradient.addColorStop(0.8, 'rgba(100, 150, 255, 0.8)'); gradient.addColorStop(1, 'rgba(50, 100, 200, 0)');
-            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
         }
         function drawRedSupergiant(progress) {
             const radius = 30 + 70 * progress;
-            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, radius);
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
             gradient.addColorStop(0, 'rgba(255, 220, 180, 1)'); gradient.addColorStop(0.5, 'rgba(255, 100, 50, 0.8)'); gradient.addColorStop(1, 'rgba(200, 50, 0, 0)');
-            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
         }
         function drawSupernova(progress) {
             const flashAlpha = Math.max(0, 1 - progress * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`; ctx.fillRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
             supernovaParticles.forEach(p => {
                 p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
                 if (p.alpha > 0) {
@@ -287,9 +291,9 @@
             });
         }
         function drawBlackHole() {
-            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 30, 0, Math.PI*2); ctx.fillStyle = 'black'; ctx.fill();
+            ctx.beginPath(); ctx.arc(centerX, centerY, 30, 0, Math.PI*2); ctx.fillStyle = 'black'; ctx.fill();
             accretionDiskParticles.forEach(p => {
-                p.angle += p.speed; const x = canvas.width/2 + Math.cos(p.angle)*p.distance; const y = canvas.height/2 + Math.sin(p.angle)*p.distance*0.3 + p.yOffset; const perspectiveScale = 0.5 + Math.sin(p.angle)*0.5;
+                p.angle += p.speed; const x = centerX + Math.cos(p.angle)*p.distance; const y = centerY + Math.sin(p.angle)*p.distance*0.3 + p.yOffset; const perspectiveScale = 0.5 + Math.sin(p.angle)*0.5;
                 ctx.beginPath(); ctx.arc(x, y, p.radius*perspectiveScale, 0, Math.PI*2); const temp = Math.floor(150 + 105*perspectiveScale); ctx.fillStyle = `rgba(255, ${temp}, 100, ${p.alpha*perspectiveScale})`; ctx.fill();
             });
         }
@@ -303,13 +307,13 @@
             const currentStage = STAGES[stageIndex]; let progress = stageElapsedTime / currentStage.duration;
             if (stageIndex === 0) totalSimulatedYears = progress * 0.0005; else if (stageIndex === 1) totalSimulatedYears = 0.0005 + progress * 10; else if (stageIndex === 2) totalSimulatedYears = 10.0005 + progress * 1;
             timerEl.textContent = `${totalSimulatedYears.toFixed(4)} billion years`;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
             switch (currentStage.name) {
                 case "Protostar": drawProtostar(progress); break;
                 case "Main Sequence": drawMainSequenceStar(); break;
                 case "Red Supergiant": drawRedSupergiant(progress); break;
                 case "Supernova": drawSupernova(progress); break;
-                case "Black Hole": drawBlackHole(); timerEl.textContent = "> 11.0005 billion years"; break;
+                case "Black Hole": drawBlackHole(); timerEl.textContent = `> 11.0005 billion years`; break;
             }
             if (progress >= 1 && stageIndex < STAGES.length - 1) { stageIndex++; stageElapsedTime = 0; updateStageInfo(); }
             animationFrameId = requestAnimationFrame(gameLoop);
@@ -342,7 +346,7 @@
             cancelAnimationFrame(animationFrameId); isRunning = false; isPaused = false;
             time = 0; stageIndex = 0; stageElapsedTime = 0; totalSimulatedYears = 0;
             particles = []; supernovaParticles = []; accretionDiskParticles = [];
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
             stageNameEl.textContent = "Not Started";
             stageDescriptionEl.textContent = "Press 'Start Simulation' to begin the life cycle of a massive star.";
             timerEl.textContent = "0.00 billion years";
@@ -366,7 +370,6 @@
             const currentStage = STAGES[stageIndex];
             aiContextStage.textContent = currentStage.name;
             aiModal.classList.remove('hidden');
-            // Reset modal state
             aiInteraction.classList.remove('hidden');
             aiLoading.classList.add('hidden');
             aiResponse.classList.add('hidden');
@@ -375,9 +378,7 @@
         closeAiModal.addEventListener('click', () => aiModal.classList.add('hidden'));
         submitAiQuestion.addEventListener('click', () => {
             const question = aiQuestionInput.value;
-            if (question.trim()) {
-                getAstroFact(question, STAGES[stageIndex]);
-            }
+            if (question.trim()) { getAstroFact(question, STAGES[stageIndex]); }
         });
         askAnotherQuestion.addEventListener('click', () => {
             aiResponse.classList.add('hidden');
