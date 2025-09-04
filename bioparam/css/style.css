@@ -78,8 +78,8 @@ header p {
 
 .header-logo {
     display: block;
-    margin: 0 auto 1.5rem auto;
-    max-width: 80px;
+    margin: 0 auto 1.0rem auto;
+    max-width: 120px;
     height: auto;
 }
 
