@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioParam - Physicochemical Calculator</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BioParam</h1> <p id="typing-text" class="typing-container"></p> <nav class="main-nav">
+                <a href="index.html">BioParam</a>
+                <a href="../pdb2fasta/index.html" class="active">PDB2FASTA</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="calculator-layout">
+                <div class="io-box">
+                    <h2>Input (FASTA Sequence)</h2>
+                    <textarea id="fasta-input" rows="12" placeholder=">Protein_ID&#10;MGQFYVMDDKKTVEQVIAEKEKEFGGKIKIVEFICFGEGLEKKTEDFAAEVAAQL"></textarea>
+                    <button id="calculate-btn">Calculate Parameters</button>
+                    <button id="clear-btn">Clear</button>
+                </div>
+
+                <div class="io-box">
+                    <h2>Calculated Parameters</h2>
+                    <div id="results-output" class="results-table-container">
+                        <p class="placeholder-text">Results will be displayed here...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025. GROMADS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/bioparam.js"></script>
+</body>
+</html>
