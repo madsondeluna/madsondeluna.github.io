@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioParam - Physicochemical Calculator</title>
+    <title>Bioinformatics Tool Suite</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,35 +13,53 @@
 <body>
     <div class="container">
         <header>
-            <h1>BioParam</h1> <p id="typing-text" class="typing-container"></p> <nav class="main-nav">
-                <a href="index.html">BioParam</a>
-                <a href="pdb2fasta.html" class="active">PDB2FASTA</a>
+            <img src="images/logo.png" alt="Logotipo" class="header-logo">
+            <h1>Bioinformatics Tool Suite</h1>
+            <p id="typing-text" class="typing-container"></p>
+            
+            <nav class="main-nav">
+                <a href="index.html" class="active">Home</a>
+                <a href="pdb2fasta.html">PDB2FASTA</a>
+                <a href="bioparam.html">BioParam</a>
             </nav>
         </header>
 
         <main>
-            <div class="calculator-layout">
-                <div class="io-box">
-                    <h2>Input (FASTA Sequence)</h2>
-                    <textarea id="fasta-input" rows="12" placeholder=">Protein_ID&#10;MGQFYVMDDKKTVEQVIAEKEKEFGGKIKIVEFICFGEGLEKKTEDFAAEVAAQL"></textarea>
-                    <button id="calculate-btn">Calculate Parameters</button>
-                    <button id="clear-btn">Clear</button>
-                </div>
+            <div class="tool-cards-container">
+                
+                <a href="pdb2fasta.html" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <h3>PDB to FASTA Converter</h3>
+                    <p>A client-side tool to convert protein structures in PDB format to FASTA sequences quickly and efficiently.</p>
+                </a>
 
-                <div class="io-box">
-                    <h2>Calculated Parameters</h2>
-                    <div id="results-output" class="results-table-container">
-                        <p class="placeholder-text">Results will be displayed here...</p>
-                    </div>
+                <a href="bioparam.html" target="_blank" rel="noopener noreferrer" class="tool-card">
+                    <h3>BioParam</h3>
+                    <p>Calculate a variety of physicochemical parameters from a protein sequence, including molecular weight, pI, and more.</p>
+                </a>
+
                 </div>
-            </div>
         </main>
         
         <footer>
-            <p>© 2025. GROMADS. All rights reserved.</p>
+            <p>&copy; 2025 Madson A. de Luna Aragão. All Rights Reserved.</p>
         </footer>
     </div>
 
-    <script src="js/bioparam.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const typingElement = document.getElementById('typing-text');
+            const textToType = "A collection of web-based tools for bioinformatics analysis.";
+            const typingSpeed = 75;
+            let charIndex = 0;
+            function type() {
+                if (charIndex < textToType.length) {
+                    typingElement.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, typingSpeed);
+                }
+            }
+            if (typingElement) type();
+        });
+    </script>
 </body>
 </html>
