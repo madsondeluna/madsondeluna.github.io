@@ -76,16 +76,6 @@ header p {
     margin: 0 auto;
 }
 
-/* Adicionado após o bloco 'header p' e antes de '.converter-grid' */
-
-/* Estilo para a imagem/logo no cabeçalho */
-.header-logo {
-    display: block; /* Garante que as margens automáticas funcionem */
-    margin: 0 auto 0rem auto; /* Centraliza a imagem e adiciona espaço abaixo */
-    max-width: 110px; /* Defina o tamanho máximo da imagem. Ajuste conforme necessário! */
-    height: auto; /* Mantém a proporção da imagem */
-}
-
 .converter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -107,7 +97,7 @@ footer {
     padding-top: 1rem;      /* Reduzido de 1.5rem - menos espaço interno */
     border-top: 1px solid var(--color-border);
     color: var(--color-text-secondary);
-    font-size: 0.8em;       /* Reduzido de 0.9em - texto menor */
+    font-size: 0.9em;       /* Reduzido de 0.9em - texto menor */
 }
 
 /* ==========================================================================
