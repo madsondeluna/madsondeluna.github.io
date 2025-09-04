@@ -76,6 +76,16 @@ header p {
     margin: 0 auto;
 }
 
+/* Adicionado após o bloco 'header p' e antes de '.converter-grid' */
+
+/* Estilo para a imagem/logo no cabeçalho */
+.header-logo {
+    display: block; /* Garante que as margens automáticas funcionem */
+    margin: 0 auto 1.5rem auto; /* Centraliza a imagem e adiciona espaço abaixo */
+    max-width: 120px; /* Defina o tamanho máximo da imagem. Ajuste conforme necessário! */
+    height: auto; /* Mantém a proporção da imagem */
+}
+
 .converter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
