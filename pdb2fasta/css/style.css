@@ -169,6 +169,7 @@ button:hover, .upload-btn:hover {
 
 #copy-btn, .upload-btn {
     background-color: var(--color-primary);
+    width: 100%; 
 }
 #copy-btn:hover, .upload-btn:hover {
     background-color: var(--color-primary-hover);
@@ -182,7 +183,7 @@ button:hover, .upload-btn:hover {
 
 .output-controls {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex;
     margin-bottom: 1rem;
 }
 
