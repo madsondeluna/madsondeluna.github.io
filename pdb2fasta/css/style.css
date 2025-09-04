@@ -82,7 +82,7 @@ header p {
 .header-logo {
     display: block; /* Garante que as margens automáticas funcionem */
     margin: 0 auto 1.5rem auto; /* Centraliza a imagem e adiciona espaço abaixo */
-    max-width: 15px; /* Defina o tamanho máximo da imagem. Ajuste conforme necessário! */
+    max-width: 50px; /* Defina o tamanho máximo da imagem. Ajuste conforme necessário! */
     height: auto; /* Mantém a proporção da imagem */
 }
 
