@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ATUALIZADA ---
     const typingElement = document.getElementById('typing-text');
     // Texto atualizado para a página BioParam
-    const textToType = "Physicochemical parameter calculator for protein sequences.";
+    const textToType = "Physicochemical parameter calculator for primary protein sequences...";
     const typingSpeed = 75;
     let charIndex = 0;
 
