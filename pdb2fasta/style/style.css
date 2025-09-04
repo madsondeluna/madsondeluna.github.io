@@ -1,89 +1,147 @@
-/* Global settings and font */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f7f9;
-    color: #333;
-    margin: 0;
-    padding: 20px;
+/* ==========================================================================
+   1. Definição de Variáveis (Paleta de Cores e Fontes)
+   ========================================================================== */
+
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'Courier New', Courier, monospace;
+
+    --color-primary: #007bff;
+    --color-primary-hover: #0056b3;
+    --color-success: #28a745;
+    --color-success-hover: #1e7e34;
+    --color-danger: #dc3545;
+    --color-danger-hover: #b02a37;
+    --color-secondary: #6c757d;
+    --color-secondary-hover: #5a6268;
+    
+    --color-text-primary: #212529;
+    --color-text-secondary: #6c757d;
+    --color-border: #dee2e6;
+    --color-background: #f8f9fa;
+    --color-surface: #ffffff;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --border-radius: 0.5rem; /* 8px */
 }
 
-/* Main container */
+/* ==========================================================================
+   2. Reset e Estilos Globais
+   ========================================================================== */
+
+body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 2rem;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   3. Layout Principal
+   ========================================================================== */
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background-color: var(--color-surface);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
 }
 
-/* Header */
 header {
     text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 20px;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
 }
 
 header h1 {
-    color: #2c3e50;
-    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
-/* Grid layout for I/O boxes */
+header p {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 .converter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 20px;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-/* I/O box styling */
 .io-box h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
     margin-top: 0;
-    color: #34495e;
-    font-size: 1.2em;
+    margin-bottom: 1rem;
 }
 
-/* Text area styling */
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.9em;
+}
+
+/* ==========================================================================
+   4. Estilo dos Elementos de Formulário (Botões, Textarea)
+   ========================================================================== */
+
 textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: var(--font-mono);
     font-size: 0.95em;
-    box-sizing: border-box;
     resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 textarea:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 textarea[readonly] {
-    background-color: #ecf0f1;
-    cursor: not-allowed;
+    background-color: #f8f9fa;
+    cursor: default;
 }
 
-/* Action buttons */
 .action-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 button, .upload-btn {
-    padding: 12px 25px;
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: background-color 0.2s, transform 0.1s;
+    -webkit-font-smoothing: antialiased;
 }
 
 button:hover, .upload-btn:hover {
@@ -91,63 +149,54 @@ button:hover, .upload-btn:hover {
 }
 
 #convert-btn {
-    background-color: #27ae60;
+    background-color: var(--color-success);
     color: white;
 }
-
 #convert-btn:hover {
-    background-color: #229954;
+    background-color: var(--color-success-hover);
 }
 
-#clear-btn, #copy-btn {
-    background-color: #e74c3c;
+#clear-btn {
+    background-color: var(--color-danger);
     color: white;
 }
-
 #clear-btn:hover {
-    background-color: #c0392b;
+    background-color: var(--color-danger-hover);
 }
 
-#copy-btn {
-    background-color: #3498db;
+#copy-btn, .upload-btn {
+    background-color: var(--color-secondary);
+    color: white;
+}
+#copy-btn:hover, .upload-btn:hover {
+    background-color: var(--color-secondary-hover);
 }
 
-#copy-btn:hover {
-    background-color: #2980b9;
-}
-
-/* Custom upload button */
 .upload-btn {
     display: inline-block;
-    background-color: #f39c12;
-    color: white;
     text-align: center;
-    margin-bottom: 10px;
-}
-.upload-btn:hover {
-    background-color: #e67e22;
+    margin-bottom: 1rem;
 }
 
-
-/* Output area controls */
 .output-controls {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
-    color: #7f8c8d;
-    font-size: 0.9em;
-}
+/* ==========================================================================
+   5. Responsividade
+   ========================================================================== */
 
-/* Responsive design for smaller screens */
 @media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .container {
+        padding: 1.5rem;
+    }
+
     .converter-grid {
         grid-template-columns: 1fr;
     }
