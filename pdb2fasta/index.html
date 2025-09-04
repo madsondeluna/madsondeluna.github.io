@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDB2Fasta Converter</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDB to FASTA Converter</h1>
+            <p>Paste your PDB file content in the text box below or upload a file to convert it to FASTA format.</p>
+        </header>
+
+        <main>
+            <div class="converter-grid">
+                <div class="io-box">
+                    <h2>PDB Input</h2>
+                    <label for="pdb-upload" class="upload-btn">Upload PDB File</label>
+                    <input type="file" id="pdb-upload" accept=".pdb" hidden>
+                    <textarea id="pdb-input" rows="15" placeholder="Or paste PDB content here..."></textarea>
+                </div>
+
+                <div class="io-box">
+                    <h2>FASTA Output</h2>
+                    <div class="output-controls">
+                         <button id="copy-btn">Copy to Clipboard</button>
+                    </div>
+                    <textarea id="fasta-output" rows="15" readonly placeholder="FASTA formatted output will appear here..."></textarea>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="convert-btn">Convert</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Developed for client-side PDB to FASTA conversion.</p>
+        </footer>
+    </div>
+
+    <script src="js/converter.js"></script>
+</body>
+</html>
