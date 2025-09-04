@@ -103,11 +103,11 @@ header p {
 
 footer {
     text-align: center;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
+    margin-top: 2rem;       /* Reduzido de 3rem - menos espaço acima do rodapé */
+    padding-top: 1rem;      /* Reduzido de 1.5rem - menos espaço interno */
     border-top: 1px solid var(--color-border);
     color: var(--color-text-secondary);
-    font-size: 0.9em;
+    font-size: 0.8em;       /* Reduzido de 0.9em - texto menor */
 }
 
 /* ==========================================================================
