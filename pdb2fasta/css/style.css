@@ -211,3 +211,31 @@ button:hover, .upload-btn:hover {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   6. Animação de Digitação
+   ========================================================================== */
+
+/* Estilo do container para garantir que o cursor fique alinhado corretamente */
+.typing-container {
+    display: inline-block;
+}
+
+/* Cria o cursor piscando usando um pseudo-elemento ::after */
+.typing-container::after {
+    content: '|'; /* O caractere do cursor */
+    display: inline-block;
+    animation: blink-caret 0.75s infinite;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+/* Animação que faz o cursor piscar */
+@keyframes blink-caret {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}

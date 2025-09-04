@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // NEW
+    const typingElement = document.getElementById('typing-text');
+    const textToType = "Paste or upload a PDB file to convert it to FASTA..."; // A frase que você quer animar
+    const typingSpeed = 75; // Velocidade em milissegundos. Ajuste conforme desejar.
+    let charIndex = 0;
+
+    function type() {
+        if (charIndex < textToType.length) {
+            typingElement.textContent += textToType.charAt(charIndex);
+            charIndex++;
+            setTimeout(type, typingSpeed);
+        }
+    }
+    
+    // Inicia a animação assim que a página carrega
+    if (typingElement) {
+        type();
+    }
+    // NEW
+
     const aminoAcidMap = {
         'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C',
         'GLN': 'Q', 'GLU': 'E', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I',
