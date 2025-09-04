@@ -1,35 +1,32 @@
 /* ==========================================================================
-   1. Definição de Variáveis (Paleta de Cores e Fontes)
+   1. Definição de Variáveis (TEMA ESCURO)
    ========================================================================== */
-
 :root {
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: 'Courier New', Courier, monospace;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Courier New', Courier, monospace;
 
-    --color-primary: #007bff;
-    --color-primary-hover: #0056b3;
-    --color-success: #28a745;
-    --color-success-hover: #1e7e34;
+    --color-primary: #0d6efd;
+    --color-primary-hover: #3b8bfd;
+    --color-success: #198754;
+    --color-success-hover: #21b36b;
     --color-danger: #dc3545;
-    --color-danger-hover: #b02a37;
-    --color-secondary: #6c757d;
-    --color-secondary-hover: #5a6268;
+    --color-danger-hover: #e55a66;
     
-    --color-text-primary: #212529;
-    --color-text-secondary: #6c757d;
-    --color-border: #dee2e6;
-    --color-background: #f8f9fa;
-    --color-surface: #ffffff;
+    --color-text-primary: #e9ecef;
+    --color-text-secondary: #adb5bd;
+    --color-border: #495057;
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-surface-light: #2c2c2c;
 
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
     --border-radius: 0.5rem; /* 8px */
 }
 
 /* ==========================================================================
    2. Reset e Estilos Globais
    ========================================================================== */
-
 body {
     font-family: var(--font-sans);
     line-height: 1.6;
@@ -37,6 +34,8 @@ body {
     color: var(--color-text-primary);
     margin: 0;
     padding: 2rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 *, *::before, *::after {
@@ -46,7 +45,6 @@ body {
 /* ==========================================================================
    3. Layout Principal
    ========================================================================== */
-
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -68,6 +66,7 @@ header h1 {
     font-size: 2.25rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    color: #fff;
 }
 
 header p {
@@ -89,6 +88,7 @@ header p {
     font-weight: 500;
     margin-top: 0;
     margin-bottom: 1rem;
+    color: var(--color-text-primary);
 }
 
 footer {
@@ -103,7 +103,6 @@ footer {
 /* ==========================================================================
    4. Estilo dos Elementos de Formulário (Botões, Textarea)
    ========================================================================== */
-
 textarea {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -112,17 +111,23 @@ textarea {
     font-family: var(--font-mono);
     font-size: 0.95em;
     resize: vertical;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    background-color: var(--color-surface-light);
+    color: var(--color-text-primary);
+}
+
+textarea::placeholder {
+    color: var(--color-text-secondary);
 }
 
 textarea:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.35);
 }
 
 textarea[readonly] {
-    background-color: #f8f9fa;
+    background-color: rgba(0,0,0,0.2);
     cursor: default;
 }
 
@@ -141,7 +146,7 @@ button, .upload-btn {
     font-weight: 500;
     font-family: var(--font-sans);
     transition: background-color 0.2s, transform 0.1s;
-    -webkit-font-smoothing: antialiased;
+    color: white;
 }
 
 button:hover, .upload-btn:hover {
@@ -150,7 +155,6 @@ button:hover, .upload-btn:hover {
 
 #convert-btn {
     background-color: var(--color-success);
-    color: white;
 }
 #convert-btn:hover {
     background-color: var(--color-success-hover);
@@ -158,22 +162,20 @@ button:hover, .upload-btn:hover {
 
 #clear-btn {
     background-color: var(--color-danger);
-    color: white;
 }
 #clear-btn:hover {
     background-color: var(--color-danger-hover);
 }
 
 #copy-btn, .upload-btn {
-    background-color: var(--color-secondary);
-    color: white;
+    background-color: var(--color-primary);
 }
 #copy-btn:hover, .upload-btn:hover {
-    background-color: var(--color-secondary-hover);
+    background-color: var(--color-primary-hover);
 }
 
 .upload-btn {
-    display: inline-block;
+    display: block;
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -187,7 +189,6 @@ button:hover, .upload-btn:hover {
 /* ==========================================================================
    5. Responsividade
    ========================================================================== */
-
 @media (max-width: 768px) {
     body {
         padding: 1rem;
