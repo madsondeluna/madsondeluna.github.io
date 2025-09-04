@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // NEW
     const typingElement = document.getElementById('typing-text');
-    const textToType = "Paste or upload a PDB file to convert it to FASTA format..."; // A frase que você quer animar
+    const textToType = "Paste or upload your PDB file to convert it to FASTA format... Here we go!"; // A frase que você quer animar
     const typingSpeed = 75; // Velocidade em milissegundos. Ajuste conforme desejar.
     let charIndex = 0;
 
