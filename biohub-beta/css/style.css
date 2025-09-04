@@ -1,4 +1,160 @@
-/* Estilos para a página principal (Hub de Ferramentas) */
+/* ==========================================================================
+   1. Definição de Variáveis (TEMA ESCURO)
+   ========================================================================== */
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Courier New', Courier, monospace;
+
+    --color-primary: #0d6efd;
+    --color-primary-hover: #3b8bfd;
+    --color-success: #198754;
+    --color-success-hover: #21b36b;
+    --color-danger: #dc3545;
+    --color-danger-hover: #e55a66;
+    
+    --color-text-primary: #e9ecef;
+    --color-text-secondary: #adb5bd;
+    --color-border: #495057;
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-surface-light: #2c2c2c;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    --border-radius: 0.5rem; /* 8px */
+}
+
+/* ==========================================================================
+   2. Reset e Estilos Globais
+   ========================================================================== */
+body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 2rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   3. Layout Principal
+   ========================================================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--color-surface);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 1.5rem;
+}
+
+header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-logo {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    max-width: 80px;
+    height: auto;
+}
+
+/* ... (outros estilos que já tínhamos) ... */
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8em;
+}
+
+/* ==========================================================================
+   4. Estilo dos Elementos de Formulário (se necessário em outras páginas)
+   ========================================================================== */
+/* ... (estilos de textarea, botões, etc. das outras páginas) ... */
+
+/* ==========================================================================
+   5. Animação de Digitação
+   ========================================================================== */
+.typing-container {
+    display: inline-block;
+}
+
+.typing-container::after {
+    content: '|';
+    display: inline-block;
+    animation: blink-caret 0.75s infinite;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+@keyframes blink-caret {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   6. Estilos da Navegação e Página Principal (Hub)
+   ========================================================================== */
+.main-nav {
+    margin-top: 1.5rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
+}
+
+.main-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+}
+
+.main-nav a:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-light);
+}
+
+.main-nav a.active {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
 .tool-cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -13,7 +169,7 @@
     border-radius: var(--border-radius);
     padding: 1.5rem;
     width: 100%;
-    max-width: 350px; /* Largura máxima de cada cartão */
+    max-width: 350px;
     text-decoration: none;
     color: var(--color-text-primary);
     transition: transform 0.2s, box-shadow 0.2s;
@@ -35,4 +191,17 @@
 .tool-card p {
     color: var(--color-text-secondary);
     font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   7. Responsividade
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .container {
+        padding: 1.5rem;
+    }
 }
