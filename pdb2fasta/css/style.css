@@ -76,11 +76,17 @@ header p {
     margin: 0 auto;
 }
 
+.header-logo {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    max-width: 120px;
+    height: auto;
+}
+
 .converter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-bottom: 2rem;
 }
 
 .io-box h2 {
@@ -93,11 +99,11 @@ header p {
 
 footer {
     text-align: center;
-    margin-top: 2rem;       /* Reduzido de 3rem - menos espaço acima do rodapé */
-    padding-top: 1rem;      /* Reduzido de 1.5rem - menos espaço interno */
+    margin-top: 2rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--color-border);
     color: var(--color-text-secondary);
-    font-size: 0.9em;       /* Reduzido de 0.9em - texto menor */
+    font-size: 0.8em; /* Ajustado para ser menor */
 }
 
 /* ==========================================================================
@@ -129,12 +135,6 @@ textarea:focus {
 textarea[readonly] {
     background-color: rgba(0,0,0,0.2);
     cursor: default;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
 }
 
 button, .upload-btn {
@@ -183,9 +183,18 @@ button:hover, .upload-btn:hover {
 
 .output-controls {
     display: flex;
-    justify-content: flex;
     margin-bottom: 1rem;
 }
+
+/* Estilo específico para os botões de ação principais na grade */
+#convert-btn,
+#clear-btn {
+    width: 100%; /* Faz o botão ocupar toda a largura da sua coluna */
+    padding-top: 1rem; /* Aumenta um pouco a altura para dar mais destaque */
+    padding-bottom: 1rem;
+    font-weight: 700; /* Deixa a fonte um pouco mais forte */
+}
+
 
 /* ==========================================================================
    5. Responsividade
