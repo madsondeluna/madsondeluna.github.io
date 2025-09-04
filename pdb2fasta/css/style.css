@@ -81,7 +81,7 @@ header p {
 /* Estilo para a imagem/logo no cabeçalho */
 .header-logo {
     display: block; /* Garante que as margens automáticas funcionem */
-    margin: 0 auto 0.5rem auto; /* Centraliza a imagem e adiciona espaço abaixo */
+    margin: 0 auto 0rem auto; /* Centraliza a imagem e adiciona espaço abaixo */
     max-width: 110px; /* Defina o tamanho máximo da imagem. Ajuste conforme necessário! */
     height: auto; /* Mantém a proporção da imagem */
 }
