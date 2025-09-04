@@ -192,7 +192,7 @@ button:hover, .upload-btn:hover {
     width: 100%; /* Faz o botão ocupar toda a largura da sua coluna */
     padding-top: 1rem; /* Aumenta um pouco a altura para dar mais destaque */
     padding-bottom: 1rem;
-    font-weight: 700; /* Deixa a fonte um pouco mais forte */
+    font-weight: 500; /* Deixa a fonte um pouco mais forte */
 }
 
 
