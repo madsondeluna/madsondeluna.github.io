@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D PDB Viewer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://unpkg.com/ngl@2.0.0-dev.38/dist/ngl.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="images/logo.png" alt="Logotipo" class="header-logo">
+            <h1>3D PDB Viewer</h1>
+            <p id="typing-text" class="typing-container"></p>
+            
+            <nav class="main-nav">
+                <a href="index.html">Home</a>
+                <a href="pdb2fasta.html">PDB2FASTA</a>
+                <a href="bioparam.html">BioParam</a>
+                <a href="contactmap.html">Contact Map</a>
+                <a href="viewer.html" class="active">3D Viewer</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="viewer-layout">
+                <div id="viewer-controls">
+                    <h3>Controls</h3>
+                    <div class="control-group">
+                        <label for="pdb-upload-3d" class="upload-btn">Load PDB File</label>
+                        <input type="file" id="pdb-upload-3d" accept=".pdb" hidden>
+                        <div id="file-name-display-3d">No structure loaded.</div>
+                    </div>
+                    <div class="control-group">
+                        <label for="representation-select">Representation</label>
+                        <select id="representation-select">
+                            <option value="cartoon" selected>Cartoon</option>
+                            <option value="ball+stick">Ball+Stick</option>
+                            <option value="spacefill">Spacefill</option>
+                            <option value="surface">Surface</option>
+                            <option value="licorice">Licorice</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="color-select">Color Scheme</label>
+                        <select id="color-select">
+                            <option value="chainindex" selected>By Chain</option>
+                            <option value="residueindex">Rainbow</option>
+                            <option value="element">By Element (CPK)</option>
+                            <option value="sstruc">By Secondary Structure</option>
+                        </select>
+                    </div>
+                    <div class="control-group action-buttons">
+                        <button id="center-btn">Center View</button>
+                        <button id="spin-btn">Toggle Spin</button>
+                    </div>
+                </div>
+
+                <div id="viewport"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 GROMADS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/viewer.js"></script>
+</body>
+</html>
