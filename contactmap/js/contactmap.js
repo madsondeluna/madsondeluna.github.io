@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ---
     const typingElement = document.getElementById('typing-text');
     if (typingElement) {
-        const textToType = "Visualize residue interactions by generating a structural contact map.";
+        const textToType = "Visualize residue distances and structural data from a PDB file.";
         const typingSpeed = 75;
         let charIndex = 0;
         function type() {
@@ -34,56 +34,83 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (e) => {
             const pdbContent = e.target.result;
             
-            // 1. Parsear o arquivo PDB
             const pdbData = parsePDB(pdbContent);
-            
-            // 2. Exibir informações do PDB
             displayPDBInfo(pdbData.info);
             
-            // 3. Calcular a matriz de contato
-            const contactMatrix = calculateContactMap(pdbData.alphaCarbons);
+            // Agora calcula a matriz de DISTÂNCIA, não de contato binário
+            const distanceMatrix = calculateDistanceMatrix(pdbData.alphaCarbons);
 
-            // 4. Plotar o heatmap
-            plotHeatmap(contactMatrix, pdbData.residueLabels);
+            // Plota o heatmap com a nova matriz e lógica
+            plotDistanceHeatmap(distanceMatrix, pdbData.residueLabels);
         };
         reader.readAsText(file);
     });
 
     /**
-     * Parseia o conteúdo de um arquivo PDB para extrair informações e coordenadas C-alfa.
-     * @param {string} pdbContent - O conteúdo textual do arquivo PDB.
-     * @returns {object} - Um objeto com informações e coordenadas.
+     * Parseia o PDB para extrair informações, metadados e coordenadas.
      */
     function parsePDB(pdbContent) {
         const lines = pdbContent.split('\n');
-        const info = { chains: new Set(), residues: 0, atoms: 0, hetatms: 0 };
+        const info = { 
+            title: '',
+            method: 'N/A',
+            resolution: 'N/A',
+            chains: new Set(), 
+            residues: 0, 
+            atoms: 0, 
+            hetatms: 0,
+            helices: 0,
+            sheets: 0
+        };
         const alphaCarbons = [];
         const residueLabels = [];
         const seenResidues = new Set();
 
         lines.forEach(line => {
-            if (line.startsWith('ATOM')) {
-                info.atoms++;
-                const atomName = line.substring(12, 16).trim();
-                if (atomName === 'CA') {
-                    const chainID = line.substring(21, 22).trim();
-                    const resSeq = parseInt(line.substring(22, 26).trim());
-                    const resName = line.substring(17, 20).trim();
-                    const residueId = `${chainID}-${resSeq}`;
-
-                    if (!seenResidues.has(residueId)) {
-                        info.chains.add(chainID);
-                        seenResidues.add(residueId);
-                        alphaCarbons.push({
-                            x: parseFloat(line.substring(30, 38)),
-                            y: parseFloat(line.substring(38, 46)),
-                            z: parseFloat(line.substring(46, 54)),
-                        });
-                        residueLabels.push(`${resName}${resSeq}`);
+            const recordType = line.substring(0, 6).trim();
+            switch (recordType) {
+                case 'TITLE':
+                    if (!info.title) info.title = line.substring(10).trim();
+                    break;
+                case 'EXPDTA':
+                    info.method = line.substring(10).trim();
+                    break;
+                case 'REMARK':
+                    if (line.includes("RESOLUTION.")) {
+                        const resolutionMatch = line.match(/RESOLUTION\.\s+([\d.]+)\s+ANGSTROMS/);
+                        if (resolutionMatch) info.resolution = resolutionMatch[1];
                     }
-                }
-            } else if (line.startsWith('HETATM')) {
-                info.hetatms++;
+                    break;
+                case 'HELIX':
+                    info.helices++;
+                    break;
+                case 'SHEET':
+                    info.sheets++;
+                    break;
+                case 'ATOM':
+                    info.atoms++;
+                    const atomName = line.substring(12, 16).trim();
+                    if (atomName === 'CA') {
+                        const chainID = line.substring(21, 22).trim();
+                        const resSeq = parseInt(line.substring(22, 26).trim());
+                        const resName = line.substring(17, 20).trim();
+                        const residueId = `${chainID}-${resSeq}`;
+
+                        if (!seenResidues.has(residueId)) {
+                            info.chains.add(chainID);
+                            seenResidues.add(residueId);
+                            alphaCarbons.push({
+                                x: parseFloat(line.substring(30, 38)),
+                                y: parseFloat(line.substring(38, 46)),
+                                z: parseFloat(line.substring(46, 54)),
+                            });
+                            residueLabels.push(`${resName}${resSeq}`);
+                        }
+                    }
+                    break;
+                case 'HETATM':
+                    info.hetatms++;
+                    break;
             }
         });
         info.residues = seenResidues.size;
@@ -91,69 +118,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Exibe os dados extraídos do PDB em cartões de informação.
-     * @param {object} info - O objeto de informações do PDB.
+     * Exibe os dados extraídos do PDB, agora com mais informações.
      */
     function displayPDBInfo(info) {
         pdbInfoContainer.innerHTML = `
+            <div class="info-card"><h3>Title</h3><p class="small-text">${info.title || 'N/A'}</p></div>
+            <div class="info-card"><h3>Method</h3><p class="small-text">${info.method}</p></div>
+            <div class="info-card"><h3>Resolution</h3><p>${info.resolution} Å</p></div>
             <div class="info-card"><h3>Chains</h3><p>${[...info.chains].join(', ') || 'N/A'}</p></div>
             <div class="info-card"><h3>Residues</h3><p>${info.residues}</p></div>
-            <div class="info-card"><h3>Atoms</h3><p>${info.atoms}</p></div>
-            <div class="info-card"><h3>Heteroatoms</h3><p>${info.hetatms}</p></div>
+            <div class="info-card"><h3>Helices</h3><p>${info.helices}</p></div>
+            <div class="info-card"><h3>Sheets</h3><p>${info.sheets}</p></div>
         `;
     }
 
     /**
-     * Calcula a matriz de contato baseada na distância entre C-alfa.
-     * @param {Array} alphaCarbons - Array de objetos com coordenadas {x, y, z}.
-     * @param {number} [cutoff=8.0] - A distância de corte em Angstroms.
-     * @returns {Array<Array<number>>} - A matriz 2D de contatos (0 ou 1).
+     * Calcula a matriz de distância euclidiana entre C-alfa.
      */
-    function calculateContactMap(alphaCarbons, cutoff = 8.0) {
+    function calculateDistanceMatrix(alphaCarbons) {
         const n = alphaCarbons.length;
         const matrix = Array(n).fill(0).map(() => Array(n).fill(0));
-        const cutoffSq = cutoff * cutoff;
 
         for (let i = 0; i < n; i++) {
             for (let j = i; j < n; j++) {
                 const dx = alphaCarbons[i].x - alphaCarbons[j].x;
                 const dy = alphaCarbons[i].y - alphaCarbons[j].y;
                 const dz = alphaCarbons[i].z - alphaCarbons[j].z;
-                const dSq = dx * dx + dy * dy + dz * dz;
-
-                if (dSq < cutoffSq) {
-                    matrix[i][j] = 1;
-                    matrix[j][i] = 1;
-                }
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                matrix[i][j] = distance;
+                matrix[j][i] = distance;
             }
         }
         return matrix;
     }
 
     /**
-     * Usa Plotly.js para desenhar o heatmap da matriz de contato.
-     * @param {Array<Array<number>>} matrix - A matriz de contatos.
-     * @param {Array<string>} labels - Os rótulos dos resíduos para os eixos.
+     * Usa Plotly.js para desenhar o heatmap da matriz de DISTÂNCIA.
      */
-    function plotHeatmap(matrix, labels) {
+    function plotDistanceHeatmap(matrix, labels) {
         const data = [{
             z: matrix,
             x: labels,
             y: labels,
             type: 'heatmap',
-            colorscale: 'Greys',
-            reversescale: true,
-            showscale: false
+            colorscale: 'RdBu', // Escala de Azul -> Branco -> Vermelho
+            reversescale: true,  // Inverte para Azul ser perto e Vermelho longe
+            showscale: true,     // Mostra a barra de cores
+            colorbar: {
+                title: 'Distance (Å)',
+                titleside: 'right'
+            }
         }];
 
         const layout = {
-            title: 'Residue-Residue Contact Map (Cα < 8Å)',
+            title: 'Residue-Residue Distance Matrix (Cα, Å)',
             paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'var(--color-surface-light)', // Fundo do gráfico
             font: { color: 'var(--color-text-secondary)' },
-            xaxis: { showticklabels: false },
-            yaxis: { showticklabels: false },
-            margin: { l: 40, r: 40, b: 40, t: 40 }
+            xaxis: { showticklabels: false, ticks: '' },
+            yaxis: { showticklabels: false, ticks: '' },
         };
 
         const config = { responsive: true };

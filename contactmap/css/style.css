@@ -435,3 +435,22 @@ button:hover, .upload-btn:hover {
     padding: 1rem;
     min-height: 500px;
 }
+
+/* ==========================================================================
+   8. Ajustes Finos para Páginas Específicas
+   ========================================================================== */
+
+/* Garante que o container do plot seja quadrado */
+.plot-container {
+    aspect-ratio: 1 / 1; /* Força a proporção de 1:1 (quadrado) */
+    width: 100%;
+    max-width: 700px; /* Define uma largura máxima para não ficar gigante em telas grandes */
+    margin: 0 auto; /* Centraliza o container do plot */
+}
+
+/* Estilo para textos menores nos cartões de informação */
+.info-card p.small-text {
+    font-size: 1rem;
+    font-weight: 400;
+    word-break: break-word; /* Quebra palavras longas como nomes de proteínas */
+}
