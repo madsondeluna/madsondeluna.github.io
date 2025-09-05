@@ -120,13 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayPDBInfo(info) {
         pdbInfoContainer.innerHTML = `
-            <div class="info-card"><h3>Title</h3><p>${info.title || 'N/A'}</p></div>
-            <div class="info-card"><h3>Method</h3><p>${info.method}</p></div>
-            <div class="info-card"><h3>Resolution</h3><p>${info.resolution} Å</p></div>
-            <div class="info-card"><h3>Chains</h3><p>${[...info.chains].join(', ') || 'N/A'}</p></div>
-            <div class="info-card"><h3>Residues</h3><p>${info.residues}</p></div>
-            <div class="info-card"><h3>Helices</h3><p>${info.helices}</p></div>
-            <div class="info-card"><h3>Sheets</h3><p>${info.sheets}</p></div>`;
+            <div class="info-card"><h3>Title</h3><p class="small-text">${info.title || 'N/A'}</p></div>
+            <div class="info-card"><h3>Method</h3><p class="small-text">${info.method}</p></div>
+            <div class="info-card"><h3>Resolution</h3><p class="small-text">${info.resolution} Å</p></div>
+            <div class="info-card"><h3>Chains</h3><p class="small-text">${[...info.chains].join(', ') || 'N/A'}</p></div>
+            <div class="info-card"><h3>Residues</h3><p class="small-text">${info.residues}</p></div>
+            <div class="info-card"><h3>Helices</h3><p class="small-text">${info.helices}</p></div>
+            <div class="info-card"><h3>Sheets</h3><p class="small-text">${info.sheets}</p></div>`;
     }
 
     function calculateDistanceMatrix(alphaCarbons) {
