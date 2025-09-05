@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr><td>Theoretical pI</td><td>${pI}</td></tr>
                 <tr><td>Aliphatic Index</td><td>${aliphaticIndex.toFixed(2)}</td></tr>
                 <tr><td>GRAVY</td><td>${gravy}</td></tr>
-                <tr><td colspan="2" class="sub-header">Extinction Coefficient (M<sup>-1</sup> cm<sup>-1</sup>)</td></tr>
+                <tr><td colspan="2" class="sub-header">Beer's Law - Extinction Coefficient (M<sup>-1</sup> cm<sup>-1</sup>)</td></tr>
                 <tr><td>Assuming all Cys reduced</td><td>${extCoeff1}</td></tr>
                 <tr><td>Assuming all Cys form cystines</td><td>${extCoeff2}</td></tr>
                 <tr><td colspan="2" class="sub-header">Amino Acid Composition</td></tr>
