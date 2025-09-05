@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ---
     const typingElement = document.getElementById('typing-text');
     if (typingElement) {
-        const textToType = "Predict and analyze hydrophobicity profiles in protein sequences...";
+        const textToType = "Predict and analyze hydrophobicity profiles for protein sequences...";
         const typingSpeed = 75;
         let charIndex = 0;
         function type() { if (charIndex < textToType.length) { typingElement.textContent += textToType.charAt(charIndex++); setTimeout(type, typingSpeed); } }
@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateBtn = document.getElementById('calculate-btn');
     const clearBtn = document.getElementById('clear-btn');
     const plotDiv = document.getElementById('hydrophobicity-plot');
-    const windowSizeSlider = document.getElementById('window-size-slider');
-    const windowSizeValue = document.getElementById('window-size-value');
+    // As linhas abaixo, que selecionavam o slider, foram removidas:
+    // const windowSizeSlider = document.getElementById('window-size-slider');
+    // const windowSizeValue = document.getElementById('window-size-value');
 
     // --- FUNÇÕES ---
     function parseSequence(fasta) {
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }];
 
         const layout = {
-            title: 'Hydrophobicity Profile',
+            title: 'Hydrophobicity Profile (Window Size: 9)',
             paper_bgcolor: '#ffffff',
             plot_bgcolor: '#ffffff',
             font: { 
@@ -74,27 +75,27 @@ document.addEventListener('DOMContentLoaded', () => {
             margin: { l: 60, r: 30, b: 50, t: 50 }
         };
         
-        // CÓDIGO ATUALIZADO
         const config = { 
             responsive: true,
-            displayModeBar: false // Esta linha desativa a barra de ferramentas
+            displayModeBar: false
         };
         Plotly.newPlot(plotDiv, data, layout, config);
     }
 
     // --- EVENT LISTENERS ---
-    windowSizeSlider.addEventListener('input', (event) => {
-        windowSizeValue.textContent = event.target.value;
-    });
+    // O event listener para o slider foi removido.
 
     calculateBtn.addEventListener('click', () => {
         const sequence = parseSequence(fastaInput.value);
-        const windowSize = parseInt(windowSizeSlider.value);
+        
+        // *** MUDANÇA PRINCIPAL AQUI ***
+        const windowSize = 9; // O valor agora é fixo em 9.
+
         if (sequence && sequence.length >= windowSize) {
             const { positions, scores } = calculateHydrophobicity(sequence, windowSize);
             plotHydrophobicity(positions, scores);
         } else {
-            Plotly.purge(plotDiv);
+            Plotly.purge(plotDiv); 
         }
     });
     
