@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- ANIMAÇÃO DE DIGITAÇÃO ATUALIZADA ---
+    // ANIMAÇÃO DE DIGITAÇÃO ATUALIZADA, E FUNCIONANDO APÓS AS ALTERAÇÕES DO ALPHA
     const typingElement = document.getElementById('typing-text');
-    // Texto atualizado para a página BioParam
+    // Texto atualizado ;)
     const textToType = "Physicochemical parameter calculator for primary protein sequences...";
     const typingSpeed = 75;
     let charIndex = 0;
