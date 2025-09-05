@@ -56,19 +56,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const layout = {
             title: 'Hydrophobicity Profile',
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'var(--color-surface-light)',
-            font: { color: 'var(--color-text-secondary)' },
+            paper_bgcolor: '#ffffff',
+            plot_bgcolor: '#ffffff',
+            font: { 
+                color: '#333333'
+            },
             xaxis: {
                 title: 'Residue Number',
-                gridcolor: 'var(--color-border)'
+                gridcolor: '#e0e0e0'
             },
             yaxis: {
                 title: 'Hydrophobicity Index',
                 zerolinecolor: 'var(--color-danger)',
-                gridcolor: 'var(--color-border)'
+                gridcolor: '#e0e0e0'
             },
-            hovermode: 'x unified'
+            hovermode: 'x unified',
+            margin: { l: 60, r: 30, b: 50, t: 50 }
         };
         
         const config = { responsive: true };
@@ -87,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { positions, scores } = calculateHydrophobicity(sequence, windowSize);
             plotHydrophobicity(positions, scores);
         } else {
-            Plotly.purge(plotDiv); // Limpa o gráfico se a sequência for inválida
+            Plotly.purge(plotDiv);
         }
     });
     

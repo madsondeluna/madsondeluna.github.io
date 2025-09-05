@@ -545,7 +545,7 @@ button:hover, .upload-btn:hover {
 #viewport {
     flex: 3;
     min-width: 300px;
-    height: 500px; /* Reduzido de 600px */
+    height: 500px;
     border-radius: var(--border-radius);
     border: 1px solid var(--color-border);
     position: relative;
@@ -558,8 +558,8 @@ button:hover, .upload-btn:hover {
 .plot-container-hydro {
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
-    padding: 1rem;
     height: 450px;
+    overflow: hidden; /* Garante que o gráfico não "vaze" */
 }
 
 .slider {
