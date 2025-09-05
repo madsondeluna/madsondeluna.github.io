@@ -74,7 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
             margin: { l: 60, r: 30, b: 50, t: 50 }
         };
         
-        const config = { responsive: true };
+        // CÓDIGO ATUALIZADO
+        const config = { 
+            responsive: true,
+            displayModeBar: false // Esta linha desativa a barra de ferramentas
+        };
         Plotly.newPlot(plotDiv, data, layout, config);
     }
 
