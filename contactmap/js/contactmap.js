@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
     const uploadButton = document.querySelector('.upload-btn');
 
+
     function updateProgress(percent, text) {
         progressBar.style.width = `${percent}%`;
         progressText.textContent = `${text} ${Math.round(percent)}%`;
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             progressContainer.classList.add('hidden');
                             uploadButton.classList.remove('hidden');
                         }, 500);
+
                     }, 50);
                 }, 50);
             }, 50);
@@ -151,27 +153,27 @@ document.addEventListener('DOMContentLoaded', () => {
             colorbar: {
                 title: 'Distance (Å)',
                 titleside: 'right',
-                tickfont: {
-                    color: '#333' // Cor escura para o texto da barra de cores
-                },
-                titlefont: {
-                    color: '#333' // Cor escura para o título da barra de cores
-                }
-            }
+                tickfont: { color: '#333' },
+                titlefont: { color: '#333' }
+            },
+            // *** MUDANÇA APLICADA AQUI: Adiciona o template para o hover interativo ***
+            hovertemplate: '<b>Interaction</b><br>' +
+                           'Residue 1: %{y}<br>' +
+                           'Residue 2: %{x}<br>' +
+                           'Distance: %{z:.2f} Å' +
+                           '<extra></extra>' // Remove informações extras do tooltip
         }];
         
-        // ** MUDANÇAS APLICADAS AQUI **
         const plotContainer = document.getElementById('heatmap-plot');
-        // Mede a largura do container para forçar o gráfico a ser quadrado
         const containerWidth = plotContainer.offsetWidth; 
 
         const layout = {
             title: 'Residue-Residue Distance Matrix (Cα, Å)',
-            paper_bgcolor: 'rgba(0,0,0,0)', // Fundo transparente ao redor do gráfico
-            plot_bgcolor: '#ffffff',      // Fundo BRANCO para a área do gráfico
-            font: { color: '#333' },    // Cor escura para os textos (título, etc.)
-            width: containerWidth,            // Força a largura
-            height: containerWidth,           // Força a ALTURA igual à LARGURA para ser um quadrado
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: '#ffffff',
+            font: { color: '#333' },
+            width: containerWidth,
+            height: containerWidth,
             xaxis: { showticklabels: false, ticks: '' },
             yaxis: { showticklabels: false, ticks: '' },
         };
