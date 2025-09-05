@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const count = sequence.split(aa).length - 1;
             composition[aa] = { count, percent: ((count / aaCount) * 100).toFixed(2) };
         });
-
+        
+        // Construção da tabela de resultados com cabeçalhos e subcabeçalhos, alterei a parte do Extinction Coefficient
         let resultsHTML = `
             <table class="results-table">
                 <tr><th>Parameter</th><th>Value</th></tr>
