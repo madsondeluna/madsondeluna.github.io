@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydrophobicity Plot</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hydrophobicity Plot Generator</h1>
+            <p id="typing-text" class="typing-container"></p>
+
+        </header>
+
+        <main>
+            <div class="calculator-layout">
+                <div class="io-box">
+                    <h2>FASTA Sequence Input</h2>
+                    <textarea id="fasta-input" rows="10" placeholder=">Protein_ID&#10;MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRL"></textarea>
+                    
+                    <div class="control-group">
+                        <label for="window-size-slider">Window Size: <span id="window-size-value">9</span></label>
+                        <input type="range" id="window-size-slider" min="3" max="9" step="2" value="9" class="slider">
+                    </div>
+                    
+                    <button id="calculate-btn">Generate Plot</button>
+                    <button id="clear-btn">Clear</button>
+                </div>
+
+                <div class="io-box">
+                    <h2>Kyte-Doolittle Hydrophobicity</h2>
+                    <div class="plot-container-hydro">
+                        <div id="hydrophobicity-plot"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025. GROMADS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/hydrophobicity.js"></script>
+</body>
+</html>
