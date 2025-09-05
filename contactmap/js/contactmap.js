@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Usar requestAnimationFrame para garantir que o DOM foi renderizado antes de pegar a largura
         requestAnimationFrame(() => {
             const containerWidth = plotContainer.offsetWidth; // Pega a largura do container
-            const squareSize = Math.min(containerWidth, window.innerHeight * 0.7); // Tenta usar 70% da altura da janela como max
+            const squareSize = Math.min(containerWidth, window.innerHeight * 0.9); // Tenta usar 90% da altura da janela como max
 
             const layout = {
                 title: {
