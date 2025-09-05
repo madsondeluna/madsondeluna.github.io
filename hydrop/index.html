@@ -14,21 +14,16 @@
 <body>
     <div class="container">
         <header>
-            <h1>Hydrophobicity Plot Generator</h1>
+            <h1>Hydrophobicity Analyzer and Plot Generator</h1>
             <p id="typing-text" class="typing-container"></p>
-
+  
         </header>
 
         <main>
             <div class="calculator-layout">
                 <div class="io-box">
                     <h2>FASTA Sequence Input</h2>
-                    <textarea id="fasta-input" rows="10" placeholder=">Protein_ID&#10;MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKADRL"></textarea>
-                    
-                    <div class="control-group">
-                        <label for="window-size-slider">Window Size: <span id="window-size-value">9</span></label>
-                        <input type="range" id="window-size-slider" min="3" max="9" step="2" value="9" class="slider">
-                    </div>
+                    <textarea id="fasta-input" rows="10" placeholder=">Protein_ID&#10;MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKREKGLGKAAKKADRLAAEG&#10;"></textarea>
                     
                     <button id="calculate-btn">Generate Plot</button>
                     <button id="clear-btn">Clear</button>
