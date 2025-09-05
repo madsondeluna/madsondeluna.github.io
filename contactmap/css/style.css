@@ -1,0 +1,437 @@
+/* ==========================================================================
+   1. Definição de Variáveis (TEMA ESCURO)
+   ========================================================================== */
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Courier New', Courier, monospace;
+
+    --color-primary: #0d6efd;
+    --color-primary-hover: #3b8bfd;
+    --color-success: #198754;
+    --color-success-hover: #21b36b;
+    --color-danger: #dc3545;
+    --color-danger-hover: #e55a66;
+    
+    --color-text-primary: #e9ecef;
+    --color-text-secondary: #adb5bd;
+    --color-border: #495057;
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-surface-light: #2c2c2c;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    --border-radius: 0.5rem; /* 8px */
+}
+
+/* ==========================================================================
+   2. Reset e Estilos Globais
+   ========================================================================== */
+body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 2rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   3. Layout Principal
+   ========================================================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--color-surface);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 1.5rem;
+}
+
+header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-logo {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    max-width: 80px;
+    height: auto;
+}
+
+.converter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1rem;
+    column-gap: 2rem;
+}
+
+.io-box h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+}
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8em;
+}
+
+/* ==========================================================================
+   4. Estilo dos Elementos de Formulário
+   ========================================================================== */
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    background-color: var(--color-surface-light);
+    color: var(--color-text-primary);
+}
+
+textarea::placeholder {
+    color: var(--color-text-secondary);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.35);
+}
+
+textarea[readonly] {
+    background-color: rgba(0,0,0,0.2);
+    cursor: default;
+}
+
+button, .upload-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: background-color 0.2s, transform 0.1s;
+    color: white;
+}
+
+button:hover, .upload-btn:hover {
+    transform: translateY(-2px);
+}
+
+#convert-btn {
+    background-color: var(--color-success);
+}
+#convert-btn:hover {
+    background-color: var(--color-success-hover);
+}
+
+#clear-btn {
+    background-color: var(--color-danger);
+}
+#clear-btn:hover {
+    background-color: var(--color-danger-hover);
+}
+
+#copy-btn, .upload-btn {
+    background-color: var(--color-primary);
+    width: 100%; 
+}
+#copy-btn:hover, .upload-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.upload-btn {
+    display: block;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.output-controls {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+#convert-btn,
+#clear-btn {
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: 700;
+}
+
+
+/* ==========================================================================
+   5. Responsividade
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .container {
+        padding: 1.5rem;
+    }
+
+    .converter-grid, .calculator-layout, .tool-cards-container {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   6. Animação de Digitação
+   ========================================================================== */
+.typing-container {
+    display: inline-block;
+}
+
+.typing-container::after {
+    content: '|';
+    display: inline-block;
+    animation: blink-caret 0.75s infinite;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+@keyframes blink-caret {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   7. Estilos Adicionais (Navegação, Hub, Tabelas, etc.)
+   ========================================================================== */
+
+/* Menu de Navegação */
+.main-nav {
+    margin-top: 1.5rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+}
+
+.main-nav a:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-light);
+}
+
+.main-nav a.active {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+/* Página Principal (Hub de Ferramentas) */
+.tool-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.tool-card {
+    background-color: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 350px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tool-card h3 {
+    margin-top: 0;
+    color: #fff;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tool-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Página BioParam */
+.calculator-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.calculator-layout #calculate-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.85rem;
+    font-weight: 700;
+    background-color: var(--color-success);
+}
+.calculator-layout #calculate-btn:hover {
+    background-color: var(--color-success-hover);
+}
+
+.calculator-layout #clear-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+    background-color: var(--color-danger);
+}
+.calculator-layout #clear-btn:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.results-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th, .results-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.results-table th {
+    background-color: var(--color-surface-light);
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+}
+
+.results-table tr:last-child td {
+    border-bottom: none;
+}
+
+.results-table .sub-header {
+    font-weight: 700;
+    background-color: rgba(0,0,0,0.2);
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.placeholder-text {
+    padding: 1rem;
+    color: var(--color-text-secondary);
+}
+
+/* Página Contact Map */
+.upload-section {
+    text-align: center;
+    border: 2px dashed var(--color-border);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+}
+.upload-section .description {
+    color: var(--color-text-secondary);
+    margin-top: 0;
+}
+#file-name-display {
+    margin-top: 1rem;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+}
+
+.hidden {
+    display: none;
+}
+
+.pdb-info-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.info-card {
+    background-color: var(--color-surface-light);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+.info-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.info-card p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.plot-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    min-height: 500px;
+}
