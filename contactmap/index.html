@@ -33,7 +33,13 @@
                 <p class="description">Select a PDB file to calculate its contact map and view structural information.</p>
                 <label for="pdb-upload" class="upload-btn">Select .pdb File</label>
                 <input type="file" id="pdb-upload" accept=".pdb" hidden>
-                <div id="file-name-display">No file selected.</div>
+                
+                <div id="progress-container" class="hidden">
+                    <div id="progress-text">Processing... 0%</div>
+                    <div class="progress-bar-background">
+                        <div id="progress-bar"></div>
+                    </div>
+                </div>
             </div>
 
             <div id="results-section" class="hidden">

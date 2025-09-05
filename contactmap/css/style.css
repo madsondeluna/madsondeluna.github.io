@@ -390,11 +390,6 @@ button:hover, .upload-btn:hover {
     color: var(--color-text-secondary);
     margin-top: 0;
 }
-#file-name-display {
-    margin-top: 1rem;
-    color: var(--color-text-secondary);
-    font-family: var(--font-mono);
-}
 
 .hidden {
     display: none;
@@ -434,23 +429,44 @@ button:hover, .upload-btn:hover {
     border-radius: var(--border-radius);
     padding: 1rem;
     min-height: 500px;
-}
-
-/* ==========================================================================
-   8. Ajustes Finos para Páginas Específicas
-   ========================================================================== */
-
-/* Garante que o container do plot seja quadrado */
-.plot-container {
-    aspect-ratio: 1 / 1; /* Força a proporção de 1:1 (quadrado) */
+    aspect-ratio: 1 / 1;
     width: 100%;
-    max-width: 700px; /* Define uma largura máxima para não ficar gigante em telas grandes */
-    margin: 0 auto; /* Centraliza o container do plot */
+    max-width: 700px;
+    margin: 0 auto;
 }
 
-/* Estilo para textos menores nos cartões de informação */
 .info-card p.small-text {
     font-size: 1rem;
     font-weight: 400;
-    word-break: break-word; /* Quebra palavras longas como nomes de proteínas */
+    word-break: break-word;
+}
+
+/* Barra de Progresso */
+#progress-container {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+#progress-text {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-background {
+    width: 100%;
+    height: 10px;
+    background-color: var(--color-surface-light);
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: 5px;
+    transition: width 0.4s ease-in-out;
 }
