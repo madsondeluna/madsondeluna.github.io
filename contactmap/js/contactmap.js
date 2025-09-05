@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ---
     const typingElement = document.getElementById('typing-text');
     if (typingElement) {
-        const textToType = "Visualize residue distances and structural data from a PDB file.";
+        const textToType = "Visualize residue distances and structural data from a PDB file...";
         const typingSpeed = 75;
         let charIndex = 0;
         function type() { if (charIndex < textToType.length) { typingElement.textContent += textToType.charAt(charIndex++); setTimeout(type, typingSpeed); } }
