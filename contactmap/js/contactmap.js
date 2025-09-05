@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadButton = document.querySelector('.upload-btn');
 
 
+    // --- FUNÇÃO HELPER PARA ATUALIZAR O PROGRESSO ---
     function updateProgress(percent, text) {
         progressBar.style.width = `${percent}%`;
         progressText.textContent = `${text} ${Math.round(percent)}%`;
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = event.target.files[0];
         if (!file) return;
 
+        // Reset e exibe o loader
         resultsSection.classList.add('hidden');
         progressContainer.classList.remove('hidden');
         uploadButton.classList.add('hidden');
@@ -37,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const reader = new FileReader();
 
+        // Evento para progresso REAL de leitura do arquivo
         reader.onprogress = (e) => {
             if (e.lengthComputable) {
                 const percentLoaded = (e.loaded / e.total);
@@ -44,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Evento para quando o arquivo for completamente lido
         reader.onload = (e) => {
             updateProgress(25, 'Reading file...');
             
@@ -156,29 +160,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 tickfont: { color: '#333' },
                 titlefont: { color: '#333' }
             },
-            // *** MUDANÇA APLICADA AQUI: Adiciona o template para o hover interativo ***
             hovertemplate: '<b>Interaction</b><br>' +
                            'Residue 1: %{y}<br>' +
                            'Residue 2: %{x}<br>' +
                            'Distance: %{z:.2f} Å' +
-                           '<extra></extra>' // Remove informações extras do tooltip
+                           '<extra></extra>'
         }];
         
         const plotContainer = document.getElementById('heatmap-plot');
-        const containerWidth = plotContainer.offsetWidth; 
+        // Usar requestAnimationFrame para garantir que o DOM foi renderizado antes de pegar a largura
+        requestAnimationFrame(() => {
+            const containerWidth = plotContainer.offsetWidth; // Pega a largura do container
+            const squareSize = Math.min(containerWidth, window.innerHeight * 0.7); // Tenta usar 70% da altura da janela como max
 
-        const layout = {
-            title: 'Residue-Residue Distance Matrix (Cα, Å)',
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: '#ffffff',
-            font: { color: '#333' },
-            width: containerWidth,
-            height: containerWidth,
-            xaxis: { showticklabels: false, ticks: '' },
-            yaxis: { showticklabels: false, ticks: '' },
-        };
+            const layout = {
+                title: {
+                    text: 'Residue-Residue Distance Matrix (Cα, Å)',
+                    font: {
+                        color: '#333' // Cor do título do gráfico
+                    }
+                },
+                paper_bgcolor: '#ffffff', // Fundo BRANCO para o paper (incluindo margens e título)
+                plot_bgcolor: '#ffffff',  // Fundo BRANCO para a área interna do gráfico
+                font: { color: '#333' },    // Cor escura para os textos em geral
+                width: squareSize,            // Define a largura do gráfico
+                height: squareSize,           // Define a ALTURA do gráfico igual à largura (QUADRADO)
+                xaxis: { 
+                    showticklabels: false, 
+                    ticks: '',
+                    automargin: true // Ajuda a evitar cortes no eixo
+                },
+                yaxis: { 
+                    showticklabels: false, 
+                    ticks: '',
+                    automargin: true // Ajuda a evitar cortes no eixo
+                },
+                margin: { // Ajusta as margens para a barra de cores não ser cortada
+                    l: 50, // left margin
+                    r: 80, // right margin (give space for colorbar)
+                    b: 50, // bottom margin
+                    t: 80, // top margin (give space for title)
+                    pad: 4 // padding between plot and axis labels
+                }
+            };
 
-        const config = { responsive: true };
-        Plotly.newPlot(heatmapPlot, data, layout, config);
+            const config = { 
+                responsive: true, // Ainda responsivo para se ajustar ao container
+                displayModeBar: true // Opcional: mostra a barra de ferramentas do Plotly
+            };
+            Plotly.newPlot(heatmapPlot, data, layout, config);
+        }); // Fim do requestAnimationFrame
     }
 });
