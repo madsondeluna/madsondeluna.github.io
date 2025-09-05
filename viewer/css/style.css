@@ -545,7 +545,7 @@ button:hover, .upload-btn:hover {
 #viewport {
     flex: 3;
     min-width: 300px;
-    height: 600px;
+    height: 500px;
     border-radius: var(--border-radius);
     border: 1px solid var(--color-border);
     position: relative;
