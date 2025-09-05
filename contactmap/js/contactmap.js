@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
     const uploadButton = document.querySelector('.upload-btn');
 
-
-    // --- FUNÇÃO HELPER PARA ATUALIZAR O PROGRESSO ---
     function updateProgress(percent, text) {
         progressBar.style.width = `${percent}%`;
         progressText.textContent = `${text} ${Math.round(percent)}%`;
@@ -31,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Reset e exibe o loader
         resultsSection.classList.add('hidden');
         progressContainer.classList.remove('hidden');
         uploadButton.classList.add('hidden');
@@ -39,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const reader = new FileReader();
 
-        // Evento para progresso REAL de leitura do arquivo
         reader.onprogress = (e) => {
             if (e.lengthComputable) {
                 const percentLoaded = (e.loaded / e.total);
@@ -47,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Evento para quando o arquivo for completamente lido
         reader.onload = (e) => {
             updateProgress(25, 'Reading file...');
             
@@ -72,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             progressContainer.classList.add('hidden');
                             uploadButton.classList.remove('hidden');
                         }, 500);
-
                     }, 50);
                 }, 50);
             }, 50);
@@ -146,8 +140,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function plotDistanceHeatmap(matrix, labels) {
-        const data = [{ z: matrix, x: labels, y: labels, type: 'heatmap', colorscale: 'RdBu', reversescale: true, showscale: true, colorbar: { title: 'Distance (Å)', titleside: 'right' } }];
-        const layout = { title: 'Residue-Residue Distance Matrix (Cα, Å)', paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'var(--color-surface-light)', font: { color: 'var(--color-text-secondary)' }, xaxis: { showticklabels: false, ticks: '' }, yaxis: { showticklabels: false, ticks: '' } };
+        const data = [{
+            z: matrix,
+            x: labels,
+            y: labels,
+            type: 'heatmap',
+            colorscale: 'RdBu',
+            reversescale: true,
+            showscale: true,
+            colorbar: {
+                title: 'Distance (Å)',
+                titleside: 'right',
+                tickfont: {
+                    color: '#333' // Cor escura para o texto da barra de cores
+                },
+                titlefont: {
+                    color: '#333' // Cor escura para o título da barra de cores
+                }
+            }
+        }];
+        
+        // ** MUDANÇAS APLICADAS AQUI **
+        const plotContainer = document.getElementById('heatmap-plot');
+        // Mede a largura do container para forçar o gráfico a ser quadrado
+        const containerWidth = plotContainer.offsetWidth; 
+
+        const layout = {
+            title: 'Residue-Residue Distance Matrix (Cα, Å)',
+            paper_bgcolor: 'rgba(0,0,0,0)', // Fundo transparente ao redor do gráfico
+            plot_bgcolor: '#ffffff',      // Fundo BRANCO para a área do gráfico
+            font: { color: '#333' },    // Cor escura para os textos (título, etc.)
+            width: containerWidth,            // Força a largura
+            height: containerWidth,           // Força a ALTURA igual à LARGURA para ser um quadrado
+            xaxis: { showticklabels: false, ticks: '' },
+            yaxis: { showticklabels: false, ticks: '' },
+        };
+
         const config = { responsive: true };
         Plotly.newPlot(heatmapPlot, data, layout, config);
     }

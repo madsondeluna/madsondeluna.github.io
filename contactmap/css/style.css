@@ -4,21 +4,18 @@
 :root {
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Courier New', Courier, monospace;
-
     --color-primary: #0d6efd;
     --color-primary-hover: #3b8bfd;
     --color-success: #198754;
     --color-success-hover: #21b36b;
     --color-danger: #dc3545;
     --color-danger-hover: #e55a66;
-    
     --color-text-primary: #e9ecef;
     --color-text-secondary: #adb5bd;
     --color-border: #495057;
     --color-background: #121212;
     --color-surface: #1e1e1e;
     --color-surface-light: #2c2c2c;
-
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
     --border-radius: 0.5rem; /* 8px */
@@ -242,7 +239,6 @@ button:hover, .upload-btn:hover {
    7. Estilos Adicionais (Navegação, Hub, Tabelas, etc.)
    ========================================================================== */
 
-/* Menu de Navegação */
 .main-nav {
     margin-top: 1.5rem;
     margin-bottom: 2.5rem;
@@ -273,7 +269,6 @@ button:hover, .upload-btn:hover {
     font-weight: 700;
 }
 
-/* Página Principal (Hub de Ferramentas) */
 .tool-cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -312,7 +307,6 @@ button:hover, .upload-btn:hover {
     font-size: 0.95rem;
 }
 
-/* Página BioParam */
 .calculator-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -379,7 +373,10 @@ button:hover, .upload-btn:hover {
     color: var(--color-text-secondary);
 }
 
-/* Página Contact Map */
+/* ==========================================================================
+   8. Estilos da Página Contact Map
+   ========================================================================== */
+
 .upload-section {
     text-align: center;
     border: 2px dashed var(--color-border);
@@ -424,12 +421,13 @@ button:hover, .upload-btn:hover {
     color: var(--color-text-primary);
 }
 
+/* ** MUDANÇAS APLICADAS AQUI ** */
 .plot-container {
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: 1rem;
-    min-height: 500px;
-    aspect-ratio: 1 / 1;
+    /* Força o container a ser quadrado para o JS medir corretamente */
+    aspect-ratio: 1 / 1; 
     width: 100%;
     max-width: 700px;
     margin: 0 auto;
@@ -441,7 +439,6 @@ button:hover, .upload-btn:hover {
     word-break: break-word;
 }
 
-/* Barra de Progresso */
 #progress-container {
     margin-top: 1.5rem;
     width: 100%;
