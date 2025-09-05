@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ---
     const typingElement = document.getElementById('typing-text');
     if (typingElement) {
-        const textToType = "Interactive 3D molecular viewer for PDB files... Make the molecules move!";
+        const textToType = "Interactive 3D molecular viewer for PDB files...";
         const typingSpeed = 75;
         let charIndex = 0;
         function type() { if (charIndex < textToType.length) { typingElement.textContent += textToType.charAt(charIndex++); setTimeout(type, typingSpeed); } }
