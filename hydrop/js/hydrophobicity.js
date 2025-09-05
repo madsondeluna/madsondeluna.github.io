@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ANIMAÇÃO DE DIGITAÇÃO ---
     const typingElement = document.getElementById('typing-text');
     if (typingElement) {
-        const textToType = "Predict transmembrane regions and analyze hydrophobicity profiles.";
+        const textToType = "Predict and analyze hydrophobicity profiles in protein sequences...";
         const typingSpeed = 75;
         let charIndex = 0;
         function type() { if (charIndex < textToType.length) { typingElement.textContent += textToType.charAt(charIndex++); setTimeout(type, typingSpeed); } }
