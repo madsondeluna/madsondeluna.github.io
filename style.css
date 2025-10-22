@@ -113,8 +113,6 @@ main section:last-of-type {
   width: 150px;      /* Largura desejada */
   height: auto;      /* Mantém a proporção automaticamente */
   margin-bottom: 10px; /* Espaço entre o ícone e o título */
-  border-radius: 50%; /* Torna a imagem circular */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* Sombra leve para profundidade */
 }
 
 /* Hero Section */
