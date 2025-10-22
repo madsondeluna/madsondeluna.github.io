@@ -113,6 +113,16 @@ main section:last-of-type {
   width: 150px;      /* Largura desejada */
   height: auto;      /* Mantém a proporção automaticamente */
   margin-bottom: 10px; /* Espaço entre o ícone e o título */
+  border-radius: 50%; /* Torna a imagem circular */
+  transition: all 0.4s ease; /* Transição suave */
+  cursor: pointer; /* Mostra que é interativo */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave inicial */
+}
+
+.logo-icon:hover {
+  transform: scale(1.1) rotate(5deg); /* Aumenta e rotaciona levemente */
+  box-shadow: 0 8px 20px rgba(55, 106, 183, 0.3); /* Sombra azul mais forte */
+  filter: brightness(1.05); /* Deixa um pouco mais brilhante */
 }
 
 /* Hero Section */
