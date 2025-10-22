@@ -390,6 +390,143 @@ header.compact h1 {
     50% { opacity: 0; }
 }
 
+/* GitHub Repository Cards */
+.github-repos-section {
+    margin-top: 3rem;
+}
+
+.github-repos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.repo-card {
+    display: block;
+    padding: 1.5rem;
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.repo-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #376ab7, #5899de);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.repo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(55, 106, 183, 0.15);
+    border-color: #376ab7;
+}
+
+.repo-card:hover::before {
+    transform: scaleX(1);
+}
+
+.repo-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.repo-icon {
+    color: #586069;
+    flex-shrink: 0;
+}
+
+.repo-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #376ab7;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.repo-card:hover .repo-name {
+    color: #2d5699;
+}
+
+.repo-description {
+    font-size: 0.9rem;
+    color: #586069;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    min-height: 2.7rem;
+}
+
+.repo-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #586069;
+}
+
+.repo-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.repo-stat svg {
+    fill: #586069;
+}
+
+.language-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Responsive adjustments for repo cards */
+@media (max-width: 768px) {
+    .github-repos-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .repo-card {
+        padding: 1.2rem;
+    }
+    
+    .repo-name {
+        font-size: 1rem;
+    }
+    
+    .repo-description {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .github-repos-section h3 {
+        font-size: 1.3rem;
+    }
+    
+    .repo-stats {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+}
+
 /* Gallery Section */
 .gallery-grid {
     display: grid;
