@@ -305,48 +305,56 @@
                     A visual collection of my work, projects, and scientific renderings. From molecular visualizations to computational outputs, this gallery showcases the intersection of art and science in bioinformatics research.
                 </p>
                 <div class="gallery-grid">
-                    <!-- Exemplo de item da galeria - Substitua com suas próprias imagens -->
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=Molecular+Dynamics" alt="Molecular dynamics simulation">
+                    <div class="gallery-item" onclick="openModal(0)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=Molecular+Dynamics" alt="Molecular dynamics simulation">
                         <div class="gallery-caption">
                             <p>Molecular Dynamics Simulation</p>
                         </div>
                     </div>
                     
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=Protein+Structure" alt="Protein structure prediction">
+                    <div class="gallery-item" onclick="openModal(1)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=Protein+Structure" alt="Protein structure prediction">
                         <div class="gallery-caption">
                             <p>Protein Structure Prediction</p>
                         </div>
                     </div>
                     
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=Data+Viz" alt="Data visualization">
+                    <div class="gallery-item" onclick="openModal(2)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=Data+Viz" alt="Data visualization">
                         <div class="gallery-caption">
                             <p>Data Visualization</p>
                         </div>
                     </div>
                     
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=Genomic+Analysis" alt="Genomic analysis">
+                    <div class="gallery-item" onclick="openModal(3)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=Genomic+Analysis" alt="Genomic analysis">
                         <div class="gallery-caption">
                             <p>Genomic Analysis</p>
                         </div>
                     </div>
                     
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=ML+Model" alt="Machine learning model">
+                    <div class="gallery-item" onclick="openModal(4)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=ML+Model" alt="Machine learning model">
                         <div class="gallery-caption">
                             <p>Machine Learning Model</p>
                         </div>
                     </div>
                     
-                    <div class="gallery-item">
-                        <img src="https://placehold.co/600x400/376ab7/ffffff?text=Structural+Biology" alt="Structural biology">
+                    <div class="gallery-item" onclick="openModal(5)">
+                        <img src="https://placehold.co/600x600/376ab7/ffffff?text=Structural+Biology" alt="Structural biology">
                         <div class="gallery-caption">
                             <p>Structural Biology</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Modal/Lightbox -->
+                <div id="galleryModal" class="gallery-modal" onclick="closeModal(event)">
+                    <span class="gallery-modal-close" onclick="closeModal()">&times;</span>
+                    <span class="gallery-modal-prev" onclick="changeImage(-1); event.stopPropagation();">&#10094;</span>
+                    <img class="gallery-modal-content" id="modalImage" alt="">
+                    <span class="gallery-modal-next" onclick="changeImage(1); event.stopPropagation();">&#10095;</span>
+                    <div class="gallery-modal-caption" id="modalCaption"></div>
                 </div>
             </div>
         </section>

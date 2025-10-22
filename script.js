@@ -74,3 +74,81 @@ window.addEventListener("scroll", function () {
 
 });
 
+// ============================================
+// Gallery Modal/Lightbox Functionality
+// ============================================
+
+let currentImageIndex = 0;
+const galleryImages = [];
+
+// Initialize gallery when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Collect all gallery images
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    galleryItems.forEach(item => {
+        const img = item.querySelector('img');
+        const caption = item.querySelector('.gallery-caption p');
+        galleryImages.push({
+            src: img.src,
+            alt: img.alt,
+            caption: caption ? caption.textContent : ''
+        });
+    });
+});
+
+function openModal(index) {
+    currentImageIndex = index;
+    const modal = document.getElementById('galleryModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    modal.classList.add('active');
+    modalImg.src = galleryImages[index].src;
+    modalImg.alt = galleryImages[index].alt;
+    modalCaption.textContent = galleryImages[index].caption;
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(event) {
+    // Close only if clicking on the modal background or close button
+    if (!event || event.target.id === 'galleryModal' || event.target.classList.contains('gallery-modal-close')) {
+        const modal = document.getElementById('galleryModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function changeImage(direction) {
+    currentImageIndex += direction;
+    
+    // Loop around if at the end or beginning
+    if (currentImageIndex >= galleryImages.length) {
+        currentImageIndex = 0;
+    } else if (currentImageIndex < 0) {
+        currentImageIndex = galleryImages.length - 1;
+    }
+    
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    modalImg.src = galleryImages[currentImageIndex].src;
+    modalImg.alt = galleryImages[currentImageIndex].alt;
+    modalCaption.textContent = galleryImages[currentImageIndex].caption;
+}
+
+// Keyboard navigation for the modal
+document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('galleryModal');
+    if (modal.classList.contains('active')) {
+        if (e.key === 'Escape') {
+            closeModal({ target: { id: 'galleryModal' } });
+        } else if (e.key === 'ArrowLeft') {
+            changeImage(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeImage(1);
+        }
+    }
+});
+
