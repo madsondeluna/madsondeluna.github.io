@@ -429,6 +429,13 @@ header.compact h1 {
     filter: brightness(1.05);
 }
 
+/* BioHub card - larger size without cropping */
+#biohub .github-repo-card img {
+    max-height: 350px;
+    object-fit: contain; /* Changed to contain to avoid cropping */
+    background-color: #f9f9f9;
+}
+
 /* Responsive adjustments for repo images */
 @media (max-width: 768px) {
     .github-repos-grid {
