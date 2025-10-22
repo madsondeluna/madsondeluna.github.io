@@ -402,29 +402,28 @@ header.compact h1 {
     margin-top: 1.5rem;
 }
 
-.github-repo-link {
+.github-repo-card {
     display: block;
     transition: all 0.3s ease;
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.github-repo-link:hover {
+.github-repo-card:hover {
     transform: translateY(-5px) scale(1.02);
-    filter: brightness(1.05);
+    box-shadow: 0 8px 20px rgba(55, 106, 183, 0.2);
 }
 
-.github-repo-link img {
+.github-repo-card img {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-.github-repo-link:hover img {
-    box-shadow: 0 8px 20px rgba(55, 106, 183, 0.2);
+.github-repo-card:hover img {
+    filter: brightness(1.05);
 }
 
 /* Responsive adjustments for repo images */
