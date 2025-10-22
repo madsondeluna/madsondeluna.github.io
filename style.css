@@ -535,41 +535,55 @@ header.compact h1 {
 }
 
 .gallery-modal-content {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 85%;
+    max-height: 85vh;
     object-fit: contain;
     animation: zoomIn 0.3s ease;
     border-radius: 8px;
+    display: block;
+    margin: auto;
 }
 
 .gallery-modal-caption {
     position: absolute;
-    bottom: 30px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     color: white;
     font-size: 1.1rem;
     text-align: center;
-    background: rgba(0,0,0,0.7);
-    padding: 10px 20px;
-    border-radius: 5px;
+    background: rgba(0,0,0,0.8);
+    padding: 12px 24px;
+    border-radius: 8px;
     max-width: 80%;
+    backdrop-filter: blur(10px);
 }
 
 .gallery-modal-close {
     position: absolute;
-    top: 20px;
-    right: 40px;
+    top: 30px;
+    right: 50px;
     color: white;
-    font-size: 40px;
+    font-size: 45px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     z-index: 1001;
+    background: rgba(0,0,0,0.5);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
 }
 
 .gallery-modal-close:hover {
-    color: #376ab7;
+    color: white;
+    background: #376ab7;
+    transform: rotate(90deg);
 }
 
 .gallery-modal-prev,
@@ -578,27 +592,35 @@ header.compact h1 {
     top: 50%;
     transform: translateY(-50%);
     color: white;
-    font-size: 50px;
+    font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    padding: 10px 20px;
+    padding: 15px;
     transition: all 0.3s ease;
     user-select: none;
     z-index: 1001;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .gallery-modal-prev {
-    left: 20px;
+    left: 30px;
 }
 
 .gallery-modal-next {
-    right: 20px;
+    right: 30px;
 }
 
 .gallery-modal-prev:hover,
 .gallery-modal-next:hover {
-    color: #376ab7;
-    transform: translateY(-50%) scale(1.2);
+    color: white;
+    background: #376ab7;
+    transform: translateY(-50%) scale(1.1);
 }
 
 @keyframes fadeIn {
@@ -618,30 +640,39 @@ header.compact h1 {
         gap: 0.8rem;
     }
     
+    .gallery-modal-content {
+        max-width: 95%;
+        max-height: 80vh;
+    }
+    
     .gallery-modal-prev,
     .gallery-modal-next {
-        font-size: 35px;
-        padding: 5px 10px;
+        font-size: 30px;
+        width: 45px;
+        height: 45px;
+        padding: 10px;
     }
     
     .gallery-modal-prev {
-        left: 10px;
+        left: 15px;
     }
     
     .gallery-modal-next {
-        right: 10px;
+        right: 15px;
     }
     
     .gallery-modal-close {
-        top: 10px;
+        top: 20px;
         right: 20px;
-        font-size: 30px;
+        font-size: 35px;
+        width: 50px;
+        height: 50px;
     }
     
     .gallery-modal-caption {
         font-size: 0.9rem;
-        padding: 8px 15px;
-        bottom: 20px;
+        padding: 10px 18px;
+        bottom: 30px;
     }
 }
 
