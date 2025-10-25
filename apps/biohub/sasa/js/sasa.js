@@ -382,15 +382,28 @@ downloadBtn.addEventListener('click', () => {
 // ==========================================================================
 function initializeViewer() {
     const viewport = document.getElementById('viewport');
-    if (!viewport || typeof NGL === 'undefined') return;
+    
+    if (!viewport) {
+        console.error('SASA Viewer: viewport element not found');
+        return;
+    }
+    
+    if (typeof NGL === 'undefined') {
+        console.error('SASA Viewer: NGL library not loaded');
+        return;
+    }
+    
+    console.log('SASA Viewer: Initializing NGL stage...');
     
     stage = new NGL.Stage(viewport, {
         backgroundColor: 'black'
     });
     
+    console.log('SASA Viewer: NGL stage initialized successfully');
+    
     // Handle window resize
     window.addEventListener('resize', () => {
-        stage.handleResize();
+        if (stage) stage.handleResize();
     });
     
     // Setup controls
@@ -399,13 +412,13 @@ function initializeViewer() {
     
     if (toggleSpinBtn) {
         toggleSpinBtn.addEventListener('click', () => {
-            stage.toggleSpin();
+            if (stage) stage.toggleSpin();
         });
     }
     
     if (centerViewBtn) {
         centerViewBtn.addEventListener('click', () => {
-            stage.autoView();
+            if (stage) stage.autoView();
         });
     }
 }
@@ -414,22 +427,41 @@ function initializeViewer() {
 // 15. Load Structure and Apply SASA Coloring
 // ==========================================================================
 function loadStructureWithSASA(pdbText) {
-    if (!stage) return;
+    console.log('SASA Viewer: loadStructureWithSASA called');
+    
+    if (!stage) {
+        console.error('SASA Viewer: Stage not initialized!');
+        // Try to initialize now
+        initializeViewer();
+        if (!stage) {
+            console.error('SASA Viewer: Failed to initialize stage');
+            return;
+        }
+    }
+    
+    console.log('SASA Viewer: Stage is ready, atoms array length:', atoms.length);
     
     const viewerContainer = document.getElementById('viewer-container');
     if (viewerContainer) {
         viewerContainer.style.display = 'block';
+        console.log('SASA Viewer: Viewer container displayed');
+    } else {
+        console.error('SASA Viewer: viewer-container element not found');
     }
     
     // Remove previous structure
     if (component) {
         stage.removeComponent(component);
+        console.log('SASA Viewer: Previous component removed');
     }
+    
+    console.log('SASA Viewer: Loading PDB structure...');
     
     // Load structure from text
     const blob = new Blob([pdbText], { type: 'text/plain' });
     stage.loadFile(blob, { ext: 'pdb' }).then((comp) => {
         component = comp;
+        console.log('SASA Viewer: Structure loaded successfully');
         
         // Register custom SASA color scheme
         NGL.ColormakerRegistry.addScheme((params) => {
@@ -479,6 +511,8 @@ function loadStructureWithSASA(pdbText) {
             };
         }, 'sasa');
         
+        console.log('SASA Viewer: Custom color scheme registered');
+        
         // Add representations with SASA coloring
         component.addRepresentation('cartoon', { 
             color: 'sasa',
@@ -490,10 +524,13 @@ function loadStructureWithSASA(pdbText) {
             surfaceType: 'av'
         });
         
+        console.log('SASA Viewer: Representations added');
+        
         // Center and zoom
         component.autoView();
+        console.log('SASA Viewer: Auto-view complete');
     }).catch((error) => {
-        console.error('Error loading structure:', error);
+        console.error('SASA Viewer: Error loading structure:', error);
     });
 }
 
