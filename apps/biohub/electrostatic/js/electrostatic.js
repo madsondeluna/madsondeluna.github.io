@@ -502,9 +502,9 @@ function loadSimpleElectrostatic(pdbText) {
     
     displayResults(pqrLines, null);
     updateStatus(`
-        <strong>📊 Simplified Electrostatic Analysis Complete!</strong><br>
+        <strong>Simplified Electrostatic Analysis Complete!</strong><br>
         <span style="font-size: 0.9rem; color: #ffc107;">
-            ⚠️ Using residue-based charge model (ARG/LYS: positive, ASP/GLU: negative).<br>
+            Using residue-based charge model (ARG/LYS: positive, ASP/GLU: negative).<br>
             This is a <em>simplified fallback</em> due to APBS server unavailability.<br>
             For accurate Poisson-Boltzmann calculations, install local APBS or wait for API stability.
         </span>
