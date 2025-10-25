@@ -130,6 +130,10 @@ nav {
 
 /* Form Elements */
 input[type="file"] {
+    display: none;
+}
+
+.upload-btn {
     display: block;
     width: 100%;
     padding: var(--spacing-sm);
@@ -139,11 +143,15 @@ input[type="file"] {
     border-radius: 4px;
     color: var(--color-text-primary);
     cursor: pointer;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
 }
 
-input[type="file"]:hover {
+.upload-btn:hover {
     border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
 }
 
 textarea {

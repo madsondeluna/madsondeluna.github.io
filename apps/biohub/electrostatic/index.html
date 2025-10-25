@@ -29,11 +29,12 @@
             <div class="converter-grid">
                 <div class="io-box">
                     <h2>PDB Input</h2>
-                    <input type="file" id="pdb-upload" accept=".pdb">
+                    <label for="pdb-upload" class="upload-btn">Upload PDB File</label>
+                    <input type="file" id="pdb-upload" accept=".pdb" hidden>
                     <textarea 
                         id="pdb-input" 
                         rows="15" 
-                        placeholder="Paste your PDB file content here or upload a file..."></textarea>
+                        placeholder="Or paste PDB content here..."></textarea>
                     
                     <div class="params-box">
                         <h3>APBS Parameters</h3>
