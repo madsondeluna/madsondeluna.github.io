@@ -77,6 +77,26 @@ header p {
     margin: 0 auto;
 }
 
+nav {
+    margin-top: 1rem;
+}
+
+.nav-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    background: var(--color-primary);
+    color: var(--bg-primary);
+}
+
 .converter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
