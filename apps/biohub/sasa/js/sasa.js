@@ -586,73 +586,92 @@ function loadStructureWithSASA(pdbText) {
         component = comp;
         console.log('SASA Viewer: Structure loaded successfully');
         console.log('SASA Viewer: Component:', comp);
+        console.log('SASA Viewer: Component atomCount:', comp.structure.atomCount);
         
-        // Register custom SASA color scheme
-        NGL.ColormakerRegistry.addScheme((params) => {
-            return {
-                atomColor: (atom) => {
-                    // Find corresponding atom in our atoms array
-                    const atomIndex = atom.index;
-                    if (atomIndex < atoms.length) {
-                        const sasa = atoms[atomIndex].sasa;
-                        
-                        // Normalize SASA to 0-1 range
-                        const maxSASA = Math.max(...atoms.map(a => a.sasa));
-                        const normalized = maxSASA > 0 ? sasa / maxSASA : 0;
-                        
-                        // Color gradient: Blue (buried) -> Cyan -> Green -> Yellow -> Red (exposed)
-                        let r, g, b;
-                        if (normalized < 0.25) {
-                            // Blue to Cyan
-                            const t = normalized / 0.25;
-                            r = 0;
-                            g = Math.floor(t * 255);
-                            b = 255;
-                        } else if (normalized < 0.5) {
-                            // Cyan to Green
-                            const t = (normalized - 0.25) / 0.25;
-                            r = 0;
-                            g = 255;
-                            b = Math.floor((1 - t) * 255);
-                        } else if (normalized < 0.75) {
-                            // Green to Yellow
-                            const t = (normalized - 0.5) / 0.25;
-                            r = Math.floor(t * 255);
-                            g = 255;
-                            b = 0;
-                        } else {
-                            // Yellow to Red
-                            const t = (normalized - 0.75) / 0.25;
-                            r = 255;
-                            g = Math.floor((1 - t) * 255);
-                            b = 0;
+        // Try simple coloring first (more reliable)
+        console.log('SASA Viewer: Adding basic representations...');
+        
+        try {
+            // Add cartoon representation
+            comp.addRepresentation('cartoon', { 
+                color: 'residueindex',
+                opacity: 0.8
+            });
+            console.log('SASA Viewer: Cartoon representation added');
+            
+            // Add surface with SASA coloring attempt
+            if (atoms.length > 0) {
+                console.log('SASA Viewer: Attempting SASA color scheme...');
+                
+                // Register custom SASA color scheme
+                const schemeName = 'sasa-' + Date.now(); // Unique name
+                NGL.ColormakerRegistry.addScheme((params) => {
+                    console.log('SASA Viewer: Color scheme factory called');
+                    const maxSASA = Math.max(...atoms.map(a => a.sasa || 0));
+                    console.log('SASA Viewer: Max SASA:', maxSASA);
+                    
+                    return {
+                        atomColor: (atom) => {
+                            const atomIndex = atom.index;
+                            
+                            // Safety check
+                            if (atomIndex >= 0 && atomIndex < atoms.length && atoms[atomIndex].sasa !== undefined) {
+                                const sasa = atoms[atomIndex].sasa;
+                                const normalized = maxSASA > 0 ? sasa / maxSASA : 0;
+                                
+                                // Simple color gradient
+                                let r, g, b;
+                                if (normalized < 0.25) {
+                                    const t = normalized / 0.25;
+                                    r = 0; g = Math.floor(t * 255); b = 255;
+                                } else if (normalized < 0.5) {
+                                    const t = (normalized - 0.25) / 0.25;
+                                    r = 0; g = 255; b = Math.floor((1 - t) * 255);
+                                } else if (normalized < 0.75) {
+                                    const t = (normalized - 0.5) / 0.25;
+                                    r = Math.floor(t * 255); g = 255; b = 0;
+                                } else {
+                                    const t = (normalized - 0.75) / 0.25;
+                                    r = 255; g = Math.floor((1 - t) * 255); b = 0;
+                                }
+                                
+                                return (r << 16) | (g << 8) | b;
+                            }
+                            // Default color for unmapped atoms
+                            return 0x808080; // Gray
                         }
-                        
-                        return (r << 16) | (g << 8) | b;
-                    }
-                    return 0x808080; // Gray for unmapped atoms
-                }
-            };
-        }, 'sasa');
-        
-        console.log('SASA Viewer: Custom color scheme registered');
-        
-        // Add representations with SASA coloring
-        component.addRepresentation('cartoon', { 
-            color: 'sasa',
-            opacity: 0.8
-        });
-        console.log('SASA Viewer: Cartoon representation added');
-        
-        component.addRepresentation('surface', { 
-            color: 'sasa',
-            opacity: 0.6,
-            surfaceType: 'av'
-        });
-        console.log('SASA Viewer: Surface representation added');
+                    };
+                }, schemeName);
+                
+                console.log('SASA Viewer: SASA color scheme registered as:', schemeName);
+                
+                // Add surface with SASA colors
+                comp.addRepresentation('surface', { 
+                    color: schemeName,
+                    opacity: 0.6,
+                    surfaceType: 'av'
+                });
+                console.log('SASA Viewer: Surface representation with SASA colors added');
+            } else {
+                // Fallback to standard coloring
+                comp.addRepresentation('surface', { 
+                    color: 'hydrophobicity',
+                    opacity: 0.6,
+                    surfaceType: 'av'
+                });
+                console.log('SASA Viewer: Surface representation with standard colors added');
+            }
+            
+        } catch (error) {
+            console.error('SASA Viewer: Error adding representations:', error);
+            console.error('SASA Viewer: Falling back to basic representation');
+            
+            // Ultimate fallback - just show structure
+            comp.addRepresentation('cartoon', { color: 'chainindex' });
+        }
         
         // Center and zoom
-        component.autoView();
+        comp.autoView();
         console.log('SASA Viewer: Auto-view complete - Structure should be visible now!');
         
         // Force stage update
