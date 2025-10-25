@@ -216,16 +216,16 @@ async function submitToPDB2PQR(pdbText, forcefield, ph, ionConc) {
     } catch (error) {
         console.error('PDB2PQR submission error:', error);
         
-        if (error.message.includes('CORS') || error.message.includes('fetch')) {
-            updateStatus(`CORS Error: Cannot connect to PDB2PQR server directly from browser. This is a security limitation. Please see README for solutions (local APBS installation or backend proxy).`, 'error');
-        } else {
-            updateStatus(`Error: ${error.message}`, 'error');
-        }
+        // Automatically switch to simplified mode
+        updateStatus('⚠️ PDB2PQR/APBS server unavailable (API instability or CORS). Switching to simplified electrostatic model...', 'error');
         
-        // Offer fallback
         setTimeout(() => {
-            updateStatus('You can use simplified mode as alternative. See README for full APBS setup.', 'error');
-        }, 3000);
+            updateStatus('Loading simplified electrostatic analysis...', 'loading');
+            const pdbText = pdbInput.value.trim();
+            if (pdbText) {
+                loadSimpleElectrostatic(pdbText);
+            }
+        }, 2000);
     }
 }
 
@@ -261,7 +261,15 @@ async function pollJobStatus(jobId, maxAttempts = 60) {
             }
         } catch (error) {
             console.error('Polling error:', error);
-            updateStatus(`Error: ${error.message}`, 'error');
+            updateStatus(`⚠️ APBS calculation failed: ${error.message}. Switching to simplified mode...`, 'error');
+            
+            // Fallback to simplified mode
+            setTimeout(() => {
+                const pdbText = pdbInput.value.trim();
+                if (pdbText) {
+                    loadSimpleElectrostatic(pdbText);
+                }
+            }, 2000);
         }
     };
     
@@ -493,7 +501,14 @@ function loadSimpleElectrostatic(pdbText) {
     }).join('\n');
     
     displayResults(pqrLines, null);
-    updateStatus('Electrostatic analysis complete! Using simplified charge model based on residue types (ARG/LYS: positive, ASP/GLU: negative)', 'success');
+    updateStatus(`
+        <strong>📊 Simplified Electrostatic Analysis Complete!</strong><br>
+        <span style="font-size: 0.9rem; color: #ffc107;">
+            ⚠️ Using residue-based charge model (ARG/LYS: positive, ASP/GLU: negative).<br>
+            This is a <em>simplified fallback</em> due to APBS server unavailability.<br>
+            For accurate Poisson-Boltzmann calculations, install local APBS or wait for API stability.
+        </span>
+    `, 'success');
 }
 
 // ==========================================================================
@@ -525,7 +540,31 @@ calculateBtn.addEventListener('click', async () => {
 });
 
 // ==========================================================================
-// 15. Clear Button
+// 15. Simple Mode Button (Direct Fallback)
+// ==========================================================================
+const simpleModeBtn = document.getElementById('simple-mode-btn');
+simpleModeBtn.addEventListener('click', () => {
+    const pdbText = pdbInput.value.trim();
+    
+    if (!pdbText) {
+        updateStatus('Please provide PDB input first.', 'error');
+        return;
+    }
+    
+    simpleModeBtn.disabled = true;
+    simpleModeBtn.textContent = 'Loading...';
+    
+    updateStatus('Starting simplified electrostatic analysis...', 'loading');
+    
+    setTimeout(() => {
+        loadSimpleElectrostatic(pdbText);
+        simpleModeBtn.disabled = false;
+        simpleModeBtn.textContent = 'Use Simplified Mode';
+    }, 500);
+});
+
+// ==========================================================================
+// 16. Clear Button
 // ==========================================================================
 clearBtn.addEventListener('click', () => {
     pdbInput.value = '';
