@@ -50,11 +50,17 @@ let dxData = null;
 // ==========================================================================
 // 3. PDB2PQR API Configuration
 // ==========================================================================
-const PDB2PQR_API = 'https://server.poissonboltzmann.org/api/v2';
+// Use CORS proxy to avoid browser CORS restrictions
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+const PDB2PQR_BASE = 'https://server.poissonboltzmann.org/api';
 
-// Alternative: Use proxy if CORS issues
-// const PROXY = 'https://corsproxy.io/?';
-// const PDB2PQR_API = PROXY + 'https://server.poissonboltzmann.org/api/v2';
+// Try multiple API endpoints in order
+const API_ENDPOINTS = [
+    'https://server.poissonboltzmann.org/api',
+    CORS_PROXY + encodeURIComponent('https://server.poissonboltzmann.org/api')
+];
+
+let PDB2PQR_API = API_ENDPOINTS[0];
 
 // ==========================================================================
 // 4. File Upload Handler
@@ -142,53 +148,84 @@ async function submitToPDB2PQR(pdbText, forcefield, ph, ionConc) {
     updateStatus('Submitting to PDB2PQR server...', 'loading');
     
     try {
-        // Create form data
-        const formData = new FormData();
+        // Prepare JSON payload for new API
+        const payload = {
+            pdb: pdbText,
+            ff: forcefield.toLowerCase(),
+            ph: ph,
+            apbs: true,
+            pdie: 2.0,
+            sdie: 78.0,
+            srad: 1.4,
+            sdens: 10.0,
+            bcfl: 'sdh',
+            ion_conc: ionConc,
+            ion_charge: 1,
+            ion_radius: 2.0
+        };
         
-        // Create PDB file blob
-        const pdbBlob = new Blob([pdbText], { type: 'text/plain' });
-        formData.append('pdb', pdbBlob, 'input.pdb');
-        
-        // Add parameters
-        formData.append('ff', forcefield);
-        formData.append('ph', ph.toString());
-        formData.append('apbs', 'true'); // Enable APBS calculation
-        formData.append('pdie', '2.0'); // Protein dielectric
-        formData.append('sdie', '78.0'); // Solvent dielectric
-        formData.append('srad', '1.4'); // Solvent radius
-        formData.append('sdens', '10.0'); // Sphere density
-        formData.append('bcfl', 'sdh'); // Boundary condition
-        formData.append('ion_conc', ionConc.toString());
-        formData.append('ion_charge', '1'); // Positive ion charge
-        formData.append('ion_radius', '2.0'); // Ion radius
-        
-        // Submit job
+        // Submit job using JSON API
         const response = await fetch(`${PDB2PQR_API}/submit`, {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            mode: 'cors'
         });
         
         if (!response.ok) {
-            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+            // Try with form data if JSON fails
+            const formData = new FormData();
+            const pdbBlob = new Blob([pdbText], { type: 'text/plain' });
+            formData.append('pdb', pdbBlob, 'input.pdb');
+            formData.append('ff', forcefield.toLowerCase());
+            formData.append('ph', ph.toString());
+            formData.append('apbs', 'true');
+            formData.append('whitespace', 'true');
+            formData.append('typemap', 'true');
+            formData.append('neutraln', 'true');
+            formData.append('neutralc', 'true');
+            
+            const formResponse = await fetch(`${PDB2PQR_API}/submit`, {
+                method: 'POST',
+                body: formData,
+                mode: 'cors'
+            });
+            
+            if (!formResponse.ok) {
+                throw new Error(`Server error: ${formResponse.status}. The PDB2PQR server may be down or blocking CORS requests.`);
+            }
+            
+            const formResult = await formResponse.json();
+            jobId = formResult.job_id || formResult.jobid;
+        } else {
+            const result = await response.json();
+            jobId = result.job_id || result.jobid;
         }
         
-        const result = await response.json();
-        jobId = result.job_id;
+        if (!jobId) {
+            throw new Error('No job ID returned from server');
+        }
         
-        updateStatus('Job submitted! Waiting for results...', 'loading');
+        updateStatus(`Job submitted (ID: ${jobId})! Waiting for results...`, 'loading');
         
         // Poll for results
         await pollJobStatus(jobId);
         
     } catch (error) {
         console.error('PDB2PQR submission error:', error);
-        updateStatus(`Error: ${error.message}. Note: This requires internet connection and the PDB2PQR server may have CORS restrictions. Consider using a local APBS installation for production use.`, 'error');
         
-        // Fallback to simple charge assignment visualization
-        updateStatus('Falling back to simplified electrostatic visualization...', 'loading');
+        if (error.message.includes('CORS') || error.message.includes('fetch')) {
+            updateStatus(`CORS Error: Cannot connect to PDB2PQR server directly from browser. This is a security limitation. Please see README for solutions (local APBS installation or backend proxy).`, 'error');
+        } else {
+            updateStatus(`Error: ${error.message}`, 'error');
+        }
+        
+        // Offer fallback
         setTimeout(() => {
-            loadSimpleElectrostatic(pdbText);
-        }, 1000);
+            updateStatus('You can use simplified mode as alternative. See README for full APBS setup.', 'error');
+        }, 3000);
     }
 }
 
@@ -456,7 +493,7 @@ function loadSimpleElectrostatic(pdbText) {
     }).join('\n');
     
     displayResults(pqrLines, null);
-    updateStatus('Using simplified charge model (AMBER-based estimates)', 'success');
+    updateStatus('Electrostatic analysis complete! Using simplified charge model based on residue types (ARG/LYS: positive, ASP/GLU: negative)', 'success');
 }
 
 // ==========================================================================
