@@ -34,16 +34,16 @@ export function LeftPanel() {
         style={{
           position: "absolute",
           inset: 0,
-          backdropFilter: "blur(4px)",
-          WebkitBackdropFilter: "blur(4px)",
-          WebkitMaskImage: "radial-gradient(ellipse 60% 50% at 40% 50%, black 30%, transparent 100%)",
-          maskImage: "radial-gradient(ellipse 60% 50% at 40% 50%, black 30%, transparent 100%)",
+          backdropFilter: "blur(72px)",
+          WebkitBackdropFilter: "blur(72px)",
+          WebkitMaskImage: "linear-gradient(to right, black 60%, transparent 100%)",
+          maskImage: "linear-gradient(to right, black 60%, transparent 100%)",
           pointerEvents: "none",
           zIndex: -1,
         }}
       />
       {/* photo + name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "2.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "2.5rem", marginTop: "3rem" }}>
         <div
           style={{
             ...fade(0),
@@ -84,105 +84,133 @@ export function LeftPanel() {
         </h1>
       </div>
 
-      {/* description */}
-      <p
-        style={{
-          ...fade(160),
-          fontSize: "clamp(0.875rem, 1.1vw, 1rem)",
-          color: "var(--muted)",
-          lineHeight: 1.7,
-          maxWidth: "400px",
-          marginBottom: "2.5rem",
-          textAlign: "justify",
-        }}
-      >
-        PhD in Bioinformatics at UFMG. Research focused on deep learning,
-        antimicrobial peptides, and structural biology. Nextflow Ambassador at Seqera.
-      </p>
-
-      {/* email */}
-      <div style={{ ...fade(240), marginBottom: "2rem" }}>
-        <span style={{ fontSize: "0.875rem", color: "var(--text)", borderBottom: "1px solid var(--border)", paddingBottom: "2px" }}>
-          get in touch <span style={{ fontSize: "0.75rem" }}>&#8594;</span>
+      {/* timeline */}
+      <div style={{ ...fade(160), marginBottom: "1.5rem" }}>
+        <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          formation
         </span>
-        <br />
-        <a
-          href="mailto:madsondeluna@gmail.com"
-          className="link-muted"
-          style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", letterSpacing: "0.04em", marginTop: "0.35rem", display: "inline-block" }}
-        >
-          madsondeluna@gmail.com
-        </a>
+        <div style={{ position: "relative", paddingLeft: "1.1rem", marginTop: "0.6rem" }}>
+          <div style={{ position: "absolute", left: "4px", top: "6px", bottom: "6px", width: "1px", background: "var(--border)" }} />
+          {[
+            { year: "2024–Now", degree: "PhD in Bioinformatics", institution: "UFMG, Brazil", ongoing: true },
+            { year: "2024–Now", degree: "MBA in Software Engineering", institution: "USP, Brazil", ongoing: true },
+            { year: "2024–2026", degree: "MBA in Data Science & Analytics", institution: "PUC-Rio, Brazil", ongoing: false },
+            { year: "2022–2024", degree: "MSc in Genetics & Bioinformatics", institution: "UFPE, Brazil", ongoing: false },
+            { year: "2018–2022", degree: "BSc in Biomedical Sciences", institution: "UFPE, Brazil", ongoing: false },
+          ].map((entry, i) => (
+            <div key={i} style={{ position: "relative", marginBottom: "0.85rem" }}>
+              <div style={{
+                position: "absolute",
+                left: "-1.1rem",
+                top: "5px",
+                width: "7px",
+                height: "7px",
+                borderRadius: "50%",
+                background: entry.ongoing ? "var(--accent)" : "var(--border)",
+                border: "1px solid var(--border-hover)",
+              }} />
+              <span style={{ display: "block", fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: entry.ongoing ? "var(--accent)" : "var(--muted)", letterSpacing: "0.06em", marginBottom: "1px" }}>
+                {entry.year}
+              </span>
+              <span style={{ display: "block", fontSize: "0.72rem", color: "var(--text)", lineHeight: 1.3 }}>
+                {entry.degree}
+              </span>
+              <span style={{ display: "block", fontSize: "0.62rem", color: "var(--muted)", lineHeight: 1.3 }}>
+                {entry.institution}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* social links */}
-      <div style={{ ...fade(320), display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+      {/* expertise tags */}
+      <div style={{ ...fade(220), marginBottom: "0.9rem" }}>
+        <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          expertise
+        </span>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
+          {["Machine Learning", "DevOps", "Product Design", "Bioinformatics", "Omics", "Protein Design"].map(tag => (
+            <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* stats */}
+      <div style={{ ...fade(260), marginBottom: "0.9rem" }}>
+        <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          outputs
+        </span>
+      <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
         {[
-          { label: "GitHub", href: "https://github.com/madsondeluna" },
-          { label: "Google Scholar", href: "https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en" },
-          { label: "ResearchGate", href: "https://www.researchgate.net/profile/Madson-Aragao" },
-          { label: "LinkedIn", href: "https://www.linkedin.com/in/madsonaragao/" },
-          { label: "X", href: "https://twitter.com/madsondeluna" },
-        ].map(({ label, href }) => (
-          <a
-            key={href}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-secondary"
-            style={{ fontSize: "0.875rem" }}
-          >
-            {label}
-          </a>
+          { label: "Papers",            value: 6  },
+          { label: "Conf. Papers",      value: 34 },
+          { label: "Conferences",       value: 35 },
+          { label: "Talks",             value: 21 },
+          { label: "Awards",            value: 11 },
+          { label: "Supervisions",      value: 3  },
+        ].map(({ label, value }) => (
+          <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1px" }}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "1rem", color: "var(--text)", lineHeight: 1 }}>
+              {value}
+            </span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.575rem", color: "var(--muted)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              {label}
+            </span>
+          </div>
         ))}
+      </div>
+      </div>
+
+      {/* applications tags */}
+      <div style={{ ...fade(290), marginBottom: "2rem" }}>
+        <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          developed applications
+        </span>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
+          {["AMPidentifier", "decryptAMP"].map(tag => (
+            <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* email + social + theme */}
+      <div style={{ ...fade(320), display: "flex", alignItems: "flex-start", gap: "2rem", flexWrap: "wrap" }}>
+        {/* social links */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+          {[
+            { label: "GitHub", href: "https://github.com/madsondeluna" },
+            { label: "Google Scholar", href: "https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en" },
+            { label: "ResearchGate", href: "https://www.researchgate.net/profile/Madson-Aragao" },
+            { label: "LinkedIn", href: "https://www.linkedin.com/in/madsonaragao/" },
+            { label: "X", href: "https://twitter.com/madsondeluna" },
+          ].map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-secondary"
+              style={{ fontSize: "0.75rem" }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
       </div>
 
       {/* theme toggle */}
-      <div style={{ ...fade(380), marginTop: "2rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+      <div style={{ ...fade(420), position: "absolute", top: "1.75rem", left: "2.5rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
         <ThemeToggle />
         <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--muted)", letterSpacing: "0.08em", lineHeight: 1, paddingTop: "2px" }}>
           Light / Dark
         </span>
       </div>
 
-      {/* copyright */}
-      <div
-        style={{
-          ...fade(400),
-          position: "absolute",
-          bottom: "1.75rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-          padding: "0.5rem 1.25rem",
-          borderRadius: "999px",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            maskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
-            WebkitMaskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
-            borderRadius: "inherit",
-          }}
-        />
-        <span
-          style={{
-            position: "relative",
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.5625rem",
-            color: "var(--muted)",
-            letterSpacing: "0.06em",
-            opacity: 0.55,
-            whiteSpace: "nowrap",
-          }}
-        >
-          &copy; {new Date().getFullYear()}. GROMADS. All rights reserved.
-        </span>
-      </div>
 
     </div>
   );

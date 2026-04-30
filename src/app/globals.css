@@ -132,6 +132,15 @@ a {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes phage-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.phage-float {
+  animation: phage-float 3s ease-in-out infinite;
+}
+
 .home-blob {
   padding: 0.45rem 1rem;
   border-radius: 999px;

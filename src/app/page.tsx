@@ -139,6 +139,27 @@ export default function Home() {
           )}
         </main>
 
+        <footer style={{ padding: "0.75rem 2rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            maskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
+          }} />
+          <span style={{
+            position: "relative",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.5625rem",
+            color: "var(--muted)",
+            letterSpacing: "0.06em",
+            opacity: 0.55,
+          }}>
+            &copy; {new Date().getFullYear()}. GROMADS. All rights reserved.
+          </span>
+        </footer>
+
       </div>
 
     </div>
