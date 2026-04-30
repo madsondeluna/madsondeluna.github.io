@@ -34,14 +34,14 @@ export function ThemeToggle() {
         background: "none",
         border: "none",
         cursor: "pointer",
-        padding: "2px",
+        padding: 0,
         display: "flex",
         alignItems: "center",
         transition: "color 0.2s ease",
       }}
     >
       <span style={{
-        fontSize: "1.4rem",
+        fontSize: "1.5rem",
         color,
         lineHeight: 1,
         transition: "color 0.2s ease",

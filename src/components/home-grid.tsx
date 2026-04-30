@@ -101,18 +101,6 @@ interface HomeGridProps {
 export function HomeGrid({ onNavigate }: HomeGridProps) {
   return (
     <div style={{ padding: "3rem 2rem" }}>
-      <FadeIn>
-        <p style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.6875rem",
-          color: "var(--muted)",
-          letterSpacing: "0.12em",
-          marginBottom: "2.5rem",
-        }}>
-          select a section
-        </p>
-      </FadeIn>
-
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",

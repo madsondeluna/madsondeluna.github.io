@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "./theme-toggle";
 
 export function LeftPanel() {
   const [mounted, setMounted] = useState(false);
@@ -134,6 +135,14 @@ export function LeftPanel() {
             {label}
           </a>
         ))}
+      </div>
+
+      {/* theme toggle */}
+      <div style={{ ...fade(380), marginTop: "2rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+        <ThemeToggle />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--muted)", letterSpacing: "0.08em", lineHeight: 1, paddingTop: "2px" }}>
+          Light / Dark
+        </span>
       </div>
 
       {/* copyright */}

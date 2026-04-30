@@ -5,7 +5,6 @@ import { LeftPanel } from "@/components/left-panel";
 import { HeroCanvas } from "@/components/hero-canvas";
 import { TabTransition } from "@/components/tab-transition";
 import { HomeGrid } from "@/components/home-grid";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { AboutSection, SkillsSection } from "@/components/sections/about";
 import { ExperienceSection, EducationSection, CertificationsSection } from "@/components/sections/career";
 import { PublicationsSection, TalksSection, AwardsSection } from "@/components/sections/research";
@@ -113,9 +112,6 @@ export default function Home() {
                 &#8592;
               </button>
             )}
-          </div>
-          <div style={{ pointerEvents: "auto", marginTop: "3rem" }}>
-            <ThemeToggle />
           </div>
         </div>
 

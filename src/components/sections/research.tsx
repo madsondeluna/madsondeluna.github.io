@@ -97,9 +97,9 @@ const awards = [
 ];
 
 const talkTypeStyle: Record<string, { color: string; background: string; border: string }> = {
-  Congress:   { color: "#1a3a52", background: "rgba(45, 90, 122, 0.12)", border: "rgba(45, 90, 122, 0.35)" },
-  Conference: { color: "#3b2a5e", background: "rgba(74, 63, 107, 0.12)", border: "rgba(74, 63, 107, 0.35)" },
-  Symposium:  { color: "#1e4d3a", background: "rgba(30, 77, 58, 0.12)",  border: "rgba(30, 77, 58, 0.35)"  },
+  Congress:   { color: "var(--tag-congress-color)",   background: "var(--tag-congress-bg)",   border: "var(--tag-congress-border)"   },
+  Conference: { color: "var(--tag-conference-color)", background: "var(--tag-conference-bg)", border: "var(--tag-conference-border)" },
+  Symposium:  { color: "var(--tag-symposium-color)",  background: "var(--tag-symposium-bg)",  border: "var(--tag-symposium-border)"  },
 };
 
 export function PublicationsSection() {

@@ -11,6 +11,18 @@
   --dim:           #dde1e9;
   --accent:        #3e5c76;
   --secondary:     #748cab;
+
+  --tag-congress-color:    #1a3a52;
+  --tag-congress-bg:       rgba(45,90,122,0.12);
+  --tag-congress-border:   rgba(45,90,122,0.35);
+
+  --tag-conference-color:  #3b2a5e;
+  --tag-conference-bg:     rgba(74,63,107,0.12);
+  --tag-conference-border: rgba(74,63,107,0.35);
+
+  --tag-symposium-color:   #1e4d3a;
+  --tag-symposium-bg:      rgba(30,77,58,0.12);
+  --tag-symposium-border:  rgba(30,77,58,0.35);
 }
 
 :root.dark {
@@ -22,6 +34,18 @@
   --text:          #f4f6f9;
   --muted:         #748cab;
   --dim:           #141c2e;
+
+  --tag-congress-color:    #7eb8d4;
+  --tag-congress-bg:       rgba(45,90,122,0.28);
+  --tag-congress-border:   rgba(45,90,122,0.55);
+
+  --tag-conference-color:  #b39ddb;
+  --tag-conference-bg:     rgba(74,63,107,0.28);
+  --tag-conference-border: rgba(74,63,107,0.55);
+
+  --tag-symposium-color:   #6dbf8f;
+  --tag-symposium-bg:      rgba(30,77,58,0.28);
+  --tag-symposium-border:  rgba(30,77,58,0.55);
 }
 
 @theme inline {
