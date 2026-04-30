@@ -11,3 +11,15 @@ __pycache__/
 # IDEs
 .vscode/
 .idea/
+
+# Next.js
+.next/
+out/
+node_modules/
+next-env.d.ts
+
+# Claude memory
+.claude/
+
+# TypeScript build info
+tsconfig.tsbuildinfo
