@@ -158,7 +158,7 @@ interface HomeGridProps {
 
 export function HomeGrid({ onNavigate }: HomeGridProps) {
   return (
-    <div style={{ padding: "3rem 2rem" }}>
+    <div style={{ padding: "3rem 2rem 5rem" }}>
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",

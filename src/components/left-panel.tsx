@@ -25,8 +25,8 @@ export function LeftPanel() {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        padding: "3rem 3rem 3rem 2.5rem",
+        justifyContent: "flex-start",
+        padding: "4.5rem 3rem 2rem 2.5rem",
       }}
     >
       {/* blur backdrop behind text */}
@@ -43,13 +43,13 @@ export function LeftPanel() {
         }}
       />
       {/* photo + name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "2.5rem", marginTop: "3rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "1.5rem" }}>
         <div
           style={{
             ...fade(0),
             flexShrink: 0,
-            width: "120px",
-            height: "120px",
+            width: "140px",
+            height: "140px",
             borderRadius: "50%",
             overflow: "hidden",
             background: "var(--dim)",
@@ -73,7 +73,7 @@ export function LeftPanel() {
           style={{
             ...fade(80),
             fontFamily: "var(--font-display)",
-            fontSize: "clamp(2.5rem, 4vw, 4.5rem)",
+            fontSize: "clamp(2.8rem, 4.5vw, 5rem)",
             fontWeight: 300,
             lineHeight: 0.92,
             letterSpacing: "-0.03em",
@@ -85,20 +85,21 @@ export function LeftPanel() {
       </div>
 
       {/* timeline */}
-      <div style={{ ...fade(160), marginBottom: "1.5rem" }}>
+      <div style={{ ...fade(160), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           formation
         </span>
-        <div style={{ position: "relative", paddingLeft: "1.1rem", marginTop: "0.6rem" }}>
+        <div style={{ position: "relative", paddingLeft: "1.1rem", marginTop: "0.4rem" }}>
           <div style={{ position: "absolute", left: "4px", top: "6px", bottom: "6px", width: "1px", background: "var(--border)" }} />
           {[
             { year: "2024–Now", degree: "PhD in Bioinformatics", institution: "UFMG, Brazil", ongoing: true },
             { year: "2024–Now", degree: "MBA in Software Engineering", institution: "USP, Brazil", ongoing: true },
             { year: "2024–2026", degree: "MBA in Data Science & Analytics", institution: "PUC-Rio, Brazil", ongoing: false },
-            { year: "2022–2024", degree: "MSc in Genetics & Bioinformatics", institution: "UFPE, Brazil", ongoing: false },
+            { year: "2022–2024", degree: "MSc in Genetics & Molecular Biology", institution: "UFPE, Brazil", ongoing: false },
             { year: "2018–2022", degree: "BSc in Biomedical Sciences", institution: "UFPE, Brazil", ongoing: false },
+            { year: "2011–2013", degree: "A.S. in Software Development", institution: "ETE-PE, Brazil", ongoing: false },
           ].map((entry, i) => (
-            <div key={i} style={{ position: "relative", marginBottom: "0.85rem" }}>
+            <div key={i} style={{ position: "relative", marginBottom: "0.55rem" }}>
               <div style={{
                 position: "absolute",
                 left: "-1.1rem",
@@ -124,11 +125,11 @@ export function LeftPanel() {
       </div>
 
       {/* expertise tags */}
-      <div style={{ ...fade(220), marginBottom: "0.9rem" }}>
+      <div style={{ ...fade(220), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           expertise
         </span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.35rem" }}>
           {["Machine Learning", "DevOps", "Product Design", "Bioinformatics", "Omics", "Protein Design"].map(tag => (
             <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
               {tag}
@@ -138,11 +139,11 @@ export function LeftPanel() {
       </div>
 
       {/* stats */}
-      <div style={{ ...fade(260), marginBottom: "0.9rem" }}>
+      <div style={{ ...fade(260), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           outputs
         </span>
-      <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+      <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.35rem" }}>
         {[
           { label: "Papers",            value: 6  },
           { label: "Conf. Papers",      value: 34 },
@@ -164,43 +165,17 @@ export function LeftPanel() {
       </div>
 
       {/* applications tags */}
-      <div style={{ ...fade(290), marginBottom: "2rem" }}>
+      <div style={{ ...fade(290), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           developed applications
         </span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.35rem" }}>
           {["AMPidentifier", "decryptAMP"].map(tag => (
             <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
               {tag}
             </span>
           ))}
         </div>
-      </div>
-
-      {/* email + social + theme */}
-      <div style={{ ...fade(320), display: "flex", alignItems: "flex-start", gap: "2rem", flexWrap: "wrap" }}>
-        {/* social links */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-          {[
-            { label: "GitHub", href: "https://github.com/madsondeluna" },
-            { label: "Google Scholar", href: "https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en" },
-            { label: "ResearchGate", href: "https://www.researchgate.net/profile/Madson-Aragao" },
-            { label: "LinkedIn", href: "https://www.linkedin.com/in/madsonaragao/" },
-            { label: "X", href: "https://twitter.com/madsondeluna" },
-          ].map(({ label, href }) => (
-            <a
-              key={href}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-secondary"
-              style={{ fontSize: "0.75rem" }}
-            >
-              {label}
-            </a>
-          ))}
-        </div>
-
       </div>
 
       {/* theme toggle */}
