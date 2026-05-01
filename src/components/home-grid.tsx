@@ -140,14 +140,14 @@ const SECTIONS = [
     number: "16",
     label: "cv-en",
     title: "CV (English)",
-    description: "Full curriculum vitae in English.",
+    description: "Short curriculum vitae in English.",
     href: "/cv/en_cv_madson_professional.pdf",
   },
   {
     number: "17",
     label: "cv-pt",
     title: "CV (Portuguese)",
-    description: "Full curriculum vitae in Brazilian Portuguese.",
+    description: "Short curriculum vitae in Brazilian Portuguese.",
     href: "/cv/pt_cv_madson_professional.pdf",
   },
 ];
