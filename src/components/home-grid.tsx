@@ -120,12 +120,6 @@ const SECTIONS = [
   },
   {
     number: "12",
-    label: "biohub",
-    title: "BioHub",
-    description: "Bioinformatics tools for structural biology analyses.",
-  },
-  {
-    number: "13",
     label: "gallery",
     title: "Gallery",
     description: "Scientific renderings, visualizations, and project imagery.",
@@ -133,8 +127,7 @@ const SECTIONS = [
   {
     number: "14",
     label: "b101nf0",
-    title: "“Hello World!”",
-    italic: true,
+    title: "Opinion",
     description: "Curated videos on structural biology, data science, and AI.",
   },
   {
@@ -144,11 +137,18 @@ const SECTIONS = [
     description: "Reach out via email or find me on academic and professional networks.",
   },
   {
-    number: "101",
-    label: "101",
-    title: "cat /dev/brain",
-    description: "Three espressos. One genome. Zero sleep. Stack not overflowed. Yet.",
-    href: "https://github.com/madsondeluna",
+    number: "16",
+    label: "cv-en",
+    title: "CV (English)",
+    description: "Full curriculum vitae in English.",
+    href: "/cv/en_cv_madson_professional.pdf",
+  },
+  {
+    number: "17",
+    label: "cv-pt",
+    title: "CV (Portuguese)",
+    description: "Full curriculum vitae in Brazilian Portuguese.",
+    href: "/cv/pt_cv_madson_professional.pdf",
   },
 ];
 
@@ -158,7 +158,7 @@ interface HomeGridProps {
 
 export function HomeGrid({ onNavigate }: HomeGridProps) {
   return (
-    <div style={{ padding: "3rem 2rem 5rem" }}>
+    <div style={{ padding: "1.75rem 2rem 3rem" }}>
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
@@ -166,7 +166,7 @@ export function HomeGrid({ onNavigate }: HomeGridProps) {
         background: "var(--border)",
       }}>
         {SECTIONS.map((section, i) => (
-          <FadeIn key={section.label} delay={i * 40}>
+          <FadeIn key={section.label} delay={i * 40} className="grid-card-wrap">
             <button
               onClick={() => "href" in section && section.href
                 ? window.open(section.href, "_blank", "noopener,noreferrer")
@@ -177,10 +177,10 @@ export function HomeGrid({ onNavigate }: HomeGridProps) {
                 background: "var(--surface)",
                 border: "none",
                 cursor: "pointer",
-                padding: "1.75rem",
+                padding: "1.35rem 1.5rem",
                 display: "flex",
                 flexDirection: "column",
-                gap: "0.75rem",
+                gap: "0.55rem",
                 textAlign: "left",
                 width: "100%",
                 height: "100%",
@@ -223,16 +223,11 @@ export function HomeGrid({ onNavigate }: HomeGridProps) {
                     color: "var(--muted)",
                     lineHeight: 1.6,
                     display: "block",
-                    textAlign: "justify",
+                    textAlign: "left",
                   }}>
                     {"description" in section ? section.description : ""}
                   </span>
-                  <span style={{
-                    marginTop: "auto",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.6875rem",
-                    color: "var(--muted)",
-                  }}>
+                  <span className="card-cta">
                     &#8594;
                   </span>
                 </>

@@ -248,7 +248,7 @@ export function B101NF0Section() {
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2.5rem" }}>
         <SectionHeader
           number="14"
-          title={<em>&ldquo;Hello World!&rdquo;</em>}
+          title="Opinion"
           description="A personal curation of videos on structural biology, data science, and AI."
         />
         <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>

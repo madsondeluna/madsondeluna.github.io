@@ -92,12 +92,12 @@ export function LeftPanel() {
         <div style={{ position: "relative", paddingLeft: "1.1rem", marginTop: "0.4rem" }}>
           <div style={{ position: "absolute", left: "4px", top: "6px", bottom: "6px", width: "1px", background: "var(--border)" }} />
           {[
-            { year: "2024–Now", degree: "PhD in Bioinformatics", institution: "UFMG, Brazil", ongoing: true },
-            { year: "2024–Now", degree: "MBA in Software Engineering", institution: "USP, Brazil", ongoing: true },
-            { year: "2024–2026", degree: "MBA in Data Science & Analytics", institution: "PUC-Rio, Brazil", ongoing: false },
-            { year: "2022–2024", degree: "MSc in Genetics & Molecular Biology", institution: "UFPE, Brazil", ongoing: false },
-            { year: "2018–2022", degree: "BSc in Biomedical Sciences", institution: "UFPE, Brazil", ongoing: false },
-            { year: "2011–2013", degree: "A.S. in Software Development", institution: "ETE-PE, Brazil", ongoing: false },
+            { year: "2024–Now", degree: "PhD in Bioinformatics", institution: "Federal University of Minas Gerais, Brazil", ongoing: true },
+            { year: "2024–Now", degree: "MBA in Software Engineering", institution: "University of São Paulo, Brazil", ongoing: true },
+            { year: "2024–2026", degree: "MBA in Data Science & Analytics", institution: "Pontifical Catholic University of Rio de Janeiro, Brazil", ongoing: false },
+            { year: "2022–2024", degree: "MSc in Genetics & Molecular Biology", institution: "Federal University of Pernambuco, Brazil", ongoing: false },
+            { year: "2014–2022", degree: "BSc in Biomedical Sciences", institution: "Federal University of Pernambuco, Brazil", ongoing: false },
+            { year: "2011–2013", degree: "A.S. in Software Development", institution: "State Technical School of Pernambuco, Brazil", ongoing: false },
           ].map((entry, i) => (
             <div key={i} style={{ position: "relative", marginBottom: "0.55rem" }}>
               <div style={{
@@ -129,11 +129,19 @@ export function LeftPanel() {
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           expertise
         </span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.35rem" }}>
-          {["Machine Learning", "DevOps", "Product Design", "Bioinformatics", "Omics", "Protein Design"].map(tag => (
-            <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
-              {tag}
-            </span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", marginTop: "0.35rem" }}>
+          {[
+            ["Python", "Bash", "API Development", "System Design", "DevOps", "Cloud Computing", "Workflow Automation"],
+            ["Machine Learning", "Statistical Modeling", "Data Engineering", "Large Language Models"],
+            ["Bioinformatics", "Genomics", "Omics", "Structural Biology", "Protein Design"],
+          ].map((row, ri) => (
+            <div key={ri} style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+              {row.map(tag => (
+                <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -143,26 +151,30 @@ export function LeftPanel() {
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           contributions
         </span>
-      <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.35rem" }}>
-        {[
-          { label: "Papers",            value: 6  },
-          { label: "Conf. Papers",      value: 34 },
-          { label: "Conferences",       value: 35 },
-          { label: "Talks",             value: 21 },
-          { label: "Awards",            value: 11 },
-          { label: "Supervisions",      value: 3  },
-          { label: "Patents",           value: 4  },
-        ].map(({ label, value }) => (
-          <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1px" }}>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "1rem", color: "var(--text)", lineHeight: 1 }}>
-              {value}
+      {[
+        [
+          { label: "Papers",         value: 6  },
+          { label: "Conf. Papers",   value: 34 },
+          { label: "Conferences",    value: 35 },
+          { label: "Awards",         value: 11 },
+          { label: "Supervisions",   value: 3  },
+          { label: "Chapters/Books", value: 1  },
+        ],
+        [
+          { label: "Talks",            value: 21 },
+          { label: "Patents & Software Tools", value: 4  },
+          { label: "Teaching Exp.",    value: 12 },
+          { label: "Journal Reviewer", value: 1  },
+        ],
+      ].map((row, ri) => (
+        <div key={ri} style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: ri === 0 ? "0.35rem" : "0.3rem" }}>
+          {row.map(({ label, value }) => (
+            <span key={label} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+              <span style={{ color: "var(--text)", fontWeight: 700 }}>{value}</span> {label}
             </span>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.575rem", color: "var(--muted)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ))}
       </div>
 
       {/* applications tags */}
