@@ -141,7 +141,7 @@ export function LeftPanel() {
       {/* stats */}
       <div style={{ ...fade(260), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          outputs
+          contributions
         </span>
       <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.35rem" }}>
         {[
@@ -151,6 +151,7 @@ export function LeftPanel() {
           { label: "Talks",             value: 21 },
           { label: "Awards",            value: 11 },
           { label: "Supervisions",      value: 3  },
+          { label: "Patents",           value: 4  },
         ].map(({ label, value }) => (
           <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1px" }}>
             <span style={{ fontFamily: "var(--font-mono)", fontSize: "1rem", color: "var(--text)", lineHeight: 1 }}>
@@ -167,14 +168,18 @@ export function LeftPanel() {
       {/* applications tags */}
       <div style={{ ...fade(290), marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          developed applications
+          developed applications and packages
         </span>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.35rem" }}>
-          {["AMPidentifier", "decryptAMP"].map(tag => (
-            <span key={tag} style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
-              {tag}
-            </span>
-          ))}
+          <a href="https://github.com/madsondeluna/AMPidentifier" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
+            AMPidentifier
+          </a>
+          <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+            decryptAMP
+          </span>
+          <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+            AMPcraft
+          </span>
         </div>
       </div>
 
