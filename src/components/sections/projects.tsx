@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { FadeIn } from "../fade-in";
 import { SectionHeader } from "../section-header";
 
@@ -187,6 +190,28 @@ export function BioHubSection() {
 }
 
 export function GallerySection() {
+  const [active, setActive] = useState(0);
+  const thumbsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft")  setActive(i => (i - 1 + gallery.length) % gallery.length);
+      if (e.key === "ArrowRight") setActive(i => (i + 1) % gallery.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    const el = thumbsRef.current?.children[active] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [active]);
+
+  const item = gallery[active];
+
+  const NAV_W = "3rem";
+  const NAV_GAP = "0.75rem";
+
   return (
     <section style={{ padding: "100px 0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2.5rem" }}>
@@ -196,45 +221,76 @@ export function GallerySection() {
           description="Visual collection of work, projects, and scientific renderings."
         />
         <FadeIn>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "1px",
-              background: "var(--border)",
-            }}
-          >
-            {gallery.map((item) => (
-              <div
-                key={item.src}
-                className="hover-surface"
-                style={{
-                  background: "var(--surface)",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div style={{ background: "var(--dim)", flexShrink: 0 }}>
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    style={{ width: "100%", height: "auto", display: "block" }}
-                  />
-                </div>
+          <div className="gallery-wrapper">
+            {/* slide row */}
+            <div style={{ display: "flex", alignItems: "center", gap: NAV_GAP }}>
+              <button
+                className="home-blob gallery-nav"
+                onClick={() => setActive(i => (i - 1 + gallery.length) % gallery.length)}
+                aria-label="Previous"
+            >&#8592;</button>
+
+              <div style={{ flex: 1, position: "relative", background: "#fff", height: "520px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                <img
+                  key={active}
+                  src={item.src}
+                  alt={item.alt}
+                  className="gallery-slide-img"
+                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", userSelect: "none" }}
+                />
                 <div style={{
-                  padding: "0.5rem 1rem",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  background: "rgba(var(--surface-rgb, 235,238,243), 0.7)",
-                  borderTop: "1px solid var(--border)",
+                  position: "absolute", bottom: 0, left: 0, right: 0,
+                  padding: "2rem 1.5rem 1.25rem",
+                  background: "linear-gradient(transparent, rgba(0,0,0,0.6))",
+                  pointerEvents: "none",
                 }}>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--muted)", letterSpacing: "0.06em" }}>
+                  <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.58rem", color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", margin: "0 0 0.25rem" }}>
                     {item.caption}
-                  </span>
+                  </p>
+                  <p style={{ fontSize: "0.85rem", color: "#fff", margin: 0, lineHeight: 1.5 }}>
+                    {item.alt}
+                  </p>
+                </div>
+                <div style={{ position: "absolute", top: "1rem", right: "1rem", fontFamily: "var(--font-mono)", fontSize: "0.58rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.08em", pointerEvents: "none" }}>
+                  {String(active + 1).padStart(2, "0")} / {String(gallery.length).padStart(2, "0")}
                 </div>
               </div>
-            ))}
+
+              <button
+                className="home-blob gallery-nav"
+                onClick={() => setActive(i => (i + 1) % gallery.length)}
+                aria-label="Next"
+            >&#8594;</button>
+            </div>
+
+            {/* thumbnail row — indented to align with slide */}
+            <div
+              ref={thumbsRef}
+              style={{
+                display: "flex",
+                gap: "3px",
+                marginTop: "3px",
+                marginLeft: `calc(${NAV_W} + ${NAV_GAP})`,
+                marginRight: `calc(${NAV_W} + ${NAV_GAP})`,
+                overflowX: "auto",
+                scrollbarWidth: "none",
+              }}
+            >
+              {gallery.map((t, i) => (
+                <button
+                  key={t.src}
+                  onClick={() => setActive(i)}
+                  className={`gallery-thumb${i === active ? " gallery-thumb-active" : ""}`}
+                  style={{ flexShrink: 0, width: "90px", height: "90px", padding: 0, border: "none", cursor: "pointer", overflow: "hidden", background: "var(--dim)" }}
+                >
+                  <img
+                    src={t.src}
+                    alt={t.alt}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </FadeIn>
       </div>
