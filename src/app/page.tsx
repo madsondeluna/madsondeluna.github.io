@@ -48,6 +48,11 @@ export default function Home() {
   return (
     <div style={{ display: "flex", height: "100svh", overflow: "hidden", position: "relative" }}>
 
+      {/* full-viewport background animation */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        <HeroCanvas />
+      </div>
+
       {/* left panel — fixed identity */}
       <div
         className="left-col"
@@ -57,26 +62,9 @@ export default function Home() {
           height: "100svh",
           position: "relative",
           overflow: "hidden",
+          zIndex: 1,
         }}
       >
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <HeroCanvas />
-        </div>
-
-        {/* blur divider at right edge */}
-        <div style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: "48px",
-          height: "100%",
-          zIndex: 2,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          maskImage: "linear-gradient(to right, transparent 0%, black 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 100%)",
-          pointerEvents: "none",
-        }} />
         <LeftPanel />
       </div>
 
@@ -87,6 +75,7 @@ export default function Home() {
           flex: 1,
           height: "100svh",
           position: "relative",
+          zIndex: 1,
         }}
       >
         {/* scrollable area — stops above footer */}

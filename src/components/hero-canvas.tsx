@@ -123,25 +123,11 @@ export function HeroCanvas() {
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "52%",
-          height: "100%",
-          backdropFilter: "blur(6px)",
-          WebkitBackdropFilter: "blur(6px)",
-          WebkitMaskImage: "linear-gradient(to right, black 0%, transparent 100%)",
-          maskImage: "linear-gradient(to right, black 0%, transparent 100%)",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
           inset: 0,
           pointerEvents: "none",
           background: [
-            "linear-gradient(to right, var(--bg) 0%, transparent 32%)",
-            "linear-gradient(to left, var(--bg) 0%, transparent 10%)",
+            "linear-gradient(to right, var(--bg) 0%, transparent 8%)",
+            "linear-gradient(to left, var(--bg) 0%, transparent 8%)",
             "linear-gradient(to bottom, var(--bg) 0%, transparent 10%)",
             "linear-gradient(to top, var(--bg) 0%, transparent 10%)",
           ].join(", "),
