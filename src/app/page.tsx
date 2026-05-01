@@ -119,6 +119,12 @@ export default function Home() {
             {activeTab === "home" ? (
               <HomeGrid onNavigate={handleTabChange} />
             ) : (
+              <div style={{
+                background: "var(--bg)",
+                minHeight: "100%",
+                maskImage: "radial-gradient(ellipse 90% 88% at 50% 50%, black 55%, transparent 100%)",
+                WebkitMaskImage: "radial-gradient(ellipse 90% 88% at 50% 50%, black 55%, transparent 100%)",
+              }}>
               <TabTransition tabKey={activeTab}>
                 {activeTab === "about" && <AboutSection />}
                 {activeTab === "skills" && <SkillsSection />}
@@ -136,19 +142,20 @@ export default function Home() {
                 {activeTab === "b101nf0" && <B101NF0Section />}
                 {activeTab === "contact" && <ContactSection />}
               </TabTransition>
+              </div>
             )}
           </main>
         </div>
 
         {/* footer — always visible at bottom */}
-        <footer style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "48px", padding: "0.3rem 2rem 0.4rem", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.3rem", zIndex: 10, background: "var(--bg)" }}>
+        <footer style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "48px", padding: "0.3rem 2rem 0.4rem", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.3rem", zIndex: 10 }}>
           <div style={{
             position: "absolute",
             inset: 0,
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            maskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
-            WebkitMaskImage: "radial-gradient(ellipse 100% 100% at 50% 50%, black 40%, transparent 100%)",
+            backdropFilter: "blur(40px) saturate(180%)",
+            WebkitBackdropFilter: "blur(40px) saturate(180%)",
+            maskImage: "radial-gradient(ellipse 80% 100% at 50% 100%, black 40%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 80% 100% at 50% 100%, black 40%, transparent 100%)",
           }} />
           <div style={{ position: "relative", display: "flex", gap: "1.1rem", alignItems: "center", justifyContent: "center" }}>
             {([

@@ -4,6 +4,8 @@
   --bg:            #f4f6f9;
   --surface:       #ebeef3;
   --surface-hover: #e1e5ec;
+  --surface-glass: rgba(235, 238, 243, 0.96);
+  --surface-hover-glass: rgba(225, 229, 236, 0.98);
   --border:        #ced3dc;
   --border-hover:  #748cab;
   --text:          #0d1321;
@@ -28,6 +30,8 @@
 :root.dark {
   --bg:            #0d1321;
   --surface:       #1d2d44;
+  --surface-glass: rgba(29, 45, 68, 0.96);
+  --surface-hover-glass: rgba(37, 55, 82, 0.98);
   --surface-hover: #253752;
   --border:        #2a3f5c;
   --border-hover:  #3e5c76;
@@ -87,6 +91,16 @@ a {
 }
 .hover-surface:hover {
   background: var(--surface-hover) !important;
+}
+
+.card-glass {
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+.card-glass:hover {
+  background: var(--surface-hover-glass) !important;
 }
 
 .hover-fade {
