@@ -163,6 +163,7 @@ export function LeftPanel() {
         [
           { label: "Talks",            value: 21 },
           { label: "Patents & Software Tools", value: 4  },
+          { label: "PyPI Official Packages",   value: 2  },
           { label: "Teaching Exp.",    value: 12 },
           { label: "Journal Reviewer", value: 1  },
         ],
@@ -186,9 +187,15 @@ export function LeftPanel() {
           <a href="https://github.com/madsondeluna/AMPidentifier" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
             AMPidentifier
           </a>
-          <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
+          <a href="http://bilbo.delunalab.dev/" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
+            BILBO
+          </a>
+          <a href="http://ecampdb.delunalab.dev/" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
+            ecAMPdb
+          </a>
+          <a href="https://github.com/madsondeluna/decryptAMP" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
             decryptAMP
-          </span>
+          </a>
           <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
             AMPcraft
           </span>
