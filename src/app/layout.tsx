@@ -40,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable}`}
+      suppressHydrationWarning
     >
       <body>
         <script
