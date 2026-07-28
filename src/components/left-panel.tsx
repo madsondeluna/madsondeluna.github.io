@@ -19,6 +19,7 @@ export function LeftPanel() {
 
   return (
     <div
+      className="left-panel"
       style={{
         position: "relative",
         zIndex: 1,
@@ -31,6 +32,7 @@ export function LeftPanel() {
     >
       {/* blur backdrop behind text */}
       <div
+        className="left-panel-blur"
         style={{
           position: "absolute",
           inset: 0,
@@ -43,8 +45,9 @@ export function LeftPanel() {
         }}
       />
       {/* photo + name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "1.5rem" }}>
+      <div className="left-identity" style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "1.5rem" }}>
         <div
+          className="left-photo"
           style={{
             ...fade(0),
             flexShrink: 0,
@@ -70,6 +73,7 @@ export function LeftPanel() {
         </div>
 
         <h1
+          className="left-name"
           style={{
             ...fade(80),
             fontFamily: "var(--font-display)",
@@ -203,7 +207,7 @@ export function LeftPanel() {
       </div>
 
       {/* theme toggle */}
-      <div style={{ ...fade(420), position: "absolute", top: "1.75rem", left: "2.5rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+      <div className="left-toggle" style={{ ...fade(420), position: "absolute", top: "1.75rem", left: "2.5rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
         <ThemeToggle />
         <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--muted)", letterSpacing: "0.08em", lineHeight: 1, paddingTop: "2px" }}>
           Light / Dark

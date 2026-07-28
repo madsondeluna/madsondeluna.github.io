@@ -6,6 +6,10 @@ export function TabTransition({ children, tabKey }: { children: ReactNode; tabKe
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState(children);
   const prev = useRef(tabKey);
+  // children muda de referencia a cada render do pai; guardar num ref evita
+  // reexecutar o efeito fora da troca de aba
+  const latest = useRef(children);
+  latest.current = children;
 
   useEffect(() => {
     if (prev.current === tabKey) {
@@ -15,11 +19,11 @@ export function TabTransition({ children, tabKey }: { children: ReactNode; tabKe
     prev.current = tabKey;
     setVisible(false);
     const t = setTimeout(() => {
-      setContent(children);
+      setContent(latest.current);
       setVisible(true);
     }, 180);
     return () => clearTimeout(t);
-  }, [tabKey, children]);
+  }, [tabKey]);
 
   return (
     <div

@@ -146,13 +146,10 @@ a {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes phage-float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-6px); }
-}
-
-.phage-float {
-  animation: phage-float 3s ease-in-out infinite;
+/* foco visivel apenas na navegacao por teclado; nao muda o visual no mouse */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .home-blob {
@@ -206,6 +203,52 @@ a {
 
 .grid-card-wrap {
   height: 100%;
+}
+
+/* Grade da home: 1, 2 ou 4 colunas, os tres divisores de 16 cards, entao
+   nenhuma fileira fica pela metade e todos os cards tem o mesmo tamanho.
+   Ao mudar a contagem de cards em home-grid.tsx, use apenas divisores dela.
+   As faixas medem a largura real do container, nao a da janela, porque o grid
+   ocupa 58% da tela no desktop e 100% quando o layout empilha. */
+.home-grid-wrap {
+  container-type: inline-size;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+/* limiares escolhidos para o card ficar entre 195px e 390px de largura */
+@container (min-width: 460px) {
+  .home-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 780px) {
+  .home-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* chips de idioma do card de CV: cada um e clicavel por si */
+.card-cta-link {
+  margin-top: 0;
+  align-self: auto;
+  cursor: pointer;
+}
+
+.card-cta-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(2px);
+}
+
+:root.dark .card-cta-link:hover {
+  background: rgba(255, 255, 255, 0.11);
 }
 
 .card-cta {
@@ -265,12 +308,67 @@ a {
   text-align: justify !important;
 }
 
+/* abaixo de 768px o layout deixa de ser duas colunas e passa a empilhar:
+   identidade, formacao, expertise e contribuicoes continuam visiveis, acima do conteudo */
 @media (max-width: 768px) {
-  .left-col {
-    display: none !important;
+  .app-shell {
+    display: block !important;
+    height: auto !important;
+    min-height: 100svh;
+    overflow: visible !important;
   }
+
+  /* o fundo animado acompanha a viewport em vez de esticar por todo o documento */
+  .bg-layer {
+    position: fixed !important;
+  }
+
+  .left-col,
   .right-col {
     width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .left-panel {
+    height: auto !important;
+    padding: 4rem 1.5rem 1.5rem !important;
+  }
+
+  .left-panel-blur {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  .left-identity {
+    gap: 1.25rem !important;
+  }
+
+  .left-photo {
+    width: 96px !important;
+    height: 96px !important;
+  }
+
+  .left-name {
+    font-size: clamp(2rem, 11vw, 2.75rem) !important;
+  }
+
+  .left-toggle {
+    top: 1.25rem !important;
+    left: 1.5rem !important;
+  }
+
+  .right-scroll {
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  /* relative, nao static: o blur interno e absolute/inset:0 e precisa se ancorar
+     no proprio rodape, senao ele cobre a coluna inteira */
+  .site-footer {
+    position: relative !important;
+    height: auto !important;
+    padding: 1rem 1.5rem 1.5rem !important;
   }
 }
 
@@ -306,4 +404,18 @@ a {
 .gallery-thumb-active {
   opacity: 1;
   outline-color: var(--text);
+}
+
+/* so entra em acao quando o proprio visitante pede reducao de movimento no SO */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

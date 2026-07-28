@@ -40,16 +40,17 @@ export default function Home() {
   function handleTabChange(tab: string) {
     setActiveTab(tab);
     window.history.replaceState(null, "", tab === "home" ? "/" : `#${tab}`);
-    if (rightPanelRef.current) {
-      rightPanelRef.current.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // no desktop o painel direito e o container rolavel; no mobile o layout empilha
+    // e quem rola e a janela
+    rightPanelRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
-    <div style={{ display: "flex", height: "100svh", overflow: "hidden", position: "relative" }}>
+    <div className="app-shell" style={{ display: "flex", height: "100svh", overflow: "hidden", position: "relative" }}>
 
       {/* full-viewport background animation */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+      <div className="bg-layer" style={{ position: "absolute", inset: 0, zIndex: 0 }}>
         <HeroCanvas />
       </div>
 
@@ -81,6 +82,7 @@ export default function Home() {
         {/* scrollable area — stops above footer */}
         <div
           ref={rightPanelRef}
+          className="right-scroll"
           style={{
             position: "absolute",
             top: 0,
@@ -108,8 +110,9 @@ export default function Home() {
                 <button
                   onClick={() => handleTabChange("home")}
                   className="home-blob"
+                  aria-label="Back to home"
                 >
-                  &#8592;
+                  <span aria-hidden="true">&#8592;</span>
                 </button>
               )}
             </div>
@@ -148,7 +151,7 @@ export default function Home() {
         </div>
 
         {/* footer — always visible at bottom */}
-        <footer style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "48px", padding: "0.3rem 2rem 0.4rem", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.3rem", zIndex: 10 }}>
+        <footer className="site-footer" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "48px", padding: "0.3rem 2rem 0.4rem", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.3rem", zIndex: 10 }}>
           <div style={{
             position: "absolute",
             inset: 0,

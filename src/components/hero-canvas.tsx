@@ -38,6 +38,15 @@ export function HeroCanvas() {
     let cols = 0;
     let rows = 0;
 
+    // com movimento reduzido pedido pelo SO, desenha um frame estatico em vez de animar
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // a cor so muda na troca de tema; ler no loop forcava recalculo de estilo a cada frame
+    let rgb: [number, number, number] = [116, 140, 171];
+    function readColor() {
+      rgb = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--text").trim());
+    }
+
     function init() {
       const w = wrapper!.clientWidth;
       const h = wrapper!.clientHeight;
@@ -62,8 +71,7 @@ export function HeroCanvas() {
       const h = wrapper!.clientHeight;
       ctx.clearRect(0, 0, w, h);
 
-      const colorHex = getComputedStyle(document.documentElement).getPropertyValue("--text").trim();
-      const [r, g, b] = hexToRgb(colorHex);
+      const [r, g, b] = rgb;
 
       ctx.font = `${CELL * 0.7}px monospace`;
       ctx.textAlign = "center";
@@ -95,7 +103,7 @@ export function HeroCanvas() {
         ctx.fillText(cell.char, x, y);
       }
 
-      raf.current = requestAnimationFrame(draw);
+      if (!reduced) raf.current = requestAnimationFrame(draw);
     }
 
     const onMouse = (e: MouseEvent) => {
@@ -103,22 +111,31 @@ export function HeroCanvas() {
       mouse.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     };
 
-    const obs = new ResizeObserver(init);
+    const obs = new ResizeObserver(() => {
+      init();
+      if (reduced) draw();
+    });
     obs.observe(wrapper);
+
+    const themeObs = new MutationObserver(readColor);
+    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+    readColor();
     init();
     draw();
 
-    document.addEventListener("mousemove", onMouse);
+    document.addEventListener("mousemove", onMouse, { passive: true });
 
     return () => {
       cancelAnimationFrame(raf.current);
       obs.disconnect();
+      themeObs.disconnect();
       document.removeEventListener("mousemove", onMouse);
     };
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div ref={wrapperRef} aria-hidden="true" style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} style={{ display: "block" }} />
       <div
         style={{

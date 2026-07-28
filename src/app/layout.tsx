@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300"],
 });
 
 export const metadata: Metadata = {

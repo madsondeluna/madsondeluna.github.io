@@ -22,6 +22,11 @@ const gallery = [
   { src: "/assets/images/gallery/chikv.png", alt: "Chikungunya virus proteins", caption: "Structural Biology" },
 ];
 
+// WebP sem perdas ao lado de cada PNG; o <img> original permanece como fallback.
+function webp(src: string, suffix = "") {
+  return src.replace(/\.png$/, `${suffix}.webp`);
+}
+
 const videos = [
   {
     id: "d95J8yzvjbQ",
@@ -231,13 +236,15 @@ export function GallerySection() {
             >&#8592;</button>
 
               <div style={{ flex: 1, position: "relative", background: "#fff", height: "520px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <img
-                  key={active}
-                  src={item.src}
-                  alt={item.alt}
-                  className="gallery-slide-img"
-                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", userSelect: "none" }}
-                />
+                <picture key={active} style={{ display: "contents" }}>
+                  <source srcSet={webp(item.src)} type="image/webp" />
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="gallery-slide-img"
+                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", userSelect: "none" }}
+                  />
+                </picture>
                 <div style={{
                   position: "absolute", bottom: 0, left: 0, right: 0,
                   padding: "2rem 1.5rem 1.25rem",
@@ -283,11 +290,16 @@ export function GallerySection() {
                   className={`gallery-thumb${i === active ? " gallery-thumb-active" : ""}`}
                   style={{ flexShrink: 0, width: "90px", height: "90px", padding: 0, border: "none", cursor: "pointer", overflow: "hidden", background: "var(--dim)" }}
                 >
-                  <img
-                    src={t.src}
-                    alt={t.alt}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
+                  <picture style={{ display: "contents" }}>
+                    <source srcSet={webp(t.src, "_thumb")} type="image/webp" />
+                    <img
+                      src={t.src}
+                      alt={t.alt}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                  </picture>
                 </button>
               ))}
             </div>
