@@ -159,7 +159,7 @@ export function LeftPanel() {
         [
           { label: "Papers",         value: 6  },
           { label: "Conf. Papers",   value: 35 },
-          { label: "Conferences",    value: 35 },
+          { label: "Conferences",    value: 39 },
           { label: "Awards",         value: 11 },
           { label: "Supervisions",   value: 3  },
           { label: "Chapters/Books", value: 1  },
