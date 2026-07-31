@@ -158,7 +158,7 @@ export function LeftPanel() {
       {[
         [
           { label: "Papers",         value: 6  },
-          { label: "Conf. Papers",   value: 34 },
+          { label: "Conf. Papers",   value: 35 },
           { label: "Conferences",    value: 35 },
           { label: "Awards",         value: 11 },
           { label: "Supervisions",   value: 3  },
