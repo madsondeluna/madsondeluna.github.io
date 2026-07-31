@@ -165,7 +165,7 @@ export function LeftPanel() {
           { label: "Chapters/Books", value: 1  },
         ],
         [
-          { label: "Talks",            value: 21 },
+          { label: "Talks",            value: 22 },
           { label: "Patents & Software Tools", value: 4  },
           { label: "PyPI Official Packages",   value: 2  },
           { label: "Teaching Exp.",    value: 12 },

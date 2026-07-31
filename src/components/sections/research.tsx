@@ -59,6 +59,7 @@ const publications = [
 ];
 
 const talks = [
+  { id: 22, title: "Compositional Analysis of α-Helical Proteins Suggests Preserved Prebiotic Constraints", type: "Congress" },
   { id: 21, title: "Development of a ML-Based Workflow for Identification of Antimicrobial Peptides Sequences in Genomic Data", type: "Congress" },
   { id: 20, title: "Assessment of eIF4E Isoforms in Cowpea (Vigna unguiculata (L.) Walp): From Genome Mining to Structural Profiling", type: "Congress" },
   { id: 19, title: "Development of a Machine Learning Based Workflow for Identification of AMP Sequences in Genomic Data", type: "Congress" },
