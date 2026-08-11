@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- a moldura do navegador acompanha o fundo do modo; o script reescreve na troca -->
+<meta name="theme-color" content="#F4F6F9">
+<title>Page title</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- ordem obrigatoria. agent.css so entra se a interface tiver um agente. -->
+<link rel="stylesheet" href="pure/tokens.css">
+<link rel="stylesheet" href="pure/patterns.css">
+<link rel="stylesheet" href="pure/agent.css">
+
+<style>
+/* =========================================================
+   Regras de diagramacao. Sao quatro, e nada as quebra.
+
+   1. DOIS EIXOS VERTICAIS. Todo texto comeca na coluna 1 ou na
+      coluna 9. Grade de especime e excecao declarada: le como
+      tabela, nao como texto corrido.
+
+   2. TRES DEGRAUS DE ESPACO. 24 aproxima o que pertence ao mesmo
+      bloco, 48 separa blocos dentro de uma secao, 96 separa secoes.
+
+   3. UMA CAPITALIZACAO. Sentence case em tudo. Nenhum texto em
+      caixa alta, nenhum titulo em minuscula deliberada.
+
+   4. UM TAMANHO POR CLASSE. Controle e --text-12, prosa e --text-15,
+      metadado e --text-12 mono, campo de texto e --text-field.
+
+   Nenhum valor literal de cor, tipo, raio, sombra ou curva abaixo
+   desta linha. Se faltar um token, ele nasce em tokens.css, nao aqui.
+   ========================================================= */
+
+.shell { max-width: var(--container-xl); margin: 0 auto; padding: 0 var(--space-32); }
+.grid  { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-24); }
+
+/* os dois eixos, e as duas larguras que eles geram */
+.axis-a      { grid-column: 1 / 7; }
+.axis-a-wide { grid-column: 1 / 10; }
+.axis-b      { grid-column: 9 / 13; }
+.bleed       { grid-column: 1 / 13; }
+
+/* min-width zero: sem ele o minimo automatico do item de grade deixa o
+   conteudo esticar a trilha e a coluna vizinha encolhe */
+.grid > * { min-width: 0; }
+
+.step-1 { margin-top: var(--space-24); }
+.step-2 { margin-top: var(--space-48); }
+.step-3 { margin-top: 96px; }
+.band   { padding: 96px 0; }
+
+/* titulo de secao: a unica funcao da familia display */
+h1, h2 {
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  color: var(--text);
+}
+h1 { font-size: var(--text-display-name); }
+h2 { font-size: var(--text-display-section); }
+
+.label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--secondary);
+}
+
+.lede { font-size: var(--text-18); line-height: var(--leading-normal); color: var(--muted); }
+.note { font-size: var(--text-13); line-height: var(--leading-normal); color: var(--muted); }
+
+/* barra de modo. O estado mora no endereco, entao um link compartilhado
+   abre no mesmo modo em que foi copiado. */
+.modes { display: flex; gap: var(--space-8); }
+.mode-btn {
+  min-height: var(--hit-min);
+  padding: var(--space-4) var(--space-12);
+  border: var(--hairline) solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition:
+    color var(--duration-3) var(--ease-standard),
+    border-color var(--duration-3) var(--ease-standard);
+}
+.mode-btn:hover { color: var(--text); }
+.mode-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-24); }
+  .axis-a, .axis-a-wide, .axis-b { grid-column: 1 / 13; }
+  .band { padding: var(--space-48) 0; }
+  .step-3 { margin-top: var(--space-48); }
+}
+</style>
+</head>
+<body>
+
+<!-- primeira parada do teclado: pula a navegacao e vai para o conteudo -->
+<a class="skip-link pill" href="#main">Skip to content</a>
+
+<div class="shell">
+  <header class="band">
+    <div class="grid">
+      <span class="label axis-a">Eyebrow</span>
+      <div class="axis-b modes">
+        <button class="mode-btn" type="button" data-mode="" aria-pressed="true">Light</button>
+        <button class="mode-btn" type="button" data-mode="paper-like" aria-pressed="false">Paper-like</button>
+        <button class="mode-btn" type="button" data-mode="deep-blue" aria-pressed="false">Deep blue</button>
+        <button class="mode-btn" type="button" data-mode="dark" aria-pressed="false">Dark</button>
+      </div>
+      <h1 class="axis-a-wide step-1">Page title</h1>
+    </div>
+  </header>
+
+  <main class="band" id="main" tabindex="-1">
+    <div class="grid">
+      <p class="lede axis-a">Opening paragraph.</p>
+      <aside class="axis-b">
+        <p class="note">Supporting note.</p>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- modo: o estado mora no endereco ---------- */
+
+const MODES = ["", "paper-like", "deep-blue", "dark"];
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+/* le o valor computado de um token para pintar a moldura do navegador */
+const probe = document.createElement("div");
+probe.style.cssText = "position:absolute;visibility:hidden";
+document.body.appendChild(probe);
+function resolve(name) {
+  probe.style.color = "var(" + name + ")";
+  const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g);
+  return "#" + m.slice(0, 3).map((c) => (+c).toString(16).padStart(2, "0")).join("");
+}
+
+function applyMode(mode, record) {
+  document.documentElement.className = mode;
+  document.querySelectorAll(".mode-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  themeMeta.setAttribute("content", resolve("--bg"));
+  if (!record) return;
+  const url = new URL(location.href);
+  if (mode) url.searchParams.set("mode", mode);
+  else url.searchParams.delete("mode");
+  history.replaceState(null, "", url);
+}
+
+document.querySelectorAll(".mode-btn").forEach((btn) =>
+  btn.addEventListener("click", () => applyMode(btn.dataset.mode, true)));
+
+const asked = new URL(location.href).searchParams.get("mode") || "";
+applyMode(MODES.includes(asked) ? asked : "", false);
+</script>
+</body>
+</html>

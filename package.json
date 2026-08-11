@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "sync:pure": "bash scripts/sync-pure.sh",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

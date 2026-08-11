@@ -4,8 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # disparado pelo repositorio pure-design-language a cada push na main
   repository_dispatch:
     types: [pure-updated]
+  # rede de seguranca caso o dispatch nao chegue
+  schedule:
+    - cron: "17 6 * * 1"
 
 permissions:
   contents: read
@@ -22,12 +26,22 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Check out the pure design language
+        uses: actions/checkout@v7
+        with:
+          repository: madsondeluna/pure-design-language
+          path: pure-src
+          fetch-depth: 1
+
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: "npm"
 
       - run: npm ci
+
+      - name: Refresh apps/pure from the language repository
+        run: npm run sync:pure
 
       - run: npm run build
 

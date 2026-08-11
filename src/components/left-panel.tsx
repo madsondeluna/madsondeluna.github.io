@@ -38,8 +38,8 @@ export function LeftPanel() {
           inset: 0,
           backdropFilter: "blur(72px)",
           WebkitBackdropFilter: "blur(72px)",
-          WebkitMaskImage: "linear-gradient(to right, black 60%, transparent 100%)",
-          maskImage: "linear-gradient(to right, black 60%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right, black 85%, transparent 100%)",
+          maskImage: "linear-gradient(to right, black 85%, transparent 100%)",
           pointerEvents: "none",
           zIndex: -1,
         }}
@@ -203,6 +203,9 @@ export function LeftPanel() {
           <span style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4 }}>
             AMPcraft
           </span>
+          <a href="/apps/pure/preview/index.html" target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.575rem", fontFamily: "var(--font-mono)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 6px", lineHeight: 1.4, textDecoration: "none" }}>
+            Pure Design (UI Blueprint)
+          </a>
         </div>
       </div>
 

@@ -1,0 +1,17 @@
+name: Notify madsondeluna.github.io
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the site rebuild
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/madsondeluna/madsondeluna.github.io/dispatches \
+            -f event_type=pure-updated

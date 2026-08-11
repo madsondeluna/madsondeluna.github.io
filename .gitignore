@@ -23,3 +23,6 @@ next-env.d.ts
 
 # TypeScript build info
 tsconfig.tsbuildinfo
+
+# checkout do pure-design-language feito pelo CI
+pure-src/
