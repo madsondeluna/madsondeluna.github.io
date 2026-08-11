@@ -19,7 +19,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Madson Aragão — Portfolio",
+  title: "Madson Aragão: Portfolio",
   description:
     "Madson A. de Luna Aragão is a Bioinformatician and Data Scientist with expertise in omics data analysis, machine learning and bioinformatics applied to structural biology.",
   keywords: [
