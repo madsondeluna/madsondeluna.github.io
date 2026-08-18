@@ -157,7 +157,7 @@ export function LeftPanel() {
         </span>
       {[
         [
-          { label: "Papers",         value: 6  },
+          { label: "Papers",         value: 7  },
           { label: "Conf. Papers",   value: 35 },
           { label: "Conferences",    value: 39 },
           { label: "Awards",         value: 11 },

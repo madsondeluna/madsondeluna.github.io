@@ -4,6 +4,15 @@ import { SectionHeader } from "../section-header";
 const publications = [
   {
     id: 1,
+    authors: "J. R. C. Ferreira-Neto et al.",
+    title: "The Regulatory Army of Plant Defense: Transcription Factors in the War for Plant Immunity",
+    journal: "International Journal of Molecular Sciences",
+    details: "vol. 27, p. 7315, 2026",
+    doi: "10.3390/ijms27167315",
+    url: "https://doi.org/10.3390/ijms27167315",
+  },
+  {
+    id: 2,
     authors: "M. A. Luna-Aragão et al.",
     title: "Unveiling Three Functionally Diverse Isoforms of eIF4E in Cowpea Through a Multi-Omics Approach",
     journal: "Agronomy",
@@ -12,7 +21,7 @@ const publications = [
     url: "https://doi.org/10.3390/agronomy16070766",
   },
   {
-    id: 2,
+    id: 3,
     authors: "F. L. B. Medeiros et al.",
     title: "Transposable elements: Functional aspects and applications as drivers of crop innovation",
     journal: "Crop Science",
@@ -21,7 +30,7 @@ const publications = [
     url: "https://doi.org/10.1002/csc2.70257",
   },
   {
-    id: 3,
+    id: 4,
     authors: "F. A. de Andrade and M. A. de Luna-Aragão et al.",
     title: "Deciphering Cowpea Resistance to Potyvirus: Assessment of eIF4E Gene Mutations and Their Impact on the eIF4E-VPg Protein Interaction",
     journal: "Viruses",
@@ -30,7 +39,7 @@ const publications = [
     url: "https://doi.org/10.3390/v17081050",
   },
   {
-    id: 4,
+    id: 5,
     authors: "R. C. C. da Silva et al.",
     title: "Omics-driven bioinformatics for plant lectins discovery and functional annotation — A comprehensive review",
     journal: "International Journal of Biological Macromolecules",
@@ -39,7 +48,7 @@ const publications = [
     url: "https://doi.org/10.1016/j.ijbiomac.2024.135511",
   },
   {
-    id: 5,
+    id: 6,
     authors: "M. V. F. Ferraz et al.",
     title: "Association strength of E6 to E6AP/p53 complex correlates with HPV-mediated oncogenesis risk",
     journal: "Biopolymers",
@@ -48,7 +57,7 @@ const publications = [
     url: "https://doi.org/10.1002/bip.23524",
   },
   {
-    id: 6,
+    id: 7,
     authors: "L. M. B. Vilela et al.",
     title: "Approaches for Identification and Validation of Antimicrobial Compounds of Plant Origin: A Long Way from the Field to the Market",
     journal: "Eco-Friendly Biobased Products Used in Microbial Diseases, CRC Press",
