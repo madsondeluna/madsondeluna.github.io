@@ -59,6 +59,25 @@
     });
   }
 
+
+  // fachada de video: o iframe so nasce no clique, entao nenhuma
+  // requisicao sai para o YouTube em quem apenas passa pela pagina
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest(".video-play");
+    if (!btn) return;
+    var frame = btn.parentElement;
+    var id = frame.dataset.video;
+    if (!id) return;
+    var f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0";
+    f.title = frame.dataset.title || "Video";
+    f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture";
+    f.referrerPolicy = "strict-origin-when-cross-origin";
+    f.allowFullscreen = true;
+    frame.textContent = "";
+    frame.appendChild(f);
+  });
+
   if (toc && "IntersectionObserver" in window) {
     var links = [].slice.call(toc.querySelectorAll("a"));
     var obs = new IntersectionObserver(function (entries) {

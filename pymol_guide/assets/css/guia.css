@@ -262,12 +262,14 @@ section h2 {
   color: var(--text);
   margin: 0;
 }
+section > *:not(.shead) { padding-left: var(--space-40); }
+section > .card { padding-left: 0; margin-left: var(--space-40); }
+
 section .lead {
   color: var(--muted);
   font-size: var(--text-15);
   margin: 0 0 var(--space-32);
-  max-width: var(--measure-wide);
-  padding-left: var(--space-40);
+  max-width: calc(var(--measure-wide) + var(--space-40));
 }
 
 /* =========================== unidade de comando ======================= */
@@ -533,6 +535,89 @@ footer b { color: var(--text); font-weight: var(--weight-medium); }
   }
 }
 
+/* ================================ videos ============================== */
+/* Fachada: o cartao carrega uma miniatura e so troca pelo iframe no
+   clique. Dezessete players embutidos custariam caro na abertura, e sem
+   o clique nenhuma requisicao sai para o YouTube. */
+
+.videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) * 2 + var(--space-48)), 1fr));
+  gap: var(--space-24);
+  margin: var(--space-24) 0 0;
+}
+.videos > * { min-width: 0; }
+.videos:has(> .video:only-child) { max-width: var(--measure-wide); }
+.video { margin: 0; }
+
+.video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-media);
+  overflow: hidden;
+  background: var(--dim);
+  --surface-context: var(--dim);
+}
+.video-frame img,
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+.video-frame img { object-fit: cover; }
+
+.video-play {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  background: none;
+  border: 0;
+  padding: var(--space-8);
+  cursor: pointer;
+}
+.video-play span {
+  min-height: var(--hit-min);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-6) var(--space-16);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  --surface-context: var(--surface);
+  border: var(--hairline) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--text);
+  transition:
+    border-color var(--duration-3) var(--ease-standard),
+    background var(--duration-3) var(--ease-standard);
+}
+.video-play:hover span { border-color: var(--border-hover); background: var(--surface-hover); }
+.video-play:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.video figcaption { padding-top: var(--space-8); }
+.video figcaption a { color: var(--text); text-decoration: none; }
+.video figcaption a:hover { color: var(--accent); }
+.video figcaption a:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+.video .vnum,
+.video .vdur {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
 /* =============================== toque ================================ */
 /* Area de toque decide-se por pointer, nunca por largura: um tablet de
    1280px e toque e um celular ligado a um mouse nao e. */
@@ -542,6 +627,7 @@ footer b { color: var(--text); font-weight: var(--weight-medium); }
   nav a,
   .copy,
   .totop { min-height: var(--hit-min-touch); }
+  .video-play span { min-height: var(--hit-min-touch); }
 }
 
 /* =============================== estreito ============================= */
@@ -572,8 +658,10 @@ footer b { color: var(--text); font-weight: var(--weight-medium); }
     gap: 0 var(--space-20);
   }
   nav .gname { grid-column: 1 / -1; }
-  section .lead { padding-left: 0; }
+  section > *:not(.shead) { padding-left: 0; }
+  section > .card { margin-left: 0; }
   .shead { grid-template-columns: var(--space-32) 1fr; }
+  .videos { grid-template-columns: minmax(0, 1fr); }
   .meta .row { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
   .meta .row > b { padding-top: 0; }
   .just { text-align: left; }
@@ -648,7 +736,9 @@ footer b { color: var(--text); font-weight: var(--weight-medium); }
   }
   section h2 { font-size: 13pt; }
   .snum { font-size: 9.5pt; }
-  section .lead { font-size: 8.8pt; margin-bottom: 11px; padding-left: 11mm; max-width: none; }
+  section > *:not(.shead) { padding-left: 11mm; }
+  section > .card { padding-left: 0; margin-left: 11mm; }
+  section .lead { font-size: 8.8pt; margin-bottom: 11px; max-width: none; }
 
   /* ------------------------ unidade de comando ---------------------- */
   .card { margin-bottom: 6mm; break-inside: auto; }
@@ -718,6 +808,11 @@ footer b { color: var(--text); font-weight: var(--weight-medium); }
   p, li, .meta .row > span { orphans: 3; widows: 3; }
 
   /* -------------------------- encerramento -------------------------- */
+  .video-frame { display: none; }
+  .videos { display: block; }
+  .video { margin-bottom: 2mm; font-size: 8.2pt; }
+  .video figcaption { padding-top: 0; }
+
   .endcard { margin: 10mm 0 0; padding-top: 12px; break-inside: avoid; }
   .ec-grid { font-size: 8.6pt; }
   footer { font-size: 7.6pt; padding-top: 12px; line-height: 1.6; }

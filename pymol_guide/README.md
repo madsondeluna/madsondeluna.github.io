@@ -7,7 +7,7 @@ Referência de comandos organizada por tema, do primeiro `fetch` à avaliação 
 
 Todas as figuras foram geradas com os próprios comandos listados, usando a protease do HIV-1 em complexo com o inibidor amprenavir (PDB 1HPV), um dímero com ligante adequado para discutir interface, bolso de ligação e propriedades de superfície. Onde o efeito de um comando só fica claro por comparação, as figuras aparecem em pares de antes e depois.
 
-16 seções, 76 blocos de comando, 51 figuras, estrutura de referência PDB 1HPV.
+17 seções, 76 blocos de comando, 51 figuras, 18 vídeos, estrutura de referência PDB 1HPV.
 
 ## Sumário
 
@@ -27,6 +27,7 @@ Todas as figuras foram geradas com os próprios comandos listados, usando a prot
 - [13. Renderização, exportação e automação](#13-renderização-exportação-e-automação)
 - [14. Armadilhas frequentes](#14-armadilhas-frequentes)
 - [15. Roteiro sugerido para a aula](#15-roteiro-sugerido-para-a-aula)
+- [16. Curso em vídeo da Schrödinger](#16-curso-em-vídeo-da-schrödinger)
 
 ---
 
@@ -1588,3 +1589,32 @@ Para reproduzir localmente todas as figuras deste guia:
 ```bash
 pymol -cq gerar_figuras_aula.py
 ```
+
+---
+
+## 16. Curso em vídeo da Schrödinger
+
+Os comandos deste guia cobrem o que se digita. O que se vê em movimento, a janela sendo operada, a cena sendo montada e o filme sendo exportado, aparece melhor em vídeo. A playlist [Visualizing Science with PyMOL 3](https://www.youtube.com/playlist?list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) é do canal oficial da Schrödinger, a empresa que mantém e distribui o PyMOL, e está em inglês.
+
+Os dezessete vídeos estão na ordem da playlist. As unidades 1 e 2 tratam da sessão, das seleções e da imagem estática, e são as que correspondem ao conteúdo deste guia. As unidades 3 e 4 tratam de cena, linha do tempo e filme, e passam pelo Maestro, que é outro programa da mesma empresa e não é necessário para nada aqui.
+
+| Unidade | Vídeo | Duração |
+| --- | --- | --- |
+| - | [PyMOL 3 Course Promotional Video](https://www.youtube.com/watch?v=o7IZ726D5Uk&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 1:23 |
+| 1A | [Course scope, certification, and honor code](https://www.youtube.com/watch?v=SRCYeW31X3g&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 5:13 |
+| 1B | [Introducing PyMOL 3](https://www.youtube.com/watch?v=S5sUmNR2cBg&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 12:58 |
+| 2A | [Getting started with a PyMOL 3 session](https://www.youtube.com/watch?v=IvLI9ECRMPI&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 10:21 |
+| 2B | [Defining and styling objects and selections](https://www.youtube.com/watch?v=4m7s8v35vXE&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 12:08 |
+| 2C | [Inspecting structures for scientific storytelling](https://www.youtube.com/watch?v=LqoF1ur9xsk&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 10:56 |
+| 2D | [Binding pocket selections, interactions and labeling](https://www.youtube.com/watch?v=8iHyvgHzIpU&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 7:33 |
+| 2E | [Creating and editing presets in PyMOL 3](https://www.youtube.com/watch?v=bG7MTKEwuu8&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 9:04 |
+| 2F | [Saving views, generating images, and ray tracing](https://www.youtube.com/watch?v=98TKujGh430&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 15:01 |
+| 3A | [Creating scenes in Maestro to sell a scientific story](https://www.youtube.com/watch?v=zDwhXwM6ASY&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 11:25 |
+| 3B | [Sending scenes from Maestro to PyMOL to create a movie](https://www.youtube.com/watch?v=Y_83nFM2VEk&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 7:22 |
+| 3C | [Saving scenes in PyMOL 3 to create a movie](https://www.youtube.com/watch?v=GYCMZ7T_h28&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 10:08 |
+| 4A | [Transforming objects with the gizmo and saving camera views](https://www.youtube.com/watch?v=510XMNDzOII&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 12:27 |
+| 4B | [Adding timeline programs and transparency subtracks](https://www.youtube.com/watch?v=wcIJ3KhO1NA&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 9:42 |
+| 4C | [Creating multi-state movies and applying styling with subtracks and scenes](https://www.youtube.com/watch?v=r6yIHj4KLIM&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 10:05 |
+| 4D | [Making movies with molecular dynamics trajectories](https://www.youtube.com/watch?v=A4CumjOBMVw&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 12:49 |
+| 4E | [Course summary and assignment checklist](https://www.youtube.com/watch?v=6UkLPaxSN8U&list=PL3dxdlKx_Pccw7CXrgeF6_zWQFT7zifyl) | 3:45 |
+
