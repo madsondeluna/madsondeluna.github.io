@@ -13,6 +13,7 @@ const classes = [
 ];
 
 const materials = [
+  { title: "PyMOL for Structural Modeling", url: "/apps/pymol-guide/", img: "/apps/pymol-guide/assets/img/card.png" },
   { title: "AMPidentifier", url: "https://github.com/madsondeluna/AMPidentifier", img: "https://opengraph.githubassets.com/1/madsondeluna/AMPidentifier" },
   { title: "Molecular Docking Class Materials", url: "https://github.com/madsondeluna/aula_docking_molecular", img: "https://opengraph.githubassets.com/1/madsondeluna/aula_docking_molecular" },
   { title: "Translation Class", url: "https://github.com/madsondeluna/translation_class", img: "https://opengraph.githubassets.com/1/madsondeluna/translation_class" },

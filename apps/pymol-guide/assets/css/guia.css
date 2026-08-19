@@ -1,0 +1,724 @@
+/* =========================================================
+   Guia de PyMOL. Camada de pagina sobre a Pure Design Language.
+
+   Ordem de importacao: pure/tokens.css, pure/patterns.css, este
+   arquivo. Nenhum valor literal de cor, tipo, raio, sombra ou
+   curva abaixo desta linha: se faltar um token, ele nasce em
+   tokens.css no repositorio da linguagem, nao aqui.
+
+   Quatro regras que nada quebra:
+   1. Dois eixos verticais: indice e mancha de texto.
+   2. Tres degraus de espaco: 24 dentro do bloco, 48 entre blocos,
+      96 entre secoes.
+   3. Sentence case em tudo. Nenhum texto em caixa alta.
+   4. Um tamanho por classe: controle --text-12, prosa --text-15,
+      metadado --text-12 mono, campo --text-field.
+   ========================================================= */
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--scroll-offset);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+/* Justificacao com hifenizacao. Sem hifenizar, a justificacao abre rios de
+   espaco em branco, sobretudo em portugues, onde as palavras sao longas. */
+.just {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+/* a coluna do indice nao tem token proprio: ela nasce dos degraus de
+   espaco, para nao virar o unico numero solto da folha */
+.wrap {
+  --toc-col: calc(var(--space-96) * 2 + var(--space-48));
+  display: grid;
+  grid-template-columns: var(--toc-col) minmax(0, 1fr);
+  gap: var(--space-64);
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-48) var(--space-32) var(--space-96);
+}
+
+/* ============================ indice lateral ========================== */
+
+aside {
+  position: sticky;
+  top: var(--space-32);
+  align-self: start;
+  max-height: calc(100vh - var(--space-64));
+  overflow: auto;
+  padding-right: var(--space-12);
+  scrollbar-width: thin;
+}
+
+.brand {
+  font-size: var(--text-13);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--text);
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--muted);
+  margin: var(--space-6) 0 var(--space-20);
+  line-height: var(--leading-normal);
+}
+
+/* campo de busca: --text-field porque abaixo de 16px o iOS amplia a
+   pagina ao focar, e a lista some sob o teclado */
+#q {
+  width: 100%;
+  min-height: var(--field-height);
+  padding: var(--space-8) var(--space-12);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-field);
+  font-size: var(--text-field);
+  font-family: var(--font-sans);
+  background: var(--surface);
+  color: var(--text);
+  margin-bottom: var(--space-24);
+  transition: border-color var(--duration-3) var(--ease-standard);
+}
+#q::placeholder { color: var(--muted); }
+#q:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+  border-color: var(--border-hover);
+}
+
+nav .gname {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted);
+  margin: var(--space-20) 0 var(--space-8);
+}
+nav .gname:first-child { margin-top: 0; }
+
+nav a {
+  display: grid;
+  grid-template-columns: var(--space-20) 1fr;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: var(--hit-min);
+  padding: var(--space-4) 0;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: var(--text-13);
+  line-height: var(--leading-snug);
+  transition: color var(--duration-3) var(--ease-standard);
+}
+nav a .n {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+nav a:hover { color: var(--text); }
+nav a:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+nav a.on,
+nav a.on .n { color: var(--text); font-weight: var(--weight-medium); }
+
+/* ============================== cabecalho ============================= */
+
+header.top { margin-bottom: var(--space-64); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted);
+  text-transform: none;
+  padding-bottom: var(--space-12);
+  border-bottom: var(--hairline) solid var(--border);
+  margin-bottom: var(--space-24);
+}
+
+header.top h1 {
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  font-size: var(--text-display-section);
+  color: var(--text);
+  margin: 0 0 var(--space-8);
+}
+
+.subtitle {
+  text-wrap: pretty;
+  font-size: var(--text-18);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+  margin: 0 0 var(--space-24);
+}
+
+header.top p {
+  margin: 0 0 var(--space-12);
+  color: var(--text);
+  font-size: var(--text-15);
+  max-width: var(--measure-wide);
+}
+
+.colophon {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--muted);
+  border-top: var(--hairline) solid var(--border);
+  border-bottom: var(--hairline) solid var(--border);
+  padding: var(--space-12) 0;
+  margin: var(--space-24) 0 0;
+}
+.colophon b {
+  color: var(--text);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.idcard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) * 2), 1fr));
+  gap: var(--space-24) var(--space-40);
+  text-wrap: pretty;
+  margin: var(--space-24) 0 0;
+  font-size: var(--text-13);
+  line-height: var(--leading-normal);
+}
+.idcard b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted);
+  font-weight: var(--weight-regular);
+  margin-bottom: var(--space-6);
+}
+.idcard span { color: var(--muted); }
+.idcard a,
+.ec-grid a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: var(--hairline) solid var(--border);
+}
+.idcard a:hover,
+.ec-grid a:hover { border-bottom-color: var(--accent); }
+.idcard a:focus-visible,
+.ec-grid a:focus-visible,
+footer a:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* =============================== secoes =============================== */
+
+section {
+  margin-bottom: var(--space-96);
+  scroll-margin-top: var(--scroll-offset);
+}
+
+.shead {
+  display: grid;
+  grid-template-columns: var(--space-40) 1fr;
+  align-items: baseline;
+  border-bottom: var(--stroke) solid var(--text);
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+.snum {
+  font-family: var(--font-mono);
+  font-size: var(--text-13);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+section h2 {
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  font-size: var(--text-32);
+  color: var(--text);
+  margin: 0;
+}
+section .lead {
+  color: var(--muted);
+  font-size: var(--text-15);
+  margin: 0 0 var(--space-32);
+  max-width: var(--measure-wide);
+  padding-left: var(--space-40);
+}
+
+/* =========================== unidade de comando ======================= */
+
+.card { margin: 0 0 var(--space-32); }
+.card + .card {
+  border-top: var(--hairline) solid var(--border);
+  padding-top: var(--space-24);
+}
+
+.cmdrow {
+  position: relative;
+  background: var(--dim);
+  --surface-context: var(--dim);
+  border-left: var(--stroke) solid var(--border-hover);
+  border-radius: 0 var(--radius-field) var(--radius-field) 0;
+  margin-bottom: var(--space-16);
+}
+
+pre {
+  margin: 0;
+  color: var(--text);
+  padding: var(--space-16) var(--space-80) var(--space-16) var(--space-16);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-family: var(--font-mono);
+  font-size: var(--text-13);
+  line-height: var(--leading-normal);
+  white-space: pre;
+  font-variant-ligatures: none;
+}
+/* realce de sintaxe em niveis de tinta, nunca em cor de serie */
+pre .c { color: var(--muted); }
+pre .k { color: var(--text); font-weight: var(--weight-medium); }
+
+.copy {
+  position: absolute;
+  top: var(--space-8);
+  right: var(--space-8);
+  min-height: var(--hit-min);
+  padding: var(--space-2) var(--space-8);
+  background: none;
+  color: var(--muted);
+  border: var(--hairline) solid transparent;
+  border-radius: var(--radius-control);
+  font-size: var(--text-12);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition:
+    color var(--duration-3) var(--ease-standard),
+    border-color var(--duration-3) var(--ease-standard);
+}
+.copy:hover { color: var(--text); border-color: var(--border-hover); }
+.copy.done { color: var(--text); border-color: transparent; }
+.copy:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.body { display: grid; grid-template-columns: minmax(0, 1fr); }
+.body.withfig {
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+  gap: var(--space-32);
+}
+.meta { display: grid; gap: var(--space-12); align-content: start; }
+.meta .row {
+  display: grid;
+  grid-template-columns: calc(var(--space-96) + var(--space-40)) minmax(0, 1fr);
+  gap: var(--space-16);
+  font-size: var(--text-15);
+  color: var(--text);
+}
+.meta .row > b {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  font-weight: var(--weight-regular);
+  color: var(--muted);
+  padding-top: var(--nudge-1);
+  line-height: var(--leading-normal);
+}
+
+/* ================================ figuras ============================= */
+
+figure { margin: 0; }
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-media);
+}
+figcaption {
+  text-wrap: pretty;
+  font-size: var(--text-13);
+  color: var(--muted);
+  padding: var(--space-8) 0 0;
+  line-height: var(--leading-normal);
+  text-align: left;
+}
+figcaption .fnum {
+  font-family: var(--font-mono);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+figcaption b { color: var(--text); font-weight: var(--weight-medium); }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) * 2), 1fr));
+  gap: var(--space-24);
+  margin: 0 0 var(--space-24);
+}
+/* itens de grid herdam min-width:auto, que para uma imagem equivale a sua
+   largura intrinseca; sem min-width:0 a coluna nao encolhe e vaza a margem */
+.gallery > *,
+.body > * { min-width: 0; }
+.card .gallery,
+.pairwrap { margin: var(--space-20) 0 0; }
+.pairwrap .gallery { margin: 0; grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) * 2 + var(--space-48)), 1fr)); }
+.figside { align-self: start; }
+
+/* ================================= notas ============================== */
+
+.note {
+  border-left: var(--stroke) solid var(--border);
+  padding: var(--space-2) 0 var(--space-2) var(--space-16);
+  margin: var(--space-16) 0 0;
+  font-size: var(--text-14);
+  color: var(--muted);
+  line-height: var(--leading-normal);
+}
+.note b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  font-weight: var(--weight-regular);
+  color: var(--muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ================================ tabelas ============================= */
+/* Toda tabela mora dentro de um .table-scroll, que vem de patterns.css.
+   Estilo de tabela cientifica: apenas fios horizontais, sem grade nem zebra. */
+
+.table-scroll { margin: 0 0 var(--space-24); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-14);
+  border-top: var(--stroke) solid var(--text);
+  border-bottom: var(--stroke) solid var(--text);
+}
+th, td { text-align: left; padding: var(--space-10) var(--space-16) var(--space-10) 0; vertical-align: top; }
+th {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  font-weight: var(--weight-regular);
+  border-bottom: var(--hairline) solid var(--border);
+}
+td { border-bottom: var(--hairline) solid var(--border); }
+tr:last-child td { border-bottom: none; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: var(--text-13);
+  color: var(--text);
+  background: var(--dim);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-mark);
+  /* nowrap aqui transbordava a pagina no estreito: um identificador longo
+     dentro da prosa empurrava o corpo e a barra horizontal aparecia */
+  overflow-wrap: break-word;
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+.hidden { display: none; }
+.empty {
+  color: var(--muted);
+  font-size: var(--text-14);
+  padding: var(--space-32) 0;
+}
+
+/* ============================= encerramento =========================== */
+
+.endcard {
+  border-top: var(--stroke) solid var(--text);
+  padding: var(--space-20) 0 0;
+  margin: var(--space-96) 0 var(--space-24);
+}
+.ec-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted);
+  margin-bottom: var(--space-16);
+}
+.ec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) * 2), 1fr));
+  gap: var(--space-20) var(--space-40);
+  text-wrap: pretty;
+  font-size: var(--text-13);
+  line-height: var(--leading-normal);
+}
+.ec-grid b { font-weight: var(--weight-medium); color: var(--text); }
+.ec-grid span { color: var(--muted); }
+
+footer {
+  color: var(--muted);
+  font-size: var(--text-13);
+  border-top: var(--hairline) solid var(--border);
+  padding-top: var(--space-20);
+  line-height: var(--leading-relaxed);
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer b { color: var(--text); font-weight: var(--weight-medium); }
+
+.totop {
+  position: fixed;
+  right: var(--space-24);
+  bottom: var(--space-24);
+  min-height: var(--hit-min);
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  --surface-context: var(--surface);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-control);
+  padding: var(--space-6) var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-3) var(--ease-out-soft),
+    color var(--duration-3) var(--ease-standard),
+    border-color var(--duration-3) var(--ease-standard);
+}
+.totop.show { opacity: 1; pointer-events: auto; }
+.totop:hover { color: var(--text); border-color: var(--border-hover); }
+.totop:focus-visible {
+  outline: var(--focus-ring) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.cover { display: none; }
+
+/* ============================== movimento ============================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * {
+    animation-duration: var(--duration-1) !important;
+    transition-duration: var(--duration-1) !important;
+  }
+}
+
+/* =============================== toque ================================ */
+/* Area de toque decide-se por pointer, nunca por largura: um tablet de
+   1280px e toque e um celular ligado a um mouse nao e. */
+
+@media (pointer: coarse) {
+  #q { min-height: var(--field-height-touch); font-size: var(--text-field); }
+  nav a,
+  .copy,
+  .totop { min-height: var(--hit-min-touch); }
+}
+
+/* =============================== estreito ============================= */
+/* O numero e literal porque uma consulta de midia nao le var(). Ele bate
+   com --breakpoint-stack, que vale 768px. */
+
+@media (max-width: 1040px) {
+  .body.withfig { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .figside { margin-top: var(--space-20); }
+}
+
+@media (max-width: 768px) {
+  .wrap {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-24) var(--space-24) var(--space-48);
+    gap: var(--space-24);
+  }
+  aside {
+    position: static;
+    max-height: none;
+    padding-right: 0;
+    border-bottom: var(--hairline) solid var(--border);
+    padding-bottom: var(--space-20);
+  }
+  nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-96) + var(--space-80)), 1fr));
+    gap: 0 var(--space-20);
+  }
+  nav .gname { grid-column: 1 / -1; }
+  section .lead { padding-left: 0; }
+  .shead { grid-template-columns: var(--space-32) 1fr; }
+  .meta .row { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .meta .row > b { padding-top: 0; }
+  .just { text-align: left; }
+  .totop { display: none; }
+}
+
+/* ============================== impressao ============================= */
+/* O guia e distribuido tambem em papel. A impressao forca a rampa clara:
+   sem isso, quem estivesse em modo escuro imprimiria tinta branca. */
+
+@page { size: A4; margin: 18mm 17mm 16mm; }
+
+@media print {
+  aside, .copy, #q, .totop, header.top { display: none; }
+  .wrap { display: block; max-width: none; padding: 0; }
+  body { font-size: 9.1pt; line-height: 1.46; }
+  a { text-decoration: none; }
+
+  /* ------------------------------ capa ------------------------------ */
+  .cover { display: block; break-after: page; page-break-after: always; padding-top: 20mm; }
+  .cv-kicker {
+    font-family: var(--font-mono);
+    font-size: 8pt;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--muted);
+    line-height: 1.9;
+    border-bottom: var(--stroke) solid var(--text);
+    padding-bottom: 12px;
+    margin-bottom: 48mm;
+  }
+  .cv-title {
+    font-family: var(--font-display);
+    font-stretch: var(--font-display-stretch);
+    font-weight: var(--weight-light);
+    font-size: 31pt;
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
+    margin: 0 0 8px;
+  }
+  .cv-sub { font-size: 14pt; color: var(--muted); margin-bottom: 34px; }
+  .cv-abs { margin: 0 0 44mm; max-width: 145mm; }
+  .cv-abs p { text-align: justify; hyphens: auto; font-size: 9.6pt; color: var(--text); margin: 0 0 9px; }
+  .cv-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 34px;
+    font-size: 9pt;
+    border-top: var(--hairline) solid var(--text);
+    padding-top: 14px;
+    line-height: 1.55;
+  }
+  .cv-meta b {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 7.5pt;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--muted);
+    font-weight: var(--weight-regular);
+    margin-bottom: 5px;
+  }
+  .cv-meta span { color: var(--muted); }
+
+  /* ---------------------------- secoes ------------------------------ */
+  /* Sem quebra forcada por secao: o texto flui e as paginas ficam cheias. */
+  section { margin-bottom: 7mm; break-inside: auto; }
+  .shead {
+    grid-template-columns: 11mm 1fr;
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  section h2 { font-size: 13pt; }
+  .snum { font-size: 9.5pt; }
+  section .lead { font-size: 8.8pt; margin-bottom: 11px; padding-left: 11mm; max-width: none; }
+
+  /* ------------------------ unidade de comando ---------------------- */
+  .card { margin-bottom: 6mm; break-inside: auto; }
+  .card + .card { padding-top: 4mm; }
+  /* blocos curtos ficam colados ao texto que os explica; os longos, como o
+     roteiro completo da aula, podem quebrar, senao empurram meia pagina */
+  .cmdrow {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    break-after: avoid;
+    page-break-after: avoid;
+    margin-bottom: 8px;
+  }
+  .cmdrow.long {
+    break-inside: auto;
+    page-break-inside: auto;
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .cmdrow.long pre { orphans: 4; widows: 4; }
+  pre { font-size: 7.4pt; line-height: 1.48; padding: 8px 10px; }
+  .meta { gap: 7px; }
+  .meta .row {
+    grid-template-columns: 20mm minmax(0, 1fr);
+    gap: 6mm;
+    font-size: 8.7pt;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .meta .row > b { font-size: 6.6pt; padding-top: 2.5px; }
+  /* Chromium fragmenta mal containers de grid entre paginas, e figuras
+     flutuantes atravessam a quebra e reaparecem ao lado de texto alheio.
+     Em impressao o layout vira fluxo simples: a figura entra logo abaixo do
+     verbete que a explica, com largura controlada, e nunca se desprende. */
+  .body, .body.withfig, .meta { display: block; }
+  .meta .row { margin-bottom: 2.6mm; }
+  /* a figura nao pode abrir pagina sozinha: break-before:avoid arrasta
+     consigo a ultima linha do texto que a explica, sem tornar o verbete
+     inteiro atomico, que era o que abria meia pagina em branco */
+  .figside {
+    width: 100%;
+    margin: 5mm 0 0;
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+  /* figura a esquerda e legenda a direita: aproveita a largura da mancha em
+     vez de deixar meia linha vazia ao lado de cada imagem */
+  .figside figure { display: grid; grid-template-columns: 47% minmax(0, 1fr); gap: 6mm; align-items: start; }
+  .figside figcaption { padding-top: 0; }
+  /* a largura define a altura pela proporcao da imagem; usar max-height com
+     object-fit deixaria faixas brancas dentro da moldura */
+  .figside figure img, .gallery figure img { max-height: none; }
+  figure, .figside { break-inside: avoid; page-break-inside: avoid; }
+  .gallery { gap: 6mm; grid-template-columns: repeat(2, 1fr); }
+  /* a galeria do roteiro tem oito quadros e funciona como folha de contato */
+  #roteiro .gallery { grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+  .card .gallery, .pairwrap { margin-top: 5mm; }
+  figcaption { font-size: 6.9pt; padding-top: 4px; line-height: 1.38; }
+  .note { margin-top: 5mm; font-size: 8.2pt; padding-left: 10px; break-inside: avoid; }
+  .note b { font-size: 6.6pt; }
+  .table-scroll { overflow-x: visible; }
+  table { font-size: 7.9pt; margin-bottom: 5mm; }
+  th, td { padding: 4px 12px 4px 0; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  code { background: none; padding: 0; }
+  p, li, .meta .row > span { orphans: 3; widows: 3; }
+
+  /* -------------------------- encerramento -------------------------- */
+  .endcard { margin: 10mm 0 0; padding-top: 12px; break-inside: avoid; }
+  .ec-grid { font-size: 8.6pt; }
+  footer { font-size: 7.6pt; padding-top: 12px; line-height: 1.6; }
+}
