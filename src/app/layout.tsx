@@ -285,7 +285,15 @@ export const metadata: Metadata = {
   authors: [{ name: "Madson Allan de Luna Aragão", url: "https://madsondeluna.com" }],
   creator: "Madson Allan de Luna Aragão",
   robots: "index, follow",
-  alternates: { canonical: "https://madsondeluna.com" },
+  alternates: {
+    canonical: "https://madsondeluna.com",
+    languages: {
+      "en-US": "https://madsondeluna.com/",
+      "pt-BR": "https://madsondeluna.com/pt",
+      es: "https://madsondeluna.com/es",
+      "x-default": "https://madsondeluna.com/",
+    },
+  },
   openGraph: {
     type: "profile",
     url: "https://madsondeluna.com",
