@@ -54,6 +54,7 @@ jobs:
           cp -r pymol_guide out/
           cp google2a0f51da71f41d93.html out/
           cp sitemap.xml out/
+          cp robots.txt out/
 
       - uses: actions/upload-pages-artifact@v5
         with:
