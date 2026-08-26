@@ -367,7 +367,7 @@
   --light-pull:  6px;
   --light-tilt:  8deg;
   --light-depth: 800px;
-  --light-lens:  2rem;
+  --light-lens:  1.5rem;
 
   /* layout */
   --measure-prose: 480px;
@@ -438,7 +438,8 @@
 
   /* sombra da lente: curta de proposito. A queda larga de
      --shadow-glass-rest e desenhada para um cartao; num disco de 48px
-     ela le como borrao em volta do ponteiro em vez de peso.
+     ela le como borrao em volta do ponteiro em vez de peso. O disco
+     esta em 24px, e a sombra encolheu duas vezes junto com ele.
 
      Aqui sobra o CONTATO e mais nada de queda: 1px de raio, e a metade
      da opacidade que o vidro usa. O que da corpo e o bisel e o
@@ -446,10 +447,23 @@
      pagina. O poco interno ficou curto pelo mesmo motivo: num disco
      pequeno ele fechava o terco de baixo e a lente lia como pastilha. */
   --shadow-lens:
-    0 1px 1px rgba(13, 19, 33, 0.05),
+    0 1px 1px rgba(13, 19, 33, 0.03),
     inset 0 1px 0 var(--glass-specular),
     inset 0 0 8px -3px var(--glass-bezel),
-    inset 0 -5px 8px -8px var(--glass-pool);
+    inset 0 -4px 6px -7px var(--glass-pool);
+
+
+  /* tinta da lente. Ela NAO e --light-fill: aquela e a luz que anda, e
+     esta e o corpo do disco. Um disco puramente translucido some sobre
+     area lisa, e o ponteiro se perde justo onde nao ha o que dobrar.
+
+     Chumbo nos modos claros e branco nos escuros, os dois de rampas que
+     ja existem: graphite-800 e o branco do vidro. Nenhuma cor nova.
+
+     As opacidades nao sao simetricas de proposito. No escuro o branco
+     aparece sozinho e 0,14 basta; no claro o chumbo precisa do dobro
+     para o disco ter corpo, e foi medido na tela: em 0,16 ele sumia. */
+  --lens-fill: rgba(59, 62, 69, 0.30);
 
 }
 
@@ -580,13 +594,23 @@
 
   /* sombra da lente: curta de proposito. A queda larga de
      --shadow-glass-rest e desenhada para um cartao; num disco de 64px
-     ela le como borrao em volta do ponteiro em vez de peso. Aqui fica
+     ela le como borrao em volta do ponteiro em vez de peso. O disco
+     esta em 24px, e a sombra encolheu duas vezes junto com ele. Aqui fica
      so o contato, mais o bisel e o especular que dao corpo ao vidro. */
   --shadow-lens:
-    0 1px 1px rgba(90, 82, 58, 0.06),
+    0 1px 1px rgba(90, 82, 58, 0.04),
     inset 0 1px 0 var(--glass-specular),
     inset 0 0 8px -3px var(--glass-bezel),
-    inset 0 -5px 8px -8px var(--glass-pool);
+    inset 0 -4px 6px -7px var(--glass-pool);
+
+
+  /* tinta da lente. Ela NAO e --light-fill: aquela e a luz que anda, e
+     esta e o corpo do disco. Um disco puramente translucido some sobre
+     area lisa, e o ponteiro se perde justo onde nao ha o que dobrar.
+
+     Chumbo nos modos claros e branco nos escuros, os dois de rampas que
+     ja existem: graphite-700 e o branco do vidro. Nenhuma cor nova. */
+  --lens-fill: rgba(59, 62, 69, 0.26);
 
 }
 
@@ -703,13 +727,23 @@
 
   /* sombra da lente: curta de proposito. A queda larga de
      --shadow-glass-rest e desenhada para um cartao; num disco de 64px
-     ela le como borrao em volta do ponteiro em vez de peso. Aqui fica
+     ela le como borrao em volta do ponteiro em vez de peso. O disco
+     esta em 24px, e a sombra encolheu duas vezes junto com ele. Aqui fica
      so o contato, mais o bisel e o especular que dao corpo ao vidro. */
   --shadow-lens:
-    0 1px 1px rgba(0, 0, 0, 0.24),
+    0 1px 1px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 var(--glass-specular),
     inset 0 0 8px -3px var(--glass-bezel),
-    inset 0 -5px 8px -8px var(--glass-pool);
+    inset 0 -4px 6px -7px var(--glass-pool);
+
+
+  /* tinta da lente. Ela NAO e --light-fill: aquela e a luz que anda, e
+     esta e o corpo do disco. Um disco puramente translucido some sobre
+     area lisa, e o ponteiro se perde justo onde nao ha o que dobrar.
+
+     Chumbo nos modos claros e branco nos escuros, os dois de rampas que
+     ja existem: graphite-700 e o branco do vidro. Nenhuma cor nova. */
+  --lens-fill: rgba(255, 255, 255, 0.16);
 
 }
 
@@ -818,12 +852,22 @@
 
   /* sombra da lente: curta de proposito. A queda larga de
      --shadow-glass-rest e desenhada para um cartao; num disco de 64px
-     ela le como borrao em volta do ponteiro em vez de peso. Aqui fica
+     ela le como borrao em volta do ponteiro em vez de peso. O disco
+     esta em 24px, e a sombra encolheu duas vezes junto com ele. Aqui fica
      so o contato, mais o bisel e o especular que dao corpo ao vidro. */
   --shadow-lens:
-    0 1px 1px rgba(0, 0, 0, 0.26),
+    0 1px 1px rgba(0, 0, 0, 0.18),
     inset 0 1px 0 var(--glass-specular),
     inset 0 0 8px -3px var(--glass-bezel),
-    inset 0 -5px 8px -8px var(--glass-pool);
+    inset 0 -4px 6px -7px var(--glass-pool);
+
+
+  /* tinta da lente. Ela NAO e --light-fill: aquela e a luz que anda, e
+     esta e o corpo do disco. Um disco puramente translucido some sobre
+     area lisa, e o ponteiro se perde justo onde nao ha o que dobrar.
+
+     Chumbo nos modos claros e branco nos escuros, os dois de rampas que
+     ja existem: graphite-700 e o branco do vidro. Nenhuma cor nova. */
+  --lens-fill: rgba(255, 255, 255, 0.14);
 
 }

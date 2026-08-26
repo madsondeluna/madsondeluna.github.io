@@ -263,7 +263,15 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  /* A lente e o PONTEIRO, e ponteiro nao fica atras de nada. Ela nasceu
+     em 2, que perdia para qualquer coisa que a pagina empilhasse: no
+     primeiro site real ela sumiu atras do seletor de modo.
+
+     A escada da linguagem termina em 80 para a sobreposicao e 100 para o
+     pulo de teclado. 120 fica acima das duas, e cobrir o pulo nao custa
+     nada porque a lente nao recebe ponteiro: ela desenha por cima e o
+     clique atravessa. */
+  z-index: 120;
   width: var(--light-lens);
   height: var(--light-lens);
   margin: calc(var(--light-lens) / -2) 0 0 calc(var(--light-lens) / -2);
@@ -271,8 +279,10 @@
   pointer-events: none;
   --surface-context: var(--surface-glass);
   background-image: var(--glass-fill-thin);
-  border: var(--hairline) solid var(--glass-edge);
+  background-color: var(--lens-fill);
+  border: var(--hairline) solid var(--glass-edge-hover);
   box-shadow: var(--shadow-lens);
+  overflow: hidden;
   -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
   backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
   transform:
@@ -291,6 +301,29 @@
   transition:
     opacity      var(--duration-3) var(--ease-out-soft),
     --light-grow var(--duration-3) var(--ease-out-soft);
+}
+
+/* O GRANULADO e o que faz vidro ler como fosco: sem ele o resultado e
+   translucido, que e outra coisa. E a mesma camada de .glass-frost, a
+   unica textura da linguagem que o carrega.
+
+   Aqui ele serve a um proposito alem do material: uma lente puramente
+   translucida some sobre uma area lisa, e o ponteiro se perde justamente
+   onde nao ha nada para dobrar. O granulado da corpo ao disco sem
+   fechar o miolo, entao a ampliacao continua passando.
+
+   Em `mix-blend-mode: overlay` ele escurece o que e claro e clareia o
+   que e escuro, entao o disco aparece nos quatro modos com uma regra so,
+   sem uma cor por modo. */
+.lit-cursor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--glass-grain);
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
 @supports (backdrop-filter: url("#pure-lens")) {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#F4F6F9">
+<meta name="theme-color" content="#0E0F13">
 <!-- a marca do casaco do retrato, vetorizada da propria ilustracao. Em
      currentColor, entao ela assume a tinta de onde for usada; a aba do
      navegador nao le var(), e por isso a copia de favicon carrega a
@@ -42,6 +42,12 @@
 <link rel="stylesheet" href="/pure/light.css">
 <link rel="stylesheet" href="/pure/motion.css">
 <link rel="stylesheet" href="/pure/agent.css">
+<script>
+/* O padrao e o escuro grafite. Ele entra ANTES da primeira pintura,
+   senao a pagina abre clara e pisca. Quem ja escolheu um modo tem a
+   escolha respeitada; quem nunca escolheu cai no escuro. */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
 <style>
 /* =========================================================
    Diagramação desta página. Nada aqui inventa valor: cor, tipo,
@@ -625,11 +631,14 @@ div.row { cursor: default; }
 
   <aside class="col-left">
     <div class="identity">
-      <span class="photo-ring motion-cycle">
+      <!-- Retrato unico, a foto de camera. O revezamento pelos tres
+           desenhos foi ligado e desligado a pedido: para religar, ponha
+           "photo-ring motion-cycle" na classe e acrescente os
+           <img class="photo photo-drawn" src="/assets/images/profile/face-1.png">
+           e irmaos. Os arquivos estao no repositorio e a regra de
+           .motion-cycle mora na linguagem, nao aqui. -->
+      <span class="photo-ring">
         <img class="photo" src="/assets/images/profile/me.jpeg" alt="Madson Aragão" width="160" height="160">
-        <img class="photo photo-drawn" src="/assets/images/profile/face-1.png" alt="" width="160" height="160" loading="lazy">
-        <img class="photo photo-drawn" src="/assets/images/profile/face-2.png" alt="" width="160" height="160" loading="lazy">
-        <img class="photo photo-drawn" src="/assets/images/profile/face-3.png" alt="" width="160" height="160" loading="lazy">
       </span>
       <span class="ident-text">
         <h1 class="name">Madson<br>Aragão</h1>
@@ -1880,6 +1889,7 @@ function resolve(name) {
 
 function applyMode(mode, record) {
   document.documentElement.className = mode;
+  try { localStorage.setItem("mode", mode || "light"); } catch (e) {}
   document.querySelectorAll(".mode-btn").forEach((b) =>
     b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
   themeMeta.setAttribute("content", resolve("--bg"));
@@ -1892,8 +1902,14 @@ function applyMode(mode, record) {
 document.querySelectorAll(".mode-btn").forEach((btn) =>
   btn.addEventListener("click", () => applyMode(btn.dataset.mode, true)));
 
-const asked = new URL(location.href).searchParams.get("mode") || "";
-applyMode(MODES.includes(asked) ? asked : "", false);
+/* o endereco vence o guardado, e o guardado vence o padrao */
+const asked = new URL(location.href).searchParams.get("mode");
+let stored = null;
+try { stored = localStorage.getItem("mode"); } catch (e) {}
+const start = MODES.includes(asked) ? asked
+  : stored !== null && MODES.includes(stored === "light" ? "" : stored) ? (stored === "light" ? "" : stored)
+  : "dark";
+applyMode(start, false);
 
 /* ---------- paineis ----------
    A pagina e uma tela so e NENHUM cartao sai dela: os dezesseis abrem
