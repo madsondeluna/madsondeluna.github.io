@@ -211,6 +211,38 @@ html, body { height: 100%; overflow: hidden; }
   transform: scale(1.28);
 }
 
+/* ---------- o desenho acompanha o modo ----------
+   Traco preto sobre branco opaco nao entra cru: num modo escuro o
+   quadrado branco vira farol, e num claro ele apaga a superficie que o
+   circulo pinta. `filter: invert(1)` resolvia metade e mentia na outra,
+   porque o fundo continuava opaco.
+
+   A mistura resolve as duas sem arquivo novo: nos claros `multiply`
+   deixa cair o branco e mantem o traco; nos escuros o desenho inverte e
+   `screen` deixa cair o preto. Nos dois o fundo desaparece e quem
+   aparece atras e a superficie do modo, entao o desenho muda de cor
+   junto com a pagina.
+
+   `isolation: isolate` prende a mistura dentro do circulo. */
+.photo-ring { isolation: isolate; background: var(--surface); --surface-context: var(--surface); }
+
+/* o arquivo ja vem enquadrado para uso circular: ele preenche, e nada
+   e encolhido para caber */
+.photo-drawn {
+  object-fit: cover;
+  object-position: center;
+  transform: none;
+  mix-blend-mode: multiply;
+}
+
+:root.deep-blue .photo-drawn,
+:root.dark .photo-drawn {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
+.photo-ring.motion-cycle { display: grid; }
+
 .ident-text { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
 
 /* o cargo fecha o bloco de identidade: sem ele o nome gigante caia
@@ -588,8 +620,11 @@ div.row { cursor: default; }
 
   <aside class="col-left">
     <div class="identity">
-      <span class="photo-ring">
-        <img class="photo" src="/assets/images/profile/me.jpeg" alt="" width="96" height="96">
+      <span class="photo-ring motion-cycle">
+        <img class="photo" src="/assets/images/profile/me.jpeg" alt="Madson Aragão" width="160" height="160">
+        <img class="photo photo-drawn" src="/assets/images/profile/face-1.png" alt="" width="160" height="160" loading="lazy">
+        <img class="photo photo-drawn" src="/assets/images/profile/face-2.png" alt="" width="160" height="160" loading="lazy">
+        <img class="photo photo-drawn" src="/assets/images/profile/face-3.png" alt="" width="160" height="160" loading="lazy">
       </span>
       <span class="ident-text">
         <h1 class="name">Madson<br>Aragão</h1>

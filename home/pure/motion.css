@@ -724,3 +724,67 @@
 
 .motion-learn:hover > .icon,
 .motion-learn:focus-visible > .icon { transform: translateX(var(--nudge-3)); }
+
+/* ---------- retratos que se revezam ----------
+   N imagens na mesma celula, uma de cada vez, atravessando por desfoque
+   em vez de corte. E o .motion-icon-swap levado ao laco: la sao duas e
+   um estado externo decide; aqui sao ate quatro e quem decide e o
+   proprio tempo.
+
+   O TETO E QUATRO, e ele e declarado: cada unidade precisa do seu
+   atraso, e atraso mora em regra, nao em contagem. Mesma escolha das
+   oito unidades do aglomerado liquido. Uma quinta imagem passa a pedir
+   javascript, e a partir dali nao e mais receita de CSS.
+
+   A duracao do ciclo e MULTIPLA de --duration-6, nao um numero novo: um
+   laco de oito segundos escrito a mao seria um setimo degrau entrando
+   pela porta dos fundos. Trocar --motion-cycle no elemento muda o
+   compasso sem tocar na escala.
+
+   O desfoque e --motion-blur-1, o mesmo da troca de icone: e a mesma
+   leitura, uma coisa virando outra no lugar. */
+
+.motion-cycle {
+  display: grid;
+  isolation: isolate;
+  --motion-cycle: calc(var(--duration-6) * 16);
+}
+
+.motion-cycle > * {
+  grid-area: 1 / 1;
+  opacity: 0;
+  animation: pure-cycle var(--motion-cycle) var(--ease-standard) infinite both;
+}
+
+.motion-cycle > :nth-child(1) { animation-delay: calc(var(--motion-cycle) * -0 / 3); }
+.motion-cycle > :nth-child(2) { animation-delay: calc(var(--motion-cycle) * -1 / 3); }
+.motion-cycle > :nth-child(3) { animation-delay: calc(var(--motion-cycle) * -2 / 3); }
+
+/* com quatro, o compasso divide por quatro: o seletor de contagem troca
+   os atrasos inteiros de uma vez, e nenhuma unidade precisa saber quantas
+   irmas tem */
+.motion-cycle:has(> :nth-child(4)) > :nth-child(1) { animation-delay: calc(var(--motion-cycle) * -0 / 4); }
+.motion-cycle:has(> :nth-child(4)) > :nth-child(2) { animation-delay: calc(var(--motion-cycle) * -1 / 4); }
+.motion-cycle:has(> :nth-child(4)) > :nth-child(3) { animation-delay: calc(var(--motion-cycle) * -2 / 4); }
+.motion-cycle:has(> :nth-child(4)) > :nth-child(4) { animation-delay: calc(var(--motion-cycle) * -3 / 4); }
+
+/* A janela visivel e curta de proposito e a travessia e longa: com as
+   bordas assim, duas imagens vizinhas se sobrepoem no meio do caminho e
+   nunca ha um quadro com a celula vazia, que e o que faz o revezamento
+   ler como respiracao em vez de piscada. */
+@keyframes pure-cycle {
+  0%   { opacity: 0; filter: blur(var(--motion-blur-1)); }
+  7%   { opacity: 1; filter: blur(0); }
+  26%  { opacity: 1; filter: blur(0); }
+  33%  { opacity: 0; filter: blur(var(--motion-blur-1)); }
+  100% { opacity: 0; filter: blur(var(--motion-blur-1)); }
+}
+
+/* Movimento reduzido: o revezamento PARA na primeira, e nao acelera nem
+   desacelera. Aqui nao ha estado a comunicar, ao contrario do esqueleto
+   e do pulso: sao tres retratos da mesma pessoa, e um deles diz tudo o
+   que os tres diziam. */
+@media (prefers-reduced-motion: reduce) {
+  .motion-cycle > * { animation: none !important; opacity: 0; }
+  .motion-cycle > :first-child { opacity: 1; }
+}
