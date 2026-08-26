@@ -73,6 +73,7 @@ jobs:
           sed -i 's|<title>Madson Aragão: Portfolio</title>|<title>Madson Aragão: previous site</title>|' out/legacy/index.html
           cp home/index.html out/index.html
           cp -r home/pure out/pure
+          cp home/mark.svg home/mark-ink.svg out/
 
       - uses: actions/upload-pages-artifact@v5
         with:
