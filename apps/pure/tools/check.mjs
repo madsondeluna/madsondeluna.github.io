@@ -157,8 +157,12 @@ const MODES = ["light", "paper-like", "deep-blue", "dark"];
 const RULES = MODES.flatMap((m) => [
   [m, "text", "bg", 4.5, "texto principal"],
   [m, "muted", "bg", 4.5, "prosa de apoio"],
-  // no deep-blue muted sobre surface fica em 4,02, que so cobre texto grande
-  [m, "muted", "surface", m === "deep-blue" ? 3 : 4.5, "prosa em cartão"],
+  // a excecao do deep-blue caiu em 1.5.1: muted subiu para o passo 400 e
+  // agora limpa 4,5 sobre a superficie. O piso e o mesmo nos quatro modos,
+  // e o hover tambem entra: era sobre --surface-hover que o 400 original
+  // ficava em 4,49, um centesimo abaixo do piso.
+  [m, "muted", "surface", 4.5, "prosa em cartão"],
+  [m, "muted", "surface-hover", 4.5, "prosa em cartão sob o ponteiro"],
   [m, "accent", "bg", 3, "anel de foco"],
 ]);
 
@@ -228,6 +232,27 @@ function consistency() {
     fontBad.length ? `divergem de tokens.json: ${fontBad.join(", ")}`
                    : `sans, mono e display batem em json, css, streamlit, palette.py e os dois mplstyle`);
 
+  // desfoque: card e overlay são os dois raios que o material do vidro usa
+  // fora das quatro texturas, e não passavam por nenhuma verificação
+  const blur = Object.entries(T.blur).filter(([k]) => !k.startsWith("$"));
+  const blurDrift = blur.filter(([k, v]) => !css.includes(`--blur-${k}: ${v}`));
+  check(!blurDrift.length, "tokens de desfoque",
+    blurDrift.length ? `divergem de tokens.json: ${blurDrift.map(([k]) => k).join(", ")}`
+                     : `${blur.length} valores batem em json e css`);
+
+  // raio por papel: o token de papel é apelido de um passo numérico, e a
+  // escada concêntrica quebra em silêncio se o apelido apontar para o passo
+  // errado. Resolve o var() antes de comparar com tokens.json.
+  const ROLES = ["surface", "field", "media", "control", "mark"];
+  const step = (name) => T.radius[name.replace("radius-", "")];
+  const radiusDrift = ROLES.filter((role) => {
+    const alias = css.match(new RegExp(`--radius-${role}: var\\(--(radius-[a-z0-9]+)\\)`))?.[1];
+    return !alias || step(alias) !== T.radius[role];
+  });
+  check(!radiusDrift.length, "raio por papel",
+    radiusDrift.length ? `apelido aponta para o passo errado: ${radiusDrift.join(", ")}`
+                       : `${ROLES.length} papéis resolvem para o passo declarado em json`);
+
   // a versão precisa bater em todo lugar que a exibe
   const html = read("preview/index.html");
   const readme = read("README.md");
@@ -255,6 +280,10 @@ function craft() {
   const css = read("web/tokens.css");
   const patterns = read("web/patterns.css");
   const agent = read("web/agent.css");
+  const motion = read("web/motion.css");
+  const light = read("web/light.css");
+  const icons = read("web/icons.svg");
+  const lightJs = read("web/light.js");
   const html = read("preview/index.html");
   const tpl = read("templates/page.html");
 
@@ -277,7 +306,9 @@ function craft() {
   // as três fontes de CSS escrito à mão passam pelas mesmas regras
   const SOURCES = [
     ["web/patterns.css", patterns],
+    ["web/motion.css", motion],
     ["web/agent.css", agent],
+    ["web/light.css", light],
     ["preview/index.html", html],
     ["templates/page.html", tpl],
   ];
@@ -302,7 +333,9 @@ function craft() {
   const litLimit = /#[0-9a-fA-F]{3,8}\b/;
   const literal = [
     ["web/patterns.css", patterns],
+    ["web/motion.css", motion],
     ["web/agent.css", agent],
+    ["web/light.css", light],
     ["templates/page.html", tpl.slice(tpl.indexOf("<style>"), tpl.indexOf("</style>"))],
   ].filter(([, src]) => litLimit.test(src));
   check(!literal.length, "sem cor literal",
@@ -325,6 +358,18 @@ function craft() {
     drift.length ? `divergem de tokens.json: ${drift.map(([k]) => k).join(", ")}`
                  : `${iface.length} valores batem em json e css`);
 
+  // as duas familias que nasceram em 1.5.0 cruzam json e css como as
+  // outras: um token que so existe de um lado e um token que mente
+  for (const fam of ["motion", "liquid", "light"]) {
+    const entries = Object.entries(T[fam]).filter(([k]) => !k.startsWith("$"));
+    const off = entries.filter(([k, v]) =>
+      !new RegExp(`--${fam}-${k}:\\s+${v.replace(".", "\\.")};`).test(css));
+    const famName = { motion: "movimento", liquid: "líquido", light: "luz" }[fam];
+    check(!off.length, `tokens de ${famName}`,
+      off.length ? `divergem de tokens.json: ${off.map(([k]) => k).join(", ")}`
+                 : `${entries.length} valores batem em json e css`);
+  }
+
   // idem para a camada de agente
   const ag = Object.entries(T.agent).filter(([k]) => !k.startsWith("$"));
   const agDrift = ag.filter(([k, v]) => !css.includes(`--${k}: ${v}`));
@@ -332,10 +377,380 @@ function craft() {
     agDrift.length ? `divergem de tokens.json: ${agDrift.map(([k]) => k).join(", ")}`
                    : `${ag.length} valores batem em json e css`);
 
+  // ---------- camada de movimento ----------
+  // a escala nao cresce: motion.css so pode usar as seis duracoes e as
+  // cinco curvas que ja existem. Um cubic-bezier ou um valor em ms
+  // escrito a mao aqui e uma sexta curva ou um setimo degrau entrando
+  // pela porta dos fundos, que e como toda escala se desfaz.
+  // comentario fora antes de medir: o cabecalho de motion.css carrega a
+  // tabela de remapeamento, e ela CITA os numeros do catalogo de origem.
+  // Contar a citacao como declaracao reprovaria justamente o arquivo que
+  // documenta a conversao.
+  const motionCode = motion.replace(/\/\*[\s\S]*?\*\//g, "");
+  const rawEase = [...motionCode.matchAll(/cubic-bezier\([^)]*\)/g)].length;
+  const rawMs = [...motionCode.matchAll(/:\s*[^;{]*?\b\d+m?s\b/g)]
+    .filter((m) => !/var\(/.test(m[0]) && !/\b0m?s\b/.test(m[0])).length;
+  check(!rawEase && !rawMs, "escala de movimento",
+    rawEase || rawMs
+      ? `motion.css escreve ${rawEase} curva(s) e ${rawMs} duração(ões) fora da escala`
+      : "motion.css só usa os seis --duration-* e as cinco --ease-*");
+
+  // ---------- contexto de superficie ----------
+  // a varredura de contraste resolve o fundo por --surface-context, e
+  // nao pela ancestralidade, porque em .liquid quem pinta e um IRMAO do
+  // texto. Uma classe que pinta fundo sem declarar o token faz a
+  // varredura medir contra --bg e aprovar uma página errada.
+  const PAINTERS = [".surface", ".card-glass", ".glass:not(.card-glass)",
+    ".glass-thin", ".glass-frost", ".glass-deep", ".pill", ".overlay", ".liquid"];
+  const noCtx = PAINTERS.filter((sel) => {
+    const i = patterns.indexOf(`\n${sel} {`);
+    if (i < 0) return true;
+    return !patterns.slice(i, patterns.indexOf("}", i)).includes("--surface-context:");
+  });
+  check(!noCtx.length, "contexto de superfície",
+    noCtx.length ? `pintam fundo sem declarar --surface-context: ${noCtx.join(", ")}`
+                 : `${PAINTERS.length} classes que pintam fundo declaram o fundo que pintam`);
+
+  // ---------- material liquido ----------
+  // trocar a variante do filtro sem trocar a folga e o jeito silencioso
+  // de o aglomerado sair como pilulas soltas: a ponte fecha enquanto o
+  // vao fica abaixo do desvio do desfoque, medido na tela.
+  const variants = [["liquid-tight", "liquid-bridge-tight"], ["liquid-wide", "liquid-bridge-wide"]];
+  const loose = variants.filter(([cls, tok]) =>
+    !new RegExp(`\\.${cls}\\s*\\{[^}]*--liquid-bridge:\\s*var\\(--${tok}\\)`).test(patterns));
+  check(!loose.length, "folga do líquido",
+    loose.length ? `variante sem folga própria: ${loose.map(([c]) => c).join(", ")}`
+                 : "cada variante do filtro goo troca de folga junto com o filtro");
+
+  // um transform por elemento, composto de tokens. Duas regras
+  // escrevendo transform no mesmo blob e o defeito de 1.4.2 e 1.4.3 por
+  // outro caminho: `:has()` pesa a especificidade do argumento mais
+  // especifico, entao o inchaco (0,6,0) vencia o leque (0,3,0) qualquer
+  // que fosse a ordem, e o aglomerado dobrado se espalhava no hover.
+  // A fatia depende de dois comentarios de capitulo. Renomear qualquer um
+  // esvazia a fatia e as duas checagens que a usam passam sem olhar nada,
+  // que e pior que nao existirem. O guarda torna isso uma falha.
+  const liqFrom = patterns.indexOf("/* ---------- liquido ----------");
+  const liqTo = patterns.indexOf("/* ---------- pilulas ----------");
+  const liquidChapter = liqFrom >= 0 && liqTo > liqFrom ? patterns.slice(liqFrom, liqTo) : "";
+  check(liquidChapter.length > 0, "capítulo do líquido",
+    liquidChapter.length ? `${liquidChapter.split("\n").length} linhas entre os dois marcadores de capítulo`
+                         : "marcadores de capítulo não encontrados: as checagens do líquido passariam sem ler nada");
+  const stateTransforms = [...liquidChapter.matchAll(/^\s*transform:/gm)].length;
+  check(stateTransforms === 1, "transform do líquido",
+    stateTransforms === 1
+      ? "um transform composto de --liquid-shift-* e --liquid-swell, e nenhum estado o reescreve"
+      : `${stateTransforms} declarações de transform no capítulo: um estado sobrescreve o outro`);
+
+  // efeito de percurso nao mora no estado de repouso. O desfoque de
+  // conteudo do liquido existe ENQUANTO a massa escorre, e prende-lo ao
+  // estado permanente deixa o rotulo desfocado para sempre: foi o que
+  // aconteceu com .liquid-fold e .liquid-drip antes de virarem .is-flux.
+  const fluxLeak = [...liquidChapter.matchAll(/^([^\n{]*\.liquid-content[^\n{]*)\{([^}]*)\}/gm)]
+    .filter(([, sel, body]) => /filter:\s*blur\(\s*var/.test(body) && !/\.is-flux/.test(sel))
+    .map(([, sel]) => sel.trim());
+  check(!fluxLeak.length, "desfoque de percurso",
+    fluxLeak.length ? `desfoca o conteúdo fora de .is-flux: ${fluxLeak.join(", ")}`
+                    : "o desfoque de conteúdo do líquido só existe enquanto a massa escorre");
+
+  // os tres filtros goo precisam existir no template, senao .liquid
+  // referencia url() morta e a folha some sem erro nenhum
+  const gooMissing = ["pure-goo-tight", "pure-goo", "pure-goo-wide"]
+    .filter((id) => !tpl.includes(`id="${id}"`));
+  check(!gooMissing.length, "filtro do líquido",
+    gooMissing.length ? `sem definição no template: ${gooMissing.join(", ")}`
+                      : "os três filtros goo estão definidos no template");
+
+  // a lente do cursor cai no mesmo buraco: .lit-cursor referencia
+  // #pure-lens dentro de um @supports, e uma url() morta ali nao gera
+  // erro nenhum. Ela apenas para de dobrar, e o piso de desfoque
+  // continua funcionando, o que torna a falha INVISIVEL em revisão.
+  const lensUsed = /url\("?#pure-lens"?\)/.test(light);
+  const lensDefined = tpl.includes('id="pure-lens"');
+  const lensPasses = (tpl.match(/in2="lens-(body|rim)"/g) || []).length;
+  check(!lensUsed || (lensDefined && lensPasses === 2), "lente do cursor",
+    !lensUsed ? "light.css não referencia a lente"
+      : !lensDefined ? "#pure-lens sem definição no template: a lente para de dobrar sem erro nenhum"
+      : `os dois passes da lente estão definidos, corpo e anel`);
+
+  // o piso precisa existir FORA do @supports, senão onde a referência a
+  // filtro não vale a lente sai sem material nenhum em vez de sair como
+  // vidro fino. É o mesmo raciocínio da ordem do backdrop-filter, visto
+  // do outro lado: uma declaração que não vale tem que cair em cima de
+  // uma que vale.
+  const lensFloor = /\.lit-cursor \{[^}]*backdrop-filter: blur\(/.test(light);
+  check(!lensUsed || lensFloor, "piso da lente",
+    !lensUsed ? "sem lente, sem piso a checar"
+      : lensFloor ? "onde a referência a filtro não vale, a lente vira vidro fino"
+                  : ".lit-cursor não declara desfoque fora do @supports: sem suporte ela sai sem material");
+
+  // ---------- estreito ----------
+  // o ponto de quebra e literal na consulta de midia porque @media nao
+  // le var(). Ele precisa bater com --breakpoint-stack, e sem esta
+  // checagem os dois divergem em silencio, que e como o token ficou
+  // sendo lido por nada ate 1.5.0.
+  const wantBp = T.layout["breakpoint-stack"];
+  // os TRES lugares que escrevem largura, nao so patterns.css: o
+  // template e o guia carregam o proprio bloco de empilhamento, e eram
+  // eles que ja divergiam entre si (768 contra 1080) antes de 1.5.0.
+  // 640px no guia e um segundo degrau declarado, nao divergencia.
+  const bpSources = [["web/patterns.css", patterns], ["web/agent.css", agent], ["web/light.css", light],
+    ["templates/page.html", tpl], ["preview/index.html", html]];
+  const bpQueries = bpSources.flatMap(([f, src]) =>
+    [...src.matchAll(/@media \(max-width:\s*([^)]+)\)/g)]
+      .map((m) => m[1].trim())
+      .filter((v) => v !== "640px")
+      .map((v) => ({ f, v })));
+  const bpOff = bpQueries.filter((q) => q.v !== wantBp);
+  check(bpQueries.length > 0 && !bpOff.length, "ponto de quebra",
+    !bpQueries.length ? "nenhuma consulta de largura: o estreito não é da linguagem"
+      : bpOff.length ? `divergem de --breakpoint-stack (${wantBp}): ${bpOff.map((q) => `${q.v} em ${q.f}`).join(", ")}`
+                     : `${bpQueries.length} consulta(s) de largura em ${wantBp}, o valor de --breakpoint-stack`);
+
+  // ---------- area de toque ----------
+  // o piso de 44px e Must na tabela de oficio, e ate 1.5.0 o bloco
+  // pointer: coarse cobria campo e .hit e mais nada: a pilula media 35px
+  // no toque. O dedo nao sabe que a regra existia.
+  const blockOf = (src) => {
+    const i = src.indexOf("@media (pointer: coarse)");
+    return i < 0 ? "" : src.slice(i, src.indexOf("\n}\n", i));
+  };
+  const coarseBlock = blockOf(patterns) + blockOf(agent);
+  // a camada de agente e a que tem mais coisa apertavel por tela, e ela
+  // nao tinha bloco de toque nenhum ate 1.5.0
+  const TOUCH = [".pill", ".link-cta", ".control-round", ".liquid-item", ".check",
+    ".tab", ".filter", ".trace-head", ".menu-item", ".palette-item", ".side-item",
+    ".ask-option", ".followup", ".seg button", ".numfield", ".selection-bar button"];
+  const untouched = TOUCH.filter((sel) => !coarseBlock.includes(sel));
+  check(!untouched.length, "alvo de toque",
+    untouched.length ? `sem piso de 44px no toque: ${untouched.join(", ")}`
+                     : `${TOUCH.length} classes de controle sobem para --hit-min-touch no toque`);
+
+  // ---------- tabela ----------
+  // o corpo da pagina nunca rola na horizontal, e essa regra so e
+  // cumprivel se alguem rolar no lugar dele
+  const scroller = /\.table-scroll \{[^}]*overflow-x:\s*auto/.test(patterns);
+  check(scroller, "rolagem da tabela",
+    scroller ? ".table-scroll rola no lugar do corpo da página"
+             : "sem .table-scroll: uma tabela larga empurra a página inteira de lado");
+
+  // ---------- classe sem regra ----------
+  // uma classe escrita na marcacao e definida em lugar nenhum nao gera
+  // erro: o elemento so sai sem estilo. Foi assim que duas tabelas do
+  // guia sairam cruas, com o check passando nas duas vezes. Aqui todo
+  // nome usado em class= precisa ter regra em algum dos tres CSS ou no
+  // <style> local do proprio guia.
+  const declared = new Set();
+  const localStyle = html.slice(html.indexOf("<style>"), html.indexOf("</style>"));
+  for (const src of [patterns, motion, agent, light, localStyle]) {
+    for (const m of src.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) declared.add(m[1]);
+  }
+  const used = new Set();
+  for (const m of html.matchAll(/class="([^"]+)"/g)) {
+    for (const c of m[1].trim().split(/\s+/)) if (c) used.add(c);
+  }
+  const orphans = [...used].filter((c) => !declared.has(c));
+  check(!orphans.length, "classe sem regra",
+    orphans.length ? `usadas no guia e definidas em lugar nenhum: ${orphans.slice(0, 8).join(", ")}`
+                   : `${used.size} classes do guia têm regra em algum dos cinco lugares`);
+
   // foco visível: outline none só é aceitável com substituto declarado
   const bareNone = /outline:\s*none/.test(patterns) && !/:focus-visible/.test(patterns);
   check(!bareNone, "foco visível",
     bareNone ? "outline removido sem :focus-visible no lugar" : "o anel de foco existe e usa --accent");
+
+  // um modificador só modifica se ganhar na cascata. .glass-accent mora no
+  // capítulo do material e os componentes que ele tinge declaram fundo
+  // depois dele, no hover com uma classe a mais: por ordem e por
+  // especificidade, o componente ganhava e o botão primário saía idêntico
+  // ao secundário, sem nenhum sinal de erro. Aqui a cascata é resolvida de
+  // verdade, elemento por elemento, em vez de conferida no olho.
+  // light.css entra concatenado DEPOIS de patterns.css porque essa e a
+  // ordem de importacao declarada, e a cascata depende dela: .lit-edge
+  // empata em especificidade com .glass:not(.card-glass) e so ganha por
+  // vir depois. Resolver so patterns.css deixaria o terceiro modificador
+  // da linguagem sem a checagem que os outros dois ja tem.
+  const naked = (patterns + "\n" + light).replace(/\/\*[\s\S]*?\*\//g, "");
+  const rules = [...naked.matchAll(/([^{}]+)\{([^{}]*)\}/g)].flatMap((m) =>
+    m[1].split(",").map((s) => ({ sel: s.trim(), body: m[2], at: m.index })))
+    .filter((r) => /^\.[a-z0-9-]+(\.[a-z0-9-]+|:[a-z-]+(\([^)]*\))?)*$/.test(r.sel));
+
+  // classes e pseudoclasses pesam na mesma coluna, e :not() soma o que carrega
+  const spec = (s) =>
+    ((s.replace(/:not\([^)]*\)/g, "").match(/[.:]/g) || []).length) +
+    (([...s.matchAll(/:not\(([^)]*)\)/g)].map((m) => m[1]).join("").match(/\./g) || []).length);
+
+  const hits = (sel, classes, state) => {
+    const nots = [...sel.matchAll(/:not\(([^)]*)\)/g)].map((m) => m[1]);
+    const bare = sel.replace(/:not\([^)]*\)/g, "");
+    const need = [...bare.matchAll(/\.([a-z0-9-]+)/g)].map((m) => m[1]);
+    const states = [...bare.matchAll(/:([a-z-]+)/g)].map((m) => m[1]);
+    if (!need.every((c) => classes.includes(c))) return false;
+    if (nots.some((n) => n.split(".").filter(Boolean).every((c) => classes.includes(c)))) return false;
+    return states.every((p) => p === state);
+  };
+
+  const winner = (classes, state, prop) => {
+    let best = null;
+    for (const r of rules) {
+      if (!hits(r.sel, classes, state)) continue;
+      const decl = [...r.body.matchAll(new RegExp(`(?:^|;)\\s*${prop}:\\s*([^;]+)`, "g"))].pop();
+      if (!decl) continue;
+      const s = spec(r.sel);
+      if (!best || s > best.s || (s === best.s && r.at >= best.at)) best = { s, at: r.at, value: decl[1].trim() };
+    }
+    return best;
+  };
+
+  const TINTED = ["pill", "card-glass", "glass"];
+  const shadowed = TINTED.flatMap((c) => ["", "hover"].map((st) => ({ c, st })))
+    .filter(({ c, st }) => {
+      const w = winner([c, "glass-accent"], st, "background-image");
+      return !w || !w.value.includes("--glass-tint-accent");
+    });
+  check(!shadowed.length, "modificador de material",
+    shadowed.length
+      ? `o componente cobre o tingimento em: ${shadowed.map(({ c, st }) => `.${c}${st ? ":" + st : ""}`).join(", ")}`
+      : `.glass-accent vence .${TINTED.join(", .")} em repouso e no hover`);
+
+  // as quatro texturas têm o mesmo problema do tingimento, pela mesma
+  // razão: .glass:not(.card-glass) vale duas classes e a textura sozinha
+  // vale uma, então class="glass glass-frost" saía com o preenchimento do
+  // .glass padrão e as quatro texturas viravam uma só.
+  const TEXTURES = [
+    ["glass-thin", "--glass-fill-thin"],
+    ["glass-frost", "--glass-fill-frost"],
+    ["glass-deep", "--glass-fill-deep"],
+  ];
+  const flattened = TEXTURES.flatMap(([c, fill]) => ["", "hover"].map((st) => ({ c, fill, st })))
+    .filter(({ c, fill, st }) => {
+      const w = winner(["glass", c], st, "background-image");
+      return !w || !w.value.includes(fill);
+    });
+  check(!flattened.length, "textura de material",
+    flattened.length
+      ? `.glass cobre a textura em: ${flattened.map(({ c, st }) => `.${c}${st ? ":" + st : ""}`).join(", ")}`
+      : `.glass-thin, .glass-frost e .glass-deep vencem .glass em repouso e no hover`);
+
+  // o aro aceso e o TERCEIRO modificador que disputa cascata com o
+  // material, depois de .glass-accent e das quatro texturas, e a licao ja
+  // custou duas versoes: um modificador que perde a cascata e um
+  // modificador que nao existe. Aqui ele resolve contra os quatro
+  // componentes que pintam sombra de vidro, em repouso e no hover.
+  const RIMMED = ["glass", "card-glass", "pill", "overlay"];
+  const unlit = RIMMED.flatMap((c) => ["", "hover"].map((st) => ({ c, st })))
+    .filter(({ c, st }) => {
+      const w = winner([c, "lit-edge"], st, "box-shadow");
+      return !w || !w.value.includes("--light-rim");
+    });
+  check(!unlit.length, "aro da luz",
+    unlit.length
+      ? `o componente cobre o aro em: ${unlit.map(({ c, st }) => `.${c}${st ? ":" + st : ""}`).join(", ")}`
+      : `.lit-edge vence .${RIMMED.join(", .")} em repouso e no hover`);
+
+  // ---------- camada de luz ----------
+  // mesmo defeito do líquido por outro caminho: inclinação, ímã e
+  // inchaço agem no MESMO elemento, e duas regras escrevendo transform
+  // brigam por especificidade em vez de somar. Uma composição, e os
+  // efeitos escrevem token.
+  const lightTransforms = [...light.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/^\s*transform:/gm)]
+    .filter((m) => !light.slice(0, m.index).endsWith("")).length;
+  const litComposition = /\.lit-tilt,\s*\n\.lit-pull,\s*\n\.lit-swell \{[^}]*transform:[^;]*--light-shift-x[^;]*--light-turn-x[^;]*--light-grow/.test(light);
+  check(litComposition, "transform da luz",
+    litComposition
+      ? "um transform composto de --light-shift-*, --light-turn-* e --light-grow"
+      : "a composição da luz não reúne deslocamento, giro e inchaço numa declaração só");
+
+  // nenhum efeito da camada pode escrever transform por conta própria:
+  // .lit-cursor é a única exceção, e ela é um elemento sozinho na página
+  const litWriters = [...light.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter((m) => /^\s*transform:/m.test(m[2]))
+    .map((m) => m[1].trim().replace(/\s+/g, " "))
+    .filter((sel) => !sel.includes(".lit-cursor"));
+  check(litWriters.length === 1, "escritores de transform da luz",
+    litWriters.length === 1
+      ? "só a composição escreve transform; cada efeito escreve o seu token"
+      : `${litWriters.length} regras escrevem transform: ${litWriters.join(" | ")}`);
+
+  // o fallback de var() na composição não é redundância: sem suporte a
+  // @property o calc fica inválido em tempo de valor computado e a
+  // declaração INTEIRA cai para transform: none. Foi medido no líquido.
+  const litFallback = !/var\(--light-(shift-[xy]|turn-[xy]|grow)\)/.test(light);
+  check(litFallback, "reserva da luz",
+    litFallback ? "todo var() da composição declara reserva"
+                : "um var() da composição sem reserva: sem @property a declaração inteira vira none");
+
+  // a reação ao ponteiro é decidida por pointer: coarse, nunca por
+  // largura, e os DOIS lados precisam concordar: o CSS zera a camada e o
+  // script nem se registra. Um dos dois sozinho deixa metade viva.
+  const litCoarseCss = /@media \(pointer: coarse\)[^}]*--light-near:\s*0/.test(light);
+  const litCoarseJs = /matchMedia\("\(pointer: coarse\)"\)\.matches\)\s*return/.test(lightJs);
+  check(litCoarseCss && litCoarseJs, "luz no toque",
+    litCoarseCss && litCoarseJs
+      ? "sem ponteiro fino a folha zera a proximidade e o script não se registra"
+      : `só um lado desiste no toque: css ${litCoarseCss}, js ${litCoarseJs}`);
+
+  // o cursor cedido e o TERCEIRO modificador da luz que disputa cascata,
+  // e o adversario aqui nao mora nesta linguagem: e o `cursor: pointer`
+  // que qualquer app escreve no proprio cartao. `.lit-cursor-only *` pesa
+  // uma classe so, empata, e empate perde para quem vem depois. Medido:
+  // metade da tela ficava com dois ponteiros.
+  const cursorOnly = light.includes(".lit-cursor-only");
+  const cursorDoubled = /\.lit-cursor-only\.lit-cursor-only \*\s*\{[^}]*cursor:\s*none/.test(light);
+  check(!cursorOnly || cursorDoubled, "cursor cedido",
+    !cursorOnly ? "a página não cede o cursor do sistema"
+      : cursorDoubled ? ".lit-cursor-only vence o cursor que o app escreve no próprio controle"
+      : ".lit-cursor-only pesa uma classe só: empata com .card { cursor: pointer } e perde por ordem");
+
+  // e ele nunca pode deixar a tela sem ponteiro nenhum: onde a lente não
+  // existe, o cursor do sistema volta na MESMA consulta que a apaga
+  const coarseBack = /@media \(pointer: coarse\)[\s\S]*?cursor:\s*auto/.test(light);
+  const motionBack = /@media \(prefers-reduced-motion: reduce\)[\s\S]*?cursor:\s*auto/.test(light);
+  check(!cursorOnly || (coarseBack && motionBack), "ponteiro de reserva",
+    !cursorOnly ? "sem cursor cedido, sem reserva a checar"
+      : coarseBack && motionBack ? "onde a lente some, o cursor do sistema volta"
+      : `a lente some e o cursor não volta: coarse ${coarseBack}, movimento reduzido ${motionBack}`);
+
+  // ---------- conjunto de ícones ----------
+  // um <use> apontando para um id que não existe não gera erro: o
+  // elemento sai vazio. Foi exatamente assim que duas tabelas do guia
+  // saíram cruas, e a lição vale para o desenho também.
+  const symbols = new Set([...icons.matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1]));
+  // só o <use> do sprite. Uma âncora de navegação (href="#main") não é
+  // referência a desenho nenhum, e contá-la reprovava o guia por um link.
+  const referenced = [...html.matchAll(/<use[^>]*href="[^"#]*#([^"]+)"/g)].map((m) => m[1])
+    .filter((id) => !id.startsWith("pure-goo"));
+  const ghosts = [...new Set(referenced)].filter((id) => !symbols.has(id));
+  check(!ghosts.length, "ícone sem desenho",
+    ghosts.length ? `usados no guia e sem símbolo em icons.svg: ${ghosts.join(", ")}`
+                  : `${symbols.size} símbolos, e os ${new Set(referenced).size} usados no guia existem`);
+
+  // a espessura do traço é a mesma da página, e ela precisa dos dois
+  // lados: o atributo no sprite (a propriedade não é herdada e o
+  // conteúdo de um <use> mora em shadow tree) e o token no CSS.
+  const nonScaling = (icons.match(/vector-effect="non-scaling-stroke"/g) || []).length;
+  const shapes = (icons.match(/<(path|circle|rect|ellipse) /g) || []).length;
+  const iconStroke = /\.icon \{[^}]*stroke-width:\s*var\(--stroke\)/.test(patterns);
+  check(nonScaling === shapes && shapes > 0 && iconStroke,
+    "traço do ícone",
+    nonScaling === shapes && iconStroke
+      ? `${shapes} formas com traço fixo, e .icon usa var(--stroke)`
+      : `${nonScaling} de ${shapes} formas com o atributo, .icon com o token: ${iconStroke}`);
+
+  // o Lightning CSS, que é o minificador do tailwind v4 e do next, guarda
+  // só a última declaração do par prefixado e não recoloca a padrão: na
+  // ordem inversa o vidro sai sem desfoque nenhum no navegador, sem erro
+  // em lugar algum. A padrão vem sempre depois da -webkit-.
+  // os tres arquivos de CSS escritos a mao, nao so patterns.css: uma
+  // regra nova em motion.css ou em agent.css reintroduz o defeito pelo
+  // mesmo caminho, e ele nao aparece em revisao nenhuma.
+  const bdSrc = patterns + agent + motion + light;
+  const wrongOrder = [...bdSrc.matchAll(/\n( *)backdrop-filter: [^;]+;\n *-webkit-backdrop-filter:/g)].length;
+  const pairs = [...bdSrc.matchAll(/\n( *)-webkit-backdrop-filter: [^;]+;\n *backdrop-filter:/g)].length;
+  check(!wrongOrder, "ordem do backdrop-filter",
+    wrongOrder
+      ? `${wrongOrder} regra(s) declaram backdrop-filter antes da -webkit-: o minificador descarta a padrão`
+      : `${pairs} pares com a declaração padrão depois da -webkit-`);
 }
 
 // execução

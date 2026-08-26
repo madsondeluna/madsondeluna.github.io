@@ -11,6 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../web/tokens.css">
 <link rel="stylesheet" href="../web/patterns.css">
+<link rel="stylesheet" href="../web/light.css">
+<link rel="stylesheet" href="../web/motion.css">
 <link rel="stylesheet" href="../web/agent.css">
 <style>
 /* =========================================================
@@ -33,8 +35,30 @@
    Nenhum valor literal de cor, tipo, raio, sombra ou curva.
    ========================================================= */
 
+/* parede de icones: especime, entao le como tabela e nao como texto
+   corrido, que e a excecao ja declarada aos dois eixos verticais */
+.icon-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-16); list-style: none; margin: 0; padding: 0; }
+.icon-wall li { display: flex; align-items: center; gap: var(--space-10);
+  min-width: 0; color: var(--text); font-size: var(--text-12); }
+.icon-wall span { color: var(--muted); font-family: var(--font-mono);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* fileira de especimes vivos: le como tabela, nao como texto corrido,
+   entao e a mesma excecao declarada aos dois eixos verticais */
+.spec-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-24);
+  padding: var(--space-24); border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-surface); background: var(--dim);
+  --surface-context: var(--dim); }
+
 .shell { max-width: var(--container-xl); margin: 0 auto; padding: 0 var(--space-32); }
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-24); }
+/* min-width zero: sem ele o minimo automatico do item de grade e o
+   conteudo, o ellipsis nunca engata, e no estreito a grade forca o
+   viewport de layout alem do aparelho: a pagina inteira renderiza
+   encolhida e deslocada. O template sempre teve esta regra; o guia
+   nao a tinha, e era o defeito de diagramacao do estreito. */
+.grid > * { min-width: 0; }
 
 .axis-a { grid-column: 1 / 7; }
 .axis-a-wide { grid-column: 1 / 10; }
@@ -58,19 +82,19 @@
 
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50;
        background: var(--surface-glass);
-       backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
        -webkit-backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
+       backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
        border-bottom: var(--hairline) solid var(--border); }
 .nav-in { max-width: var(--container-xl); margin: 0 auto;
           padding: var(--space-16) var(--space-32); display: flex; align-items: center; }
 .nav .sig { font-family: var(--font-mono); font-size: var(--text-12);
             letter-spacing: var(--tracking-wide); color: var(--text); }
-.nav .sig span { color: var(--secondary); }
+.nav .sig span { color: var(--muted); }
 /* os links seguem a assinatura pela esquerda; quem vai para a borda
    direita e o seletor de modo */
 .nav .links { display: flex; gap: var(--space-20); }
 .nav .links a { position: relative; font-family: var(--font-mono); font-size: var(--text-12);
-                letter-spacing: var(--tracking-wide); color: var(--secondary);
+                letter-spacing: var(--tracking-wide); color: var(--muted);
                 padding-bottom: var(--space-4);
                 transition: color var(--duration-3) var(--ease-standard); }
 .nav .links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
@@ -87,8 +111,8 @@
             cursor: pointer; line-height: var(--leading-snug);
             background-image: var(--glass-fill); background-color: transparent;
             border: var(--hairline) solid var(--glass-edge);
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             box-shadow: var(--shadow-glass-rest); isolation: isolate;
             transition: background-image var(--duration-5) var(--ease-out-soft),
                         border-color var(--duration-5) var(--ease-out-soft),
@@ -111,7 +135,7 @@
 /* ---------- títulos ---------- */
 
 .label { font-family: var(--font-mono); font-size: var(--text-12);
-         letter-spacing: var(--tracking-eyebrow); color: var(--secondary); display: block; }
+         letter-spacing: var(--tracking-eyebrow); color: var(--muted); display: block; }
 .label b { color: var(--muted); font-weight: var(--weight-regular); }
 
 h1.hero-title { font-family: var(--font-display); font-stretch: var(--font-display-stretch);
@@ -132,7 +156,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 
 .aside-note { padding-top: var(--space-16); border-top: var(--hairline) solid var(--border); }
 .aside-note h4 { font-family: var(--font-mono); font-size: var(--text-12);
-                 letter-spacing: var(--tracking-eyebrow); color: var(--secondary);
+                 letter-spacing: var(--tracking-eyebrow); color: var(--muted);
                  font-weight: var(--weight-regular); margin-bottom: var(--space-12); }
 .aside-note p { font-size: var(--text-13); line-height: var(--leading-normal); color: var(--muted); }
 .aside-note p + p { margin-top: var(--space-12); }
@@ -145,7 +169,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
                font-size: var(--text-13); }
 .facts > div:first-child { border-top: var(--hairline) solid var(--border); }
 .facts dt { font-family: var(--font-mono); font-size: var(--text-12);
-            letter-spacing: var(--tracking-wide); color: var(--secondary); }
+            letter-spacing: var(--tracking-wide); color: var(--muted); }
 .facts dd { color: var(--text); }
 
 /* ---------- espécimes ---------- */
@@ -157,7 +181,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 .ramp button { position: relative; height: 96px; border: 0; padding: 0; cursor: copy;
                display: block; width: 100%; }
 .ramp button span { position: absolute; left: 0; right: 0; bottom: var(--space-8);
-                    text-align: center; font-family: var(--font-mono); font-size: 10px;
+                    text-align: center; font-family: var(--font-mono); font-size: var(--text-11);
                     letter-spacing: var(--tracking-wide);
                     transition: opacity var(--duration-2) var(--ease-standard); }
 .ramp button::after { content: ""; position: absolute; inset: 0;
@@ -174,7 +198,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
                 transition: transform var(--duration-3) var(--ease-swift); }
 .swatch:hover .chip { transform: translateY(-2px); }
 .swatch .n { font-family: var(--font-mono); font-size: var(--text-12); color: var(--text); display: inline-grid; place-items: center; text-align: center; }
-.swatch .h { font-family: var(--font-mono); font-size: var(--text-11); color: var(--secondary); }
+.swatch .h { font-family: var(--font-mono); font-size: var(--text-11); color: var(--muted); }
 
 /* tabela */
 .table { width: 100%; border-collapse: collapse; font-size: var(--text-13);
@@ -182,7 +206,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 .table th:not(:last-child), .table td:not(:last-child) { width: 1%; }
 .table th:last-child, .table td:last-child { width: auto; }
 .table th { text-align: left; white-space: nowrap; font-family: var(--font-mono); font-size: var(--text-12);
-            letter-spacing: var(--tracking-eyebrow); color: var(--secondary);
+            letter-spacing: var(--tracking-eyebrow); color: var(--muted);
             font-weight: var(--weight-regular);
             padding: var(--space-10) var(--space-16) var(--space-10) 0;
             border-bottom: var(--hairline) solid var(--text); }
@@ -203,7 +227,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
             align-items: baseline; padding: var(--space-12) 0;
             border-bottom: var(--hairline) solid var(--border); }
 .type-row .meta { font-family: var(--font-mono); font-size: var(--text-11);
-                  letter-spacing: var(--tracking-wide); color: var(--secondary); }
+                  letter-spacing: var(--tracking-wide); color: var(--muted); }
 .type-row .sample { color: var(--text); overflow: hidden; text-overflow: ellipsis;
                     white-space: nowrap; }
 
@@ -213,14 +237,14 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
             gap: var(--space-16); }
 .specimen .glyphs { font-size: var(--text-56); line-height: 1; color: var(--text); }
 .specimen .role { font-family: var(--font-mono); font-size: var(--text-12);
-                  letter-spacing: var(--tracking-wide); color: var(--secondary); }
+                  letter-spacing: var(--tracking-wide); color: var(--muted); }
 .specimen .rule-line { font-size: var(--text-13); color: var(--muted);
                        line-height: var(--leading-normal); }
 
 /* espaço e forma */
 .space-row { display: grid; grid-template-columns: 90px 1fr; gap: var(--space-24);
              align-items: center; padding: var(--space-8) 0; }
-.space-row .k { font-family: var(--font-mono); font-size: var(--text-12); color: var(--secondary); }
+.space-row .k { font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); }
 .space-row .bar { height: 12px; background: var(--accent); }
 
 .shape-row { display: flex; gap: var(--space-24); align-items: flex-end; flex-wrap: wrap; }
@@ -229,7 +253,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
               border: var(--hairline) solid var(--border);
               border-radius: var(--radius-surface); }
 .space-row .bar { border-radius: var(--radius-4); }
-.shape .k { font-family: var(--font-mono); font-size: var(--text-11); color: var(--secondary); }
+.shape .k { font-family: var(--font-mono); font-size: var(--text-11); color: var(--muted); }
 
 /* movimento */
 .motion-row { display: grid; grid-template-columns: 168px 1fr 76px; gap: var(--space-24);
@@ -237,7 +261,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
               border-bottom: var(--hairline) solid var(--border); }
 .motion-row .k { font-family: var(--font-mono); font-size: var(--text-12); color: var(--text); display: inline-grid; place-items: center; text-align: center; }
 .motion-row .use { font-family: var(--font-mono); font-size: var(--text-11);
-                   color: var(--secondary); text-align: right; }
+                   color: var(--muted); text-align: right; }
 .lane { position: relative; height: var(--hairline); background: var(--border);
         container-type: inline-size; }
 .lane .dot { position: absolute; top: -6px; left: 0; width: 13px; height: 13px;
@@ -258,7 +282,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 .demo-block { display: flex; flex-direction: column; gap: var(--space-16); min-width: 0;
               padding-top: var(--space-16); border-top: var(--hairline) solid var(--text); }
 .demo-block .k { font-family: var(--font-mono); font-size: var(--text-12);
-                 letter-spacing: var(--tracking-eyebrow); color: var(--secondary); }
+                 letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
 .demo-row { display: flex; gap: var(--space-8); flex-wrap: wrap; align-items: center; }
 
 /* a célula da grade não arredonda sozinha: o raio é da grade, e o
@@ -316,7 +340,7 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
              padding: var(--space-24); display: flex; flex-direction: column;
              gap: var(--space-16); min-width: 0; }
 .craft-box .k { font-family: var(--font-mono); font-size: var(--text-12);
-                letter-spacing: var(--tracking-eyebrow); color: var(--secondary); }
+                letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
 .craft-box .note { color: var(--muted); }
 
 /* o alvo é invisível por definição; o interruptor o revela */
@@ -329,14 +353,14 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 .res-grid > div { background: var(--bg); padding: var(--space-16);
                   display: flex; gap: var(--space-12); min-width: 0; }
 .res-grid .who { font-family: var(--font-mono); font-size: var(--text-11);
-                 color: var(--secondary); flex-shrink: 0; }
+                 color: var(--muted); flex-shrink: 0; }
 .res-grid .what { font-size: var(--text-13); color: var(--text); min-width: 0; }
 
 /* estados: vazio, carregando e erro são três desenhos, não um */
 .state-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-24); }
 .state-grid > div { display: flex; flex-direction: column; gap: var(--space-12); }
 .state-grid .k { font-family: var(--font-mono); font-size: var(--text-12);
-                 letter-spacing: var(--tracking-eyebrow); color: var(--secondary); }
+                 letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
 .state-card { border: var(--hairline) solid var(--border); background: var(--surface);
               border-radius: var(--radius-surface);
               padding: var(--space-16); min-height: 132px;
@@ -359,8 +383,8 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
                         color: var(--text); border-radius: var(--radius-full);
                         background-image: var(--glass-fill);
                         border: var(--hairline) solid var(--glass-edge);
-                        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
                         -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
                         box-shadow: var(--shadow-glass-rest); }
 
 /* toast de cópia */
@@ -375,22 +399,55 @@ h3.block-title { font-size: var(--text-18); color: var(--text);
 /* rodapé: mesma barra da navegação, ancorada embaixo */
 .foot { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
         background: var(--surface-glass);
-        backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
         -webkit-backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
+        backdrop-filter: blur(var(--blur-card)) saturate(var(--blur-saturate));
         border-top: var(--hairline) solid var(--border); }
 .foot-in { max-width: var(--container-xl); margin: 0 auto;
            padding: var(--space-16) var(--space-32); display: flex;
            align-items: center; gap: var(--space-16);
            font-family: var(--font-mono); font-size: var(--text-12);
-           letter-spacing: var(--tracking-wide); color: var(--secondary); }
+           letter-spacing: var(--tracking-wide); color: var(--muted); }
 .foot .sig { margin-left: auto; color: var(--text); }
-.foot .sig span { color: var(--secondary); }
+.foot .sig span { color: var(--muted); }
 
 /* a barra de baixo é fixa: o conteúdo precisa de fôlego para não passar
    por baixo dela, e o toast sobe acima do rodapé */
 body { padding-bottom: var(--space-96); }
 
-@media (max-width: 1080px) {
+/* mesmo ponto do template e de patterns.css: --breakpoint-stack */
+@media (max-width: 768px) {
+  /* a nav fixa: a assinatura sai (a identidade mora no rodape), o
+     seletor de modo vira o conteudo da barra e pode quebrar linha */
+  .nav .sig { display: none; }
+  .nav-in { padding-inline: var(--space-16); flex-wrap: wrap; }
+  .nav .modes { flex-wrap: wrap; margin-left: auto; }
+
+  /* o rodape e uma linha de flex com texto longo: quebra, nao estica */
+  .foot-in { flex-wrap: wrap; }
+
+  /* rodape fixo sai do estreito: com o texto quebrado em duas linhas
+     ele passa a cobrir a prosa, porque o folego do body foi medido
+     para uma linha. Numa tela de celular uma barra fixa embaixo ja
+     custa a altura mais cara da tela; aqui ela desce para o fim do
+     fluxo, onde nao cobre nada. */
+  .foot { position: static; }
+
+  /* TODO filho da grade vai para o eixo unico. As classes de eixo ja
+     colapsam acima; o que resta sao os 25 posicionamentos inline dos
+     especimes (grid-column: 1 / 7 e afins), e important e o unico
+     mecanismo que vence um estilo inline sem javascript. E a excecao
+     declarada que confirma a regra de nao usar important: um especime
+     de diagramacao larga nao tem forma legal de existir em 375px. */
+  .grid > * { grid-column: 1 / -1 !important; }
+
+  /* os paineis do palco de vidro carregam min-width inline de especime
+     (320, 260, 200): em 311px de trilha eles transbordavam o cartao */
+  .stage-content .glass-panel { min-width: 0 !important; }
+
+  /* o leitor do palco e absoluto sobre a arte no largo; no estreito ele
+     cobria o proprio conteudo que anota. Vira fluxo. */
+  .stage-readout { position: static; margin-top: var(--space-16); pointer-events: auto; }
+
   .shell { padding: 0 var(--space-24); }
   .grid { gap: var(--space-16); }
   .axis-a, .axis-a-wide, .axis-a-chart, .axis-b { grid-column: 1 / 13; }
@@ -400,6 +457,14 @@ body { padding-bottom: var(--space-96); }
   .motion-row { grid-template-columns: 140px 1fr; }
   .motion-row .use { display: none; }
 }
+/* o guia obedece as proprias regras: o que se aperta chega a 44px no
+   toque. .mode-btn e .dot-btn sao locais do guia, entao o piso mora
+   aqui; o resto vem de patterns.css e de agent.css. */
+@media (pointer: coarse) {
+  .mode-btn { min-height: var(--hit-min-touch); padding-block: var(--space-10); }
+  .dot-btn { min-width: var(--hit-min); min-height: var(--hit-min); }
+}
+
 @media (max-width: 640px) {
   .swatches { grid-template-columns: repeat(2, 1fr); }
   .ramp { grid-template-columns: repeat(5, 1fr); }
@@ -408,7 +473,34 @@ body { padding-bottom: var(--space-96); }
 }
 </style>
 </head>
-<body>
+<body class="lit-cursor-only">
+
+<svg class="pure-defs" aria-hidden="true" focusable="false" width="0" height="0"><defs>
+
+  <filter id="pure-goo-tight" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -7.83" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+
+  <filter id="pure-goo" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+
+  <filter id="pure-goo-wide" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6.17" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+
+</defs></svg>
+
+<div class="lit-cursor" aria-hidden="true"></div>
 
 <a class="skip-link pill" href="#main">Skip to content</a>
 <div class="progress" id="progress"></div>
@@ -442,7 +534,6 @@ body { padding-bottom: var(--space-96); }
   <header class="band" style="padding-top: 152px">
     <div class="grid">
       <span class="label axis-a rv">Visual blueprint</span>
-      <span class="label axis-b rv" style="--d: 40ms">Version 1.4.1</span>
       <h1 class="hero-title axis-a-wide optical rv step-1" style="--d: 80ms">The whole<br>system, on<br>one page</h1>
       <p class="lede axis-a rv step-2" style="--d: 140ms">Every token, every component and every
       motion curve available in Pure Design, rendered live in all four modes. Click any colour to
@@ -499,10 +590,10 @@ body { padding-bottom: var(--space-96); }
     <div class="grid step-3">
       <div class="axis-a-chart rv">
         <span class="label" style="margin-bottom: var(--space-16)">Where each colour may legally be used</span>
-        <table class="table">
+        <div class="table-scroll"><table class="table">
           <thead><tr><th>Pair</th><th>Ratio</th><th>WCAG verdict</th><th>Role</th></tr></thead>
           <tbody id="contrast"></tbody>
-        </table>
+        </table></div>
       </div>
       <aside class="aside-note axis-b rv" style="--d: 60ms">
         <h4>Read this before using a colour</h4>
@@ -812,7 +903,7 @@ body { padding-bottom: var(--space-96); }
     <div class="grid step-3">
       <div class="axis-a-chart rv">
         <span class="label" style="margin-bottom: var(--space-16)">When to use which</span>
-        <table class="table">
+        <div class="table-scroll"><table class="table">
           <thead><tr><th>Texture</th><th>Blur</th><th>Use it for</th></tr></thead>
           <tbody>
             <tr><td class="mono">.glass-thin</td><td class="mono">4px</td><td>Overlay where the content behind must stay readable: a legend over a chart, a caption over an image</td></tr>
@@ -821,7 +912,7 @@ body { padding-bottom: var(--space-96); }
             <tr><td class="mono">.glass-deep</td><td class="mono">56px</td><td>Full-width chrome that must separate itself from the page: navigation bar, docked footer</td></tr>
             <tr><td class="mono">.glass-accent</td><td class="mono">inherits</td><td>The one selected or primary control in a group, never more than one at a time</td></tr>
           </tbody>
-        </table>
+        </table></div>
       </div>
       <aside class="aside-note axis-b rv" style="--d: 60ms">
         <h4>Where glass may not go</h4>
@@ -830,6 +921,222 @@ body { padding-bottom: var(--space-96); }
         anything the ratio table would allow.</p>
         <p>In those three cases the answer is <span class="mono" style="color: var(--text)">.pill-solid</span>
         or a plain surface.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Liquid layer</span>
+      <h3 class="axis-a-wide rv step-1">The fifth material is not a fifth texture</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <p>Glass filters itself, so the text it carries goes through the blur with it. That is
+        why glass never merges: fusing two neighbouring controls would melt both labels.</p>
+        <p>Liquid splits the material from the content into two layers stacked in one grid
+        cell. The silhouette sheet, behind, is the only filtered thing on the page and carries
+        the goo filter and the shadow. The real DOM rides on top, unfiltered, crisp, with its
+        focus ring, hit area and ARIA intact.</p>
+        <p>The two layers are mirrors: same display, same gap, same box per unit. That is how
+        the drop sits exactly under the control without a line of JavaScript measuring
+        anything, and it is also the price. A cluster unit has a fixed size, because a width
+        that depends on the text can only be mirrored by measuring the text.</p>
+      </div>
+      <div class="axis-b rv">
+        <div class="liquid">
+          <span class="liquid-sheet" aria-hidden="true"><i class="liquid-blob"></i><i class="liquid-blob"></i><i class="liquid-blob"></i><i class="liquid-blob"></i></span>
+          <div class="liquid-content">
+            <button class="liquid-item" type="button">A</button>
+            <button class="liquid-item" type="button">B</button>
+            <button class="liquid-item" type="button">C</button>
+            <button class="liquid-item" type="button">D</button>
+          </div>
+        </div>
+        <div class="liquid liquid-wide liquid-sq step-1">
+          <span class="liquid-sheet" aria-hidden="true"><i class="liquid-blob"></i><i class="liquid-blob"></i><i class="liquid-blob"></i></span>
+          <div class="liquid-content">
+            <button class="liquid-item" type="button">1</button>
+            <button class="liquid-item" type="button">2</button>
+            <button class="liquid-item" type="button">3</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="table-scroll"><table class="table">
+          <thead><tr><th>Filter</th><th class="num">Deviation</th><th class="num">Slope</th><th class="num">Intercept</th><th class="num">Bridges up to</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">#pure-goo-tight</td><td class="num">4</td><td class="num">20</td><td class="num">-7.83</td><td class="num">4px</td></tr>
+            <tr><td class="mono">#pure-goo</td><td class="num">6</td><td class="num">18</td><td class="num">-7</td><td class="num">6px</td></tr>
+            <tr><td class="mono">#pure-goo-wide</td><td class="num">12</td><td class="num">16</td><td class="num">-6.17</td><td class="num">10px</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>What the bridge column means</h4>
+        <p>It was measured on screen, not estimated. The bridge holds while the gap stays below
+        the blur deviation and vanishes a pixel above it. Each filter variant therefore carries
+        its own gap, and swapping the variant without swapping the gap is the silent way a
+        cluster comes out as loose pills.</p>
+        <h4>What does not cross into pure CSS</h4>
+        <p>The spring, the droplet that trails a moving element, and the inner bezel rebuilt on
+        the merged silhouette. All three have to measure a rectangle every frame.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Liquid layer</span>
+      <h3 class="axis-a-wide rv step-1">Five reads, and none of them writes a transform</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <p>Every liquid animation writes the registered tokens and the composition stays the one
+        transform declaration in the chapter. That is what lets the material move without
+        reopening the defect of two rules fighting over the same element.</p>
+        <p>The tokens are registered with <span class="mono">@property</span>, which is what
+        makes them interpolate. An unregistered custom property is text: it jumps from one frame
+        to the next, so a keyframe writing <span class="mono">--liquid-swell</span> would step
+        instead of flow.</p>
+        <p>What the library does with a spring, this does with a curve, and the difference is
+        declared rather than hidden. A spring overshoots on its own and keeps going past the
+        target; reproducing it means integrating every frame, which is JavaScript. What crosses
+        over is the <em>shape</em> of the motion, and the shape is what you recognise: the bridge
+        stretching, the neck thinning, the drop letting go.</p>
+      </div>
+      <aside class="aside-note axis-b rv">
+        <h4>Three of the five need a flux state</h4>
+        <p>They exist only <em>while</em> the mass is flowing, and CSS cannot say "during". They
+        read <span class="mono">.is-flux</span>, set on the way in and cleared on the way out,
+        the same contract <span class="mono">.motion-dropdown</span> has with
+        <span class="mono">.is-open</span>.</p>
+        <p>Binding them to the resting state was tried and discarded on screen: it left the label
+        blurred forever and the trail reading as loose dots standing still. A travel effect
+        pinned to the resting state is a defect, not a simplification. The check script covers it
+        as <span class="mono">desfoque de percurso</span>.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="table-scroll"><table class="table">
+          <thead><tr><th>Class</th><th>Read</th><th>Mechanism</th><th>Needs state</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">.liquid-trail</td><td>The mass stretches behind a moving unit</td><td>Phase difference from <span class="mono">transition-delay</span></td><td>Yes</td></tr>
+            <tr><td class="mono">.liquid-drip</td><td>A drop stretches, necks and lets go</td><td>Keyframes on shift and stretch</td><td>No</td></tr>
+            <tr><td class="mono">.liquid-morph</td><td>A round trigger becomes the surface it opens</td><td>Per-axis stretch of the silhouette</td><td>Yes</td></tr>
+            <tr><td class="mono">.liquid-pulse</td><td>The cluster breathes while something is pending</td><td>Out-of-phase swell loop</td><td>No</td></tr>
+            <tr><td class="mono">.is-flux</td><td>Content cross-blurs while the mass flows</td><td><span class="mono">--motion-blur-1</span> on the content layer</td><td>Yes</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>The morph is the plus-to-menu, done legally</h4>
+        <p>The source recipe animates width, height and border-radius. Here the same read comes
+        out without touching layout, because only the silhouette has to grow: the content is
+        already at its final size and was merely clipped. The material working for the rule
+        instead of against it.</p>
+        <h4>Pulse under reduced motion</h4>
+        <p>It slows down rather than stopping, the same exception the skeleton already carries. A
+        pending indicator that holds still lies about the state.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Light layer</span>
+      <h3 class="axis-a-wide rv step-1">Glass stands still. The light does not.</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <p>The glass in this language is a still material: it blurs what is behind it, lights the
+        top edge and pools a shadow at the base, and it does all three the same way wherever the
+        pointer happens to be. That is what an honest material does, and it is why glass never
+        needed a script.</p>
+        <p>The light layer does not change the material. It adds the <em>source</em>. A real
+        glass surface has a highlight that travels when the light travels, a rim that lights on
+        the side the light comes from, and a depth that only shows when the observer moves. The
+        pointer is the observer, and it is the one thing on this page a stylesheet cannot read.
+        That, and only that, is why this layer ships with JavaScript.</p>
+        <p>The contract is three numbers. <span class="mono">light.js</span> measures a box and
+        writes <span class="mono">--light-x</span>, <span class="mono">--light-y</span> and
+        <span class="mono">--light-near</span>. It knows nothing about highlights, rims, tilt or
+        magnets: no effect name appears anywhere in that file. Every appearance decision lives in
+        <span class="mono">light.css</span>, which is why a new effect in this layer touches no
+        JavaScript at all.</p>
+      </div>
+      <aside class="aside-note axis-b rv">
+        <h4>Proximity is the only off switch</h4>
+        <p>There is no second "pointer absent" state anywhere in the layer.
+        <span class="mono">--light-near</span> is 1 under the pointer and 0 at
+        <span class="mono">--light-reach</span> away, and every effect multiplies by it. One
+        state fewer is one state fewer to fall out of sync.</p>
+        <h4>Decided by input, never by width</h4>
+        <p>Under <span class="mono">pointer: coarse</span> there is no hover, so the layer rests
+        and the script does not register. Under
+        <span class="mono">prefers-reduced-motion</span> the light stays and the travel goes: the
+        highlight still lights, the tilt and the magnet do not. A 1280px tablet is touch and a
+        phone with a mouse is not, and deciding by width gets both wrong.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="lit-stage" style="display: flex; gap: var(--space-24); flex-wrap: wrap; align-items: center">
+          <button class="pill glass lit lit-swell lit-edge" data-lit>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="../web/icons.svg#sparkle"/></svg>
+            Highlight and rim
+          </button>
+          <button class="pill glass lit lit-pull" data-lit>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="../web/icons.svg#link"/></svg>
+            Magnet
+          </button>
+          <div class="card-glass lit lit-tilt lit-edge" data-lit
+               style="padding: var(--space-24); max-width: 280px">
+            <span class="eyebrow">Tilt</span>
+            <p style="margin: var(--space-8) 0 0">The surface turns toward the pointer and settles
+            back on its own. No second state, no hover rule.</p>
+          </div>
+        </div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>One transform, composed of tokens</h4>
+        <p>Tilt, magnet and swell act on the same element, so none of them writes
+        <span class="mono">transform</span>. Each writes its own token and the single composed
+        declaration lives in one rule, the same discipline the liquid chapter already carries and
+        for the same defect: two rules writing transform fight over specificity instead of adding
+        up.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="table-scroll"><table class="table">
+          <thead><tr><th>Class</th><th>Read</th><th>Writes</th><th>Under reduced motion</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">.lit</td><td>A specular spot travels with the pointer</td><td>Opacity of a negative-index plane</td><td>Stays</td></tr>
+            <tr><td class="mono">.lit-edge</td><td>The rim lights on the side the light comes from</td><td>Offset of an inset shadow</td><td>Stays</td></tr>
+            <tr><td class="mono">.lit-tilt</td><td>The surface turns toward the pointer</td><td class="mono">--light-turn-x/y</td><td>Rests</td></tr>
+            <tr><td class="mono">.lit-pull</td><td>The control drifts toward the pointer before it arrives</td><td class="mono">--light-shift-x/y</td><td>Rests</td></tr>
+            <tr><td class="mono">.lit-swell</td><td>The control grows as the pointer nears</td><td class="mono">--light-grow</td><td>Rests</td></tr>
+            <tr><td class="mono">.lit-field</td><td>The section lights behind the glass that sits on it</td><td>Opacity of a negative-index plane</td><td>Stays</td></tr>
+            <tr><td class="mono">.lit-cursor</td><td>One thin drop of glass rides with the cursor</td><td class="mono">--light-shift-x/y</td><td>Hidden</td></tr>
+            <tr><td class="mono">.lit-stage</td><td>Gives the tilt a vanishing point</td><td class="mono">perspective</td><td>Unaffected</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>The plane is behind the glass, not over it</h4>
+        <p><span class="mono">.lit-field</span> paints on a pseudo-element at
+        <span class="mono">z-index: -1</span>, which paints after the element's own background
+        and before its in-flow content. An overlay on top would stay sharp and give away that the
+        light passes through nothing. Below, the backdrop filter of every glass surface distorts
+        it, and that is where the liquid-glass read comes from.</p>
+        <h4>No spring, no inertia, no physical trail</h4>
+        <p>All three integrate position every frame. An effect that only exists while a rAF loop
+        runs is not a material: it is animation under another name.</p>
       </aside>
     </div>
   </section>
@@ -861,7 +1168,7 @@ body { padding-bottom: var(--space-96); }
     <div class="grid step-3">
       <span class="label axis-a rv">Where motion is allowed</span>
       <div class="axis-a-chart step-1 rv">
-        <table class="table">
+        <div class="table-scroll"><table class="table">
           <thead><tr><th>Pattern</th><th>Curve</th><th>Duration</th></tr></thead>
           <tbody>
             <tr><td>Colour, background and border on hover</td><td class="mono">ease-standard</td><td class="mono">200ms</td></tr>
@@ -871,7 +1178,7 @@ body { padding-bottom: var(--space-96); }
             <tr><td>Chart line drawing itself in</td><td class="mono">ease-out-soft</td><td class="mono">500ms</td></tr>
             <tr><td>Chart bar growing from its base</td><td class="mono">ease-out-expo</td><td class="mono">350ms</td></tr>
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
     <div class="grid step-3">
@@ -883,7 +1190,7 @@ body { padding-bottom: var(--space-96); }
         <span class="k">Agent · Loading state</span>
         <div class="agent-stage">
           <div><span class="loader" role="status" aria-live="polite">
-            <span class="loader-shape" id="load-shape" aria-hidden="true"></span>
+            <span id="load-shape" aria-hidden="true"></span>
             <span class="loader-label" id="load-label">Churning</span>
             <span class="loader-time num" id="load-time">0.0s</span>
           </span></div>
@@ -963,6 +1270,131 @@ body { padding-bottom: var(--space-96); }
         version and no substitute worth inventing.</p>
         <p>The check script enforces the first rule on agent.css directly: a transition naming a
         layout property fails the build, as does any hex colour written outside tokens.css.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Motion layer</span>
+      <h3 class="axis-a-wide rv step-1">Twenty recipes, remapped onto the scale that already existed</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <p>The recipes come from the transitions.dev catalogue by Jakub Antalik, and they were
+        not copied: they were remapped. The catalogue carries its own scale, seven durations and
+        six curves, and this language has six durations and five curves and forbids a new one.</p>
+        <p>The remap follows the rule the catalogue itself states, match by <em>use</em> and not
+        by number. A 300ms modal close becomes <span class="mono">--duration-2</span> at 150ms
+        because both are "modal close", even though the numbers are far apart. The dominant
+        catalogue curve, <span class="mono">cubic-bezier(0.22, 1, 0.36, 1)</span>, is
+        <span class="mono">--ease-out-expo</span> here to three decimal places of intent.</p>
+        <p>Three px values were born with the layer, and they are blur radii, not a scale:
+        <span class="mono">--motion-blur-1</span>, <span class="mono">-2</span> and
+        <span class="mono">-3</span>. They blur the element itself while it moves and clear on
+        settle, which is the opposite of glass, where the blur is on the backdrop and stands
+        still. Mixing the two families is how a card ends up blurred at rest.</p>
+      </div>
+      <aside class="aside-note axis-b rv">
+        <h4>What did not come across</h4>
+        <p>Card resize, accordion, panel reveal and input clear animate width, height or
+        grid-template-rows. Layout property, recalculated every frame, forbidden here. An
+        accordion body leaves the flow with <span class="mono">[hidden]</span> instead.</p>
+        <p>Avatar group hover, card stack hover, the double-bounce toggle and the like button
+        need an overshoot curve. A control settles, it does not jump. The toggle came across
+        without the overshoot; the other three did not come across at all.</p>
+        <p>Confetti, drag-and-drop physics, the smoky dissolve and the image-generation
+        placeholder integrate position, collision or noise every frame. A CSS recipe that needs a
+        rAF loop to exist is not a CSS recipe. Pro gradient text and the Get Pro button ask for a
+        hue the palette does not have, and inventing a ninth slot for one button is how a palette
+        comes apart.</p>
+        <p>3D tilt with glare and image open tilt were not rejected: they changed chapters. Both
+        react to the <em>pointer</em>, and nothing in this file reads a pointer. They live in the
+        light layer as <span class="mono">.lit-tilt</span>.</p>
+        <h4>What needs JavaScript</h4>
+        <p><span class="mono">.motion-tabs</span> for the pill geometry,
+        <span class="mono">.motion-digits</span> for the per-digit state,
+        <span class="mono">.motion-shake</span> and
+        <span class="mono">.motion-dropdown</span> for adding and clearing the state class,
+        <span class="mono">.motion-counter</span> for writing the target digit,
+        <span class="mono">.motion-spin</span> for marking the wait done and
+        <span class="mono">.motion-stack</span> for inserting the new notice first.
+        Each says so in its own comment.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="spec-row">
+          <div class="motion-stack" id="spec-stack" style="min-width: 220px">
+            <div class="surface" style="padding: var(--space-12) var(--space-16)">Third notice</div>
+            <div class="surface" style="padding: var(--space-12) var(--space-16)">Second notice</div>
+            <div class="surface" style="padding: var(--space-12) var(--space-16)">First notice</div>
+          </div>
+
+          <span class="num" style="font-size: var(--text-32)"><span class="motion-counter"><span id="spec-reel-a"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span></span><span class="motion-counter"><span id="spec-reel-b"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span></span></span>
+
+          <svg class="icon icon-lg motion-spin" id="spec-spin" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle vector-effect="non-scaling-stroke" cx="12" cy="12" r="9" pathLength="1"/>
+            <g class="motion-check" id="spec-mark"><path vector-effect="non-scaling-stroke" d="M7.5 12.3 10.7 15.5 16.5 8.9" pathLength="1"/></g>
+          </svg>
+
+          <span class="motion-wave">Scoring 4096 candidates</span>
+
+          <a class="motion-learn link-muted" href="#motion">Learn more
+            <svg class="icon icon-sm" aria-hidden="true"><use href="../web/icons.svg#arrow-right"/></svg></a>
+
+          <button class="pill glass lit lit-swell" type="button" id="spec-run" data-lit>Run the five</button>
+        </div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>Five specimens, five reads</h4>
+        <p>The stack recedes by transform in one grid cell, so nothing reflows when a fourth
+        notice arrives and the fourth leaves the tab order with
+        <span class="mono">visibility</span>. The reel says the number travelled the distance;
+        the cross-blur of <span class="mono">.motion-digits</span> says it was replaced. The arc
+        closes into the ring while the check draws inside it, two recipes on one element, which
+        is what removes the flicker of swapping a spinner for a mark.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <div class="table-scroll"><table class="table">
+          <thead><tr><th>Use</th><th>Class</th><th class="num">Duration</th><th>Curve</th></tr></thead>
+          <tbody>
+            <tr><td>Anchored surface opens</td><td class="mono">.motion-dropdown</td><td class="num">200 / 150</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Centred surface opens</td><td class="mono">.motion-modal</td><td class="num">300 / 150</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Notice rises from below</td><td class="mono">.motion-toast</td><td class="num">350 / 150</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Hint over an icon</td><td class="mono">.motion-tip</td><td class="num">150</td><td class="mono">--ease-out</td></tr>
+            <tr><td>Two icons, one slot</td><td class="mono">.motion-icon-swap</td><td class="num">200</td><td class="mono">--ease-standard</td></tr>
+            <tr><td>Label changes in place</td><td class="mono">.motion-text-swap</td><td class="num">150</td><td class="mono">--ease-standard</td></tr>
+            <tr><td>Stacked lines enter</td><td class="mono">.motion-lines</td><td class="num">500</td><td class="mono">--ease-standard</td></tr>
+            <tr><td>Badge appears</td><td class="mono">.motion-badge</td><td class="num">350</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>A number updates</td><td class="mono">.motion-digits</td><td class="num">500</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Validation failed</td><td class="mono">.motion-shake</td><td class="num">350</td><td class="mono">--ease-standard</td></tr>
+            <tr><td>Placeholder becomes content</td><td class="mono">.motion-reveal</td><td class="num">350</td><td class="mono">--ease-standard</td></tr>
+            <tr><td>Progress text stays alive</td><td class="mono">.motion-shimmer</td><td class="num">2000</td><td class="mono">linear</td></tr>
+            <tr><td>Highlight follows the tab</td><td class="mono">.motion-tabs</td><td class="num">200</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Action confirmed</td><td class="mono">.motion-check</td><td class="num">500</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>List becomes detail</td><td class="mono">.motion-pages</td><td class="num">200</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Notices pile up</td><td class="mono">.motion-stack</td><td class="num">300</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>A counter runs to its value</td><td class="mono">.motion-counter</td><td class="num">500</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>A wait closes into a ring</td><td class="mono">.motion-spin</td><td class="num">350</td><td class="mono">--ease-out-expo</td></tr>
+            <tr><td>Long text stays alive</td><td class="mono">.motion-wave</td><td class="num">500</td><td class="mono">linear</td></tr>
+            <tr><td>A link opens one step</td><td class="mono">.motion-learn</td><td class="num">200</td><td class="mono">--ease-out-expo</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <aside class="axis-b rv">
+        <h4>Two painted exceptions</h4>
+        <p>Beyond transform, opacity and filter the layer animates
+        <span class="mono">stroke-dashoffset</span> in the confirmation check and
+        <span class="mono">background-position</span> in the shimmer. Both are paint, neither is
+        layout, and neither reflows anything.</p>
+        <h4>One emphasis per flow</h4>
+        <p>The confirmation check costs <span class="mono">--duration-6</span> on purpose. A
+        celebration that happens on every save stops being one.</p>
       </aside>
     </div>
   </section>
@@ -1509,7 +1941,7 @@ body { padding-bottom: var(--space-96); }
       <div class="demo-block rv" style="grid-column: 5 / 9; --d: 60ms">
         <span class="k">Links</span>
         <div class="demo-row"><a class="link-cta" href="#">Call to action</a></div>
-        <div class="demo-row"><a class="link-muted" href="#">Muted link</a></div>
+        <div class="demo-row"><a class="link-muted hit" href="#">Muted link</a></div>
         <div class="demo-row"><span class="hover-fade" style="cursor: pointer">Fades on hover</span></div>
         <p class="note">Three levels: underlined action, muted inline, and fade for anything
         already carrying its own affordance.</p>
@@ -1654,7 +2086,7 @@ body { padding-bottom: var(--space-96); }
             <div class="suggest-foot">
               <span class="confidence">Stock cover</span>
               <span class="spacer"></span>
-              <span class="num" style="font-size: var(--text-12); color: var(--secondary)">82%</span>
+              <span class="num" style="font-size: var(--text-12); color: var(--muted)">82%</span>
             </div>
             <div class="meter" style="margin-top: var(--space-8)"><i style="--v: 0.82"></i></div>
           </div>
@@ -1746,7 +2178,7 @@ body { padding-bottom: var(--space-96); }
             <button class="filter" type="button" aria-pressed="false" data-filter="done">Completed <span class="n">1</span></button>
           </div>
           <div class="step-1" style="overflow-x: auto">
-            <table class="grid-table" id="filter-table">
+            <div class="table-scroll"><table class="grid-table" id="filter-table">
               <caption class="sr-only">Reorder tasks by status</caption>
               <thead><tr><th>Task</th><th>Date</th><th>Status</th><th>Advisor</th></tr></thead>
               <tbody>
@@ -1756,10 +2188,10 @@ body { padding-bottom: var(--space-96); }
                 <tr data-status="doing"><td>Taste-test batch 42</td><td class="num">Nov 08</td><td><span class="status status-serious">In progress</span></td><td>Maple Orbit</td></tr>
                 <tr data-status="done"><td>Order waffle cones</td><td class="num">Apr 14</td><td><span class="status status-good">Completed</span></td><td>Aurora Scoops</td></tr>
               </tbody>
-            </table>
+            </table></div>
           </div>
           <div class="step-2" style="overflow-x: auto">
-            <table class="grid-table">
+            <div class="table-scroll"><table class="grid-table">
               <caption class="sr-only">Menu cleanup the agent proposes</caption>
               <thead><tr><th>Flavour</th><th>Category</th><th>Supplier</th><th>Last interaction</th></tr></thead>
               <tbody>
@@ -1768,7 +2200,7 @@ body { padding-bottom: var(--space-96); }
                 <tr><td>Mint Chip</td><td>Classic</td><td>maple-orbit</td><td class="num">9 days ago</td></tr>
                 <tr data-diff="added"><td>Pistachio</td><td>Seasonal</td><td>maple-orbit</td><td class="num">15 days ago</td></tr>
               </tbody>
-            </table>
+            </table></div>
           </div>
         </div>
         <p class="note">One table base carries all three: the filtered list, the record grid and
@@ -1779,6 +2211,161 @@ body { padding-bottom: var(--space-96); }
       </div>
     </div>
 
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Icons</span>
+      <h3 class="axis-a-wide rv step-1">Sixty-five, drawn to the same geometry as everything else</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <p>Until 1.6.0 the language had no icons, and the absence showed on every screen built
+        with it: each project brought a set in from outside, with a different box, a different
+        weight and a different cap, so the one drawing on the page that did not belong to the
+        page was the one that repeated most often.</p>
+        <p>The weight is the whole point, and it does not live in the sprite file. It lives in
+        <span class="mono">.icon</span> as <span class="mono">var(--stroke)</span>, the same
+        token as the spinner ring and the checkbox mark.
+        <span class="mono">non-scaling-stroke</span> keeps it equal across all three sizes:
+        without it the stroke shrinks with the box and a 16px icon reads lighter than a 24px one
+        in the same bar.</p>
+        <p>Three sizes and no more: 20 for a control, 16 for metadata, 24 for a heading. The
+        whole family is <span class="mono">currentColor</span>, so an icon inside a control takes
+        the control's ink with no rule at all.</p>
+      </div>
+      <aside class="aside-note axis-b rv">
+        <h4>Not derived from a licensed set</h4>
+        <p>The premium sets are drawn on their own grids and sold under their own licences.
+        Copying their glyph shapes is neither legal nor useful: the point of an owned set is that
+        it shares the box, the stroke and the cap with the rest of the language.</p>
+        <h4>The sprite needs http</h4>
+        <p>An external <span class="mono">&lt;use&gt;</span> does not resolve over
+        <span class="mono">file://</span>. Nothing errors: the element comes out empty. The check
+        script covers the other half of that trap, a <span class="mono">&lt;use&gt;</span>
+        pointing at an id no symbol carries.</p>
+      </aside>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a-wide rv">
+        <ul class="icon-wall">
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#search"/></svg><span class="mono">search</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#filter"/></svg><span class="mono">filter</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#sort"/></svg><span class="mono">sort</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#plus"/></svg><span class="mono">plus</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#check"/></svg><span class="mono">check</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#close"/></svg><span class="mono">close</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chevron-right"/></svg><span class="mono">chevron-right</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#arrow-right"/></svg><span class="mono">arrow-right</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#external"/></svg><span class="mono">external</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#copy"/></svg><span class="mono">copy</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#edit"/></svg><span class="mono">edit</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#trash"/></svg><span class="mono">trash</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#download"/></svg><span class="mono">download</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#upload"/></svg><span class="mono">upload</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#refresh"/></svg><span class="mono">refresh</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#settings"/></svg><span class="mono">settings</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#link"/></svg><span class="mono">link</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#share"/></svg><span class="mono">share</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#send"/></svg><span class="mono">send</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#file"/></svg><span class="mono">file</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#folder"/></svg><span class="mono">folder</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#database"/></svg><span class="mono">database</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#code"/></svg><span class="mono">code</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#terminal"/></svg><span class="mono">terminal</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#grid"/></svg><span class="mono">grid</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#list"/></svg><span class="mono">list</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#table"/></svg><span class="mono">table</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chart-bar"/></svg><span class="mono">chart-bar</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chart-line"/></svg><span class="mono">chart-line</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#image"/></svg><span class="mono">image</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#mail"/></svg><span class="mono">mail</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#user"/></svg><span class="mono">user</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#users"/></svg><span class="mono">users</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#calendar"/></svg><span class="mono">calendar</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#book"/></svg><span class="mono">book</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#tag"/></svg><span class="mono">tag</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#bookmark"/></svg><span class="mono">bookmark</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#sparkle"/></svg><span class="mono">sparkle</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#tool"/></svg><span class="mono">tool</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#branch"/></svg><span class="mono">branch</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#play"/></svg><span class="mono">play</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#pause"/></svg><span class="mono">pause</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#stop"/></svg><span class="mono">stop</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#molecule"/></svg><span class="mono">molecule</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#helix"/></svg><span class="mono">helix</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#sun"/></svg><span class="mono">sun</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#moon"/></svg><span class="mono">moon</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#contrast"/></svg><span class="mono">contrast</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#alert"/></svg><span class="mono">alert</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#info"/></svg><span class="mono">info</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#clock"/></svg><span class="mono">clock</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#dot"/></svg><span class="mono">dot</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#shield"/></svg><span class="mono">shield</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#check-circle"/></svg><span class="mono">check-circle</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#menu"/></svg><span class="mono">menu</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#more"/></svg><span class="mono">more</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#expand"/></svg><span class="mono">expand</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#collapse"/></svg><span class="mono">collapse</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#minus"/></svg><span class="mono">minus</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chevron-down"/></svg><span class="mono">chevron-down</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chevron-up"/></svg><span class="mono">chevron-up</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#chevron-left"/></svg><span class="mono">chevron-left</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#arrow-left"/></svg><span class="mono">arrow-left</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#arrow-up"/></svg><span class="mono">arrow-up</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="../web/icons.svg#arrow-down"/></svg><span class="mono">arrow-down</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid step-3">
+      <span class="label axis-a rv">Agent layer</span>
+      <h3 class="axis-a-wide rv step-1">The twentieth component: a flow that branches</h3>
+    </div>
+
+    <div class="grid step-2">
+      <div class="axis-a rv">
+        <div class="flow">
+          <div class="flow-node" data-kind="trigger">
+            <span class="flow-mark"></span>
+            <span class="flow-label">New sequence uploaded</span>
+            <span class="flow-note">trigger</span>
+          </div>
+          <div class="flow-node">
+            <span class="flow-mark"></span>
+            <span class="flow-label">Score against the AMP model</span>
+            <span class="flow-note">42 ms</span>
+          </div>
+          <div class="flow-branch">
+            <div class="flow-leg">
+              <span class="flow-when">score &gt;= 0.8</span>
+              <div class="flow-node">
+                <span class="flow-mark"></span>
+                <span class="flow-label">Queue for synthesis</span>
+              </div>
+            </div>
+            <div class="flow-leg">
+              <span class="flow-when">score &lt; 0.8</span>
+              <div class="flow-node" data-kind="stop">
+                <span class="flow-mark"></span>
+                <span class="flow-label">Archive with the reason</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="aside-note axis-b rv">
+        <h4>A column, not a canvas</h4>
+        <p>A drag-to-arrange canvas needs absolute position per node and a measurement every
+        frame. The column carries what the flow has to say: the order of the steps, where it
+        splits and what each leg does. Free rearrangement is what it does not carry, and that is
+        declared rather than simulated.</p>
+        <h4>The branch says its condition in words</h4>
+        <p>Node kind is state, so it takes <span class="mono">--status-*</span>, and each leg
+        repeats its condition as text. A flow where yes and no differ only by colour is a flow
+        nobody who cannot separate the two can read.</p>
+      </aside>
+    </div>
   </section>
 
   <div class="grid"><div class="rule"></div></div>
@@ -1815,10 +2402,34 @@ body { padding-bottom: var(--space-96); }
 
 </div>
 
+<script>
+/* as tres receitas de motion que dependem de estado. O guia e o unico
+   lugar onde elas rodam sozinhas: numa tela de verdade quem troca o
+   estado e a aplicacao. */
+(function () {
+  "use strict";
+  var reels = [document.getElementById("spec-reel-a"), document.getElementById("spec-reel-b")];
+  var spin = document.getElementById("spec-spin");
+  var mark = document.getElementById("spec-mark");
+  var stack = document.getElementById("spec-stack");
+  var tick = 0;
+  document.getElementById("spec-run").addEventListener("click", function () {
+    tick = (tick + 37) % 100;
+    reels[0].style.setProperty("--motion-tick", String(Math.floor(tick / 10)));
+    reels[1].style.setProperty("--motion-tick", String(tick % 10));
+    var done = spin.classList.toggle("is-done");
+    mark.classList.toggle("is-done", done);
+    /* o aviso novo entra como PRIMEIRO filho: e o unico contrato da pilha */
+    stack.insertBefore(stack.lastElementChild, stack.firstElementChild);
+  });
+})();
+</script>
+<script src="../web/light.js" defer></script>
+
 <footer class="foot">
   <div class="foot-in">
     <span>Set in Archivo, Public Sans and Spline Sans Mono</span>
-    <span class="sig">Pure Design <span>1.4.1</span></span>
+    <span class="sig">Pure Design <span>1.6.0</span></span>
   </div>
 </footer>
 
@@ -1924,7 +2535,15 @@ function stageArt() {
 function paintRamp(id, family) {
   document.getElementById(id).innerHTML = RAMP_STEPS.map((s) => {
     const c = resolve(`--${family}-${s}`);
-    const ink = relLum(c) > 0.4 ? "#0d1321" : "#f4f6f9";
+    /* a tinta e escolhida pela RAZAO, nao por limiar de luminancia: o
+       limiar de 0,4 punha tinta clara nos passos medios e o rotulo do
+       400 saia em 2,47. Os candidatos sao preto e branco PUROS, nao as
+       tintas do modo: no passo 600, o do meio da rampa, nenhuma tinta
+       de modo alcanca 4,5 e o preto puro alcanca (4,72). Rotulo de
+       especime anota a cor, nao participa da paleta. */
+    const lum = relLum(c);
+    const dark = (lum + 0.05) / 0.05, light = 1.05 / (lum + 0.05);
+    const ink = dark >= light ? "#000000" : "#ffffff";
     return `<button data-token="--${family}-${s}" style="background:${c}" title="--${family}-${s}">
               <span style="color:${ink}">${s}</span></button>`;
   }).join("");

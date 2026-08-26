@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4F6F9">
+<meta name="robots" content="noindex, nofollow">
+<title>Madson Aragão: beta</title>
+<meta name="description" content="Beta of madsondeluna.com rebuilt on Pure Design 1.6.0: pointer-reactive glass, the liquid material, the motion layer and the language's own icon set.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pure/tokens.css">
+<link rel="stylesheet" href="pure/patterns.css">
+<link rel="stylesheet" href="pure/light.css">
+<link rel="stylesheet" href="pure/motion.css">
+<link rel="stylesheet" href="pure/agent.css">
+<style>
+/* =========================================================
+   Diagramação desta página. Nada aqui inventa valor: cor, tipo,
+   raio, sombra, curva e espaço vêm todos de pure/tokens.css.
+
+   O que é local é a divisão em duas colunas, que é do site e não da
+   linguagem: identidade fixa à esquerda, conteúdo rolável à direita.
+   ========================================================= */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* o campo de luz é a página inteira: a luz fica ATRÁS de todo vidro
+   que mora nela, e é o backdrop-filter das superfícies de cima que a
+   distorce. É daí que vem a leitura de vidro líquido. */
+/* uma tela so. A pagina nao rola: quem rola e o painel aberto, e so
+   quando o conteudo dele nao cabe. */
+html, body { height: 100%; overflow: hidden; }
+
+.app {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.col-left {
+  height: 100svh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-32) var(--space-48) var(--space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.col-right {
+  min-width: 0;
+  height: 100svh;
+  border-left: var(--hairline) solid var(--border);
+  padding: var(--space-48);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  overflow: hidden;
+}
+
+/* Um painel por vez na MESMA celula de grade, que e a receita
+   .motion-pages da linguagem: lista vira detalhe. Os dois existem ao
+   mesmo tempo durante a travessia, entao a troca tem percurso em vez de
+   corte seco, e nada disso anima propriedade de layout.
+
+   O que sai leva `visibility: hidden` com atraso do tamanho da
+   transicao, e o atraso e o efeito inteiro: sem ele a visibilidade
+   trocaria no primeiro quadro e o painel sumiria antes de escorregar.
+   `opacity: 0` sozinho tiraria o ponteiro e NAO tiraria o teclado, o
+   mesmo defeito ja fechado no leque do liquido.
+
+   O desfoque e de PERCURSO, --motion-blur-2, e zera ao assentar: e a
+   familia oposta a do vidro, que desfoca o fundo e fica parado. */
+.panes { display: grid; flex: 1; min-height: 0; }
+
+.pane {
+  grid-area: 1 / 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  transition:
+    transform  var(--duration-3) var(--ease-out-expo),
+    opacity    var(--duration-3) var(--ease-out-expo),
+    filter     var(--duration-3) var(--ease-out-expo),
+    visibility 0s var(--duration-3);
+}
+
+.pane[data-state="in"] {
+  transform: none;
+  opacity: 1;
+  filter: blur(0);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* o detalhe entra pela direita e a grade recua pela esquerda: a direcao
+   diz de onde se veio, e e o que torna o voltar legivel sem rotulo */
+.pane[data-state="right"] {
+  transform: translateX(var(--space-24));
+  opacity: 0;
+  filter: blur(var(--motion-blur-2));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pane[data-state="left"] {
+  transform: translateX(calc(-1 * var(--space-24)));
+  opacity: 0;
+  filter: blur(var(--motion-blur-2));
+  visibility: hidden;
+  pointer-events: none;
+}
+.pane-head { display: flex; align-items: center; gap: var(--space-16); flex: none; }
+.pane-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-size: var(--text-24);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-display);
+}
+/* o corpo do painel e o unico lugar da pagina que rola */
+.pane-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding-right: var(--space-8);
+}
+.head-extra { display: flex; align-items: baseline; gap: var(--space-12); }
+
+/* a grade ocupa a altura que sobra, e a celula cresce com ela */
+.pane[data-pane="grid"] .sections { flex: 1; min-height: 0; grid-auto-rows: 1fr; }
+.card-go {
+  margin-left: auto;
+  opacity: 0.55;
+  transition: opacity var(--duration-3) var(--ease-standard),
+              transform var(--duration-3) var(--ease-out-expo);
+}
+.section-card:hover .card-go { opacity: 1; transform: translateX(var(--nudge-1)); }
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+}
+
+.photo-ring {
+  flex: none;
+  width: var(--photo-sm);
+  height: var(--photo-sm);
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+  background: var(--dim);
+  border: var(--hairline) solid var(--border);
+  box-shadow: var(--shadow-lens);
+}
+.photo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 18%;
+  transform: scale(1.28);
+}
+
+.ident-text { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
+
+/* o cargo fecha o bloco de identidade: sem ele o nome gigante caia
+   direto num paragrafo, e o salto de 44px para 15px nao tinha degrau */
+.role {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--muted);
+  line-height: var(--leading-snug);
+}
+.role .sep { padding: 0 var(--space-2); opacity: 0.6; }
+
+.lede {
+  margin: 0;
+  max-width: var(--measure-prose);
+  font-size: var(--text-14);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-size: var(--text-display-name);
+  font-weight: var(--weight-light);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-display);
+  color: var(--text);
+}
+
+.block { display: flex; flex-direction: column; gap: var(--space-6); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+
+/* etiqueta de metadado: mono, 11, tinta de apoio. --muted e nunca
+   --secondary, que fica abaixo do piso de contraste em todos os modos */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-2) var(--space-8);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-mark);
+  background: var(--surface);
+  --surface-context: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+  line-height: var(--leading-snug);
+  text-decoration: none;
+  transition: border-color var(--duration-3) var(--ease-standard),
+              color var(--duration-3) var(--ease-standard);
+}
+a.chip:hover { border-color: var(--border-hover); color: var(--text); }
+.chip b { color: var(--text); font-weight: var(--weight-semibold); }
+
+/* linha do tempo da formação */
+.rail-list { position: relative; padding-left: var(--space-16); margin: 0; list-style: none; }
+.rail-list::before {
+  content: "";
+  position: absolute;
+  left: var(--nudge-2);
+  top: var(--space-6);
+  bottom: var(--space-6);
+  border-left: var(--hairline) solid var(--border);
+}
+.rail-list li { position: relative; margin-bottom: var(--space-6); min-width: 0; line-height: var(--leading-snug); }
+.rail-list li::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-16) * -1);
+  top: var(--space-6);
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-circle);
+  background: var(--border);
+  border: var(--hairline) solid var(--border-hover);
+}
+.rail-list li[data-now]::before { background: var(--accent); }
+/* duas linhas por entrada, nao tres: o ano entra na linha do grau, em
+   mono, e o painel esquerdo inteiro passa a caber numa tela sem rolar */
+.rail-year {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+  margin-right: var(--space-8);
+}
+.rail-list li[data-now] .rail-year { color: var(--accent); }
+.rail-what { font-size: var(--text-13); color: var(--text); }
+.rail-where { display: block; font-size: var(--text-11); color: var(--muted); line-height: var(--leading-snug); }
+
+/* grade de seções: os vãos de 1px sobre --border desenham a grade */
+.sections { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+/* celula da grade: o vao de 1px sobre --border ja desenha a estrutura,
+   entao ela nao tem borda, nem raio, nem sombra propria. Vidro com
+   sombra aqui empilha duas leituras de profundidade na mesma celula. */
+.section-card {
+  background: var(--surface);
+  --surface-context: var(--surface);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-20);
+  border: 0;
+  border-radius: 0;
+  min-height: var(--space-56);
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+}
+.section-card .eyebrow { display: flex; align-items: center; gap: var(--space-8); }
+.section-card h3 { margin: 0; font-size: var(--text-15); font-weight: var(--weight-medium); }
+.section-card p { margin: 0; font-size: var(--text-13); color: var(--muted); }
+.section-card:hover { background: var(--surface-hover); }
+/* o cartao afunda um fio ao ser premido. 2px e --nudge-1, e o suficiente
+   para o clique ter resposta antes de o painel comecar a escorregar */
+.section-card:active { transform: scale(0.995); }
+.section-card { transition: background var(--duration-3) var(--ease-standard),
+  transform var(--duration-1) var(--ease-out); }
+
+.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-12); }
+.head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-size: var(--text-display-section);
+  font-weight: var(--weight-light);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+/* lista de linhas: publicacao, contato. Os vaos de 1px sobre --border
+   desenham a divisao, entao a linha nao tem borda propria */
+.rows {
+  display: grid;
+  gap: var(--hairline);
+  background: var(--border);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16) var(--space-20);
+  background: var(--surface);
+  --surface-context: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+}
+.row-main { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; flex: 1; }
+.row-title { font-size: var(--text-14); line-height: var(--leading-snug); }
+.row-meta { font-size: var(--text-12); color: var(--muted); }
+.row-side { flex: none; font-size: var(--text-12); color: var(--muted); text-align: right; }
+.row-go { flex: none; color: var(--muted); transition: transform var(--duration-3) var(--ease-out-expo); }
+.row:hover .row-go { transform: translateX(var(--nudge-3)); }
+.row .eyebrow { display: flex; align-items: center; gap: var(--space-8); }
+.row-desc { font-size: var(--text-12); color: var(--muted); line-height: var(--leading-normal); }
+.row-title .tag { margin-left: var(--space-6); vertical-align: middle; }
+div.row { cursor: default; }
+
+/* a galeria e especime: le como grade, nao como texto corrido */
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-16);
+}
+.shot { margin: 0; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
+.shot img { width: 100%; height: auto; display: block; }
+
+.modes { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--hit-min);
+  padding: var(--space-6) var(--space-12);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition: color var(--duration-3) var(--ease-standard),
+              border-color var(--duration-3) var(--ease-standard);
+}
+.mode-btn:hover { color: var(--text); }
+.mode-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+
+.foot {
+  border-top: var(--hairline) solid var(--border);
+  padding-top: var(--space-24);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+}
+
+/* Estreito. O ponto de quebra é o da linguagem, 768px, e é literal
+   porque @media não lê var(). Abaixo dele a coluna esquerda deixa de
+   ser fixa: um painel de 100svh grudado no topo come a tela inteira. */
+@media (max-width: 768px) {
+  html, body { height: auto; overflow: visible; }
+  .app { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .col-left {
+    height: auto;
+    padding: var(--space-24) var(--space-24) 0;
+  }
+  .col-right {
+    height: auto;
+    overflow: visible;
+    border-left: 0;
+    border-top: var(--hairline) solid var(--border);
+    padding: var(--space-24) var(--space-24) var(--space-48);
+  }
+  /* no estreito quem rola volta a ser a pagina: painel com rolagem
+     propria dentro de pagina que tambem rola sao duas barras brigando */
+  .pane-body { overflow: visible; }
+  .pane[data-pane="grid"] .sections { grid-auto-rows: auto; }
+  .sections { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .row { flex-wrap: wrap; }
+  .row-side { text-align: left; }
+}
+
+/* ---------- telas baixas ----------
+   O painel esquerdo cabe numa tela sem rolar, e cabe por MEDIDA. Foi
+   medido em quatro alturas: 900 e 982 fecham folgados, 800 estourava em
+   76px e 720 em 114, porque a coluna estreita faz as etiquetas quebrarem
+   em mais fileiras e a altura sobe onde a largura desce.
+
+   A consulta e de ALTURA e nao de largura de proposito: o que falta aqui
+   e altura, e um notebook de 1280x720 tem a largura de um monitor e
+   metade da altura dele. A rolagem interna continua existindo como
+   ULTIMO recurso, nao como primeiro. */
+@media (max-height: 880px) {
+  .col-left { padding-top: var(--space-24); gap: var(--space-12); }
+  .rail-list li { margin-bottom: var(--space-4); }
+  .name { font-size: var(--text-40); }
+}
+
+@media (max-height: 820px) {
+  .col-left { padding-top: var(--space-16); padding-bottom: var(--space-16); gap: var(--space-10); }
+  .identity { gap: var(--space-16); }
+  .name { font-size: var(--text-32); }
+  .photo-ring { width: var(--space-64); height: var(--space-64); }
+  .rail-list li { margin-bottom: var(--space-2); }
+  .col-right { padding-top: var(--space-24); padding-bottom: var(--space-24); }
+  .liquid { --liquid-pad: var(--space-4); --liquid-size: var(--space-40); }
+
+  /* a grade tambem perde altura: a descricao do cartao fecha em duas
+     linhas em vez de tres, e o cartao recorta em vez de empurrar */
+  .section-card { padding: var(--space-12) var(--space-16); overflow: hidden; }
+  .section-card p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media (max-height: 800px) {
+  .col-left { gap: var(--space-8); }
+  .chip { padding-block: 0; }
+  .chips { gap: var(--space-2); }
+  .name { font-size: var(--text-24); }
+  .photo-ring { width: var(--space-56); height: var(--space-56); }
+}
+
+/* 1280x720 sobrava 6px com o nome da instituicao visivel. Preferi tirar
+   os 6px da folga a tirar a instituicao da tela: escondê-la e perder
+   conteudo para ganhar espaco, que e a troca errada. */
+@media (max-height: 740px) {
+  .col-left { gap: var(--space-6); padding-bottom: var(--space-12); }
+  .rail-list li { margin-bottom: 0; }
+}
+
+@media (pointer: coarse) {
+  .mode-btn,
+  a.chip,
+  .row { min-height: var(--hit-min-touch); }
+  a.chip { padding-block: var(--space-10); }
+}
+</style>
+</head>
+<body>
+
+<svg class="pure-defs" aria-hidden="true" focusable="false" width="0" height="0"><defs>
+  <filter id="pure-goo-tight" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -7.83" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+  <filter id="pure-goo" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+  <filter id="pure-goo-wide" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+    <feColorMatrix in="blur" type="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6.17" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+
+  <!-- ---------- lente ----------
+
+       O vidro desta linguagem desfoca o fundo. A lente o DOBRA, e a
+       diferenca e visivel: dentro dela o que esta atras aparece maior e
+       entortado, como atraves de vidro grosso de verdade.
+
+       Nada disso e escala em CSS: e amostragem. feDisplacementMap le a
+       posicao de cada pixel do fundo num MAPA, onde o canal R carrega o
+       deslocamento horizontal, o G o vertical e 128 e o repouso. Um
+       degrade de 255 a 0 atravessando o circulo faz cada ponto amostrar
+       de mais perto do centro, e amostrar de mais perto E ampliar.
+
+       Sao DOIS passes encadeados, e serem dois e o ponto:
+
+         corpo  plano no miolo e ingreme na beirada, entao o centro
+                amplia limpo. Escala 0,52.
+         anel   exatamente 128 nos 80 por cento centrais e vertical nas
+                pontas. Nao amplia nada: so entorta o que passa rente a
+                borda. Escala 0,18.
+
+       As duas escalas sao a leitura "gota", escolhida na tela entre
+       cinco: pequena, muito curva, aumento forte no miolo. As outras
+       quatro (lupa, vidro grosso, anel, bolha) mudavam so este par e o
+       diametro, entao trocar de leitura e trocar dois numeros aqui e um
+       token, nunca reescrever o filtro.
+
+       Num mapa so, subir a beirada arrasta o miolo junto. Separados, um
+       se ajusta sem o outro.
+
+       Os numeros e os mapas NAO sao tokens, pela mesma razao dos filtros
+       goo logo acima: feImage e feDisplacementMap nao leem var(), e um
+       token que nada resolve e um token que mente. Os dois mapas saem de
+       tools/lens-map.mjs, entao eles sao reproduziveis em vez de string
+       opaca colada aqui.
+
+       primitiveUnits objectBoundingBox e o que faz a lente servir a
+       qualquer tamanho: as escalas viram fracao da propria caixa, entao
+       trocar --light-lens nao pede filtro novo.
+
+       A regiao vai a 200 por cento porque o deslocamento amostra FORA da
+       caixa. Sem a folga, a beirada puxa de uma area que o filtro nao
+       tem e devolve um entalhe transparente rente ao contorno. -->
+  <filter id="pure-lens" x="-50%" y="-50%" width="200%" height="200%"
+          primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(190%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(136%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(120%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(66%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(0%2C190%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(0%2C136%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(0%2C120%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(0%2C66%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-body"/>
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-rim"/>
+    <feDisplacementMap in="SourceGraphic" in2="lens-body" scale="0.52" xChannelSelector="R" yChannelSelector="G" result="lens-warp"/>
+    <feDisplacementMap in="lens-warp" in2="lens-rim" scale="0.18" xChannelSelector="R" yChannelSelector="G" result="lens-bent"/>
+    <feGaussianBlur in="lens-bent" stdDeviation="0.005"/>
+  </filter>
+
+</defs></svg>
+
+<a class="skip-link pill" href="#main">Skip to content</a>
+
+<div class="lit-cursor" aria-hidden="true"></div>
+
+<div class="app lit-field lit-cursor-only" data-lit>
+
+  <aside class="col-left">
+    <div class="identity">
+      <span class="photo-ring">
+        <img class="photo" src="../assets/images/profile/me.jpeg" alt="" width="96" height="96">
+      </span>
+      <span class="ident-text">
+        <h1 class="name">Madson<br>Aragão</h1>
+        <span class="role">Bioinformatician <span class="sep">/</span> DevOps engineer</span>
+      </span>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Formation</span>
+      <ul class="rail-list">
+        <li data-now><span class="rail-year">2024 to now</span><span class="rail-what">PhD in Bioinformatics</span><span class="rail-where">Federal University of Minas Gerais</span></li>
+        <li data-now><span class="rail-year">2024 to now</span><span class="rail-what">MBA in Software Engineering</span><span class="rail-where">University of São Paulo</span></li>
+        <li><span class="rail-year">2024 to 2026</span><span class="rail-what">MBA in Data Science and Analytics</span><span class="rail-where">Pontifical Catholic University of Rio de Janeiro</span></li>
+        <li><span class="rail-year">2022 to 2024</span><span class="rail-what">MSc in Genetics and Molecular Biology</span><span class="rail-where">Federal University of Pernambuco</span></li>
+        <li><span class="rail-year">2014 to 2022</span><span class="rail-what">BSc in Biomedical Sciences</span><span class="rail-where">Federal University of Pernambuco</span></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Expertise</span>
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">Bash</span>
+        <span class="chip">API development</span>
+        <span class="chip">System design</span>
+        <span class="chip">DevOps</span>
+        <span class="chip">Cloud computing</span>
+        <span class="chip">Workflow automation</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Machine learning</span>
+        <span class="chip">Statistical modeling</span>
+        <span class="chip">Data engineering</span>
+        <span class="chip">Large language models</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Bioinformatics</span>
+        <span class="chip">Genomics</span>
+        <span class="chip">Omics</span>
+        <span class="chip">Structural biology</span>
+        <span class="chip">Protein design</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Contributions</span>
+      <div class="chips">
+        <span class="chip"><b class="num">7</b> papers</span>
+        <span class="chip"><b class="num">35</b> conference papers</span>
+        <span class="chip"><b class="num">39</b> conferences</span>
+        <span class="chip"><b class="num">11</b> awards</span>
+        <span class="chip"><b class="num">3</b> supervisions</span>
+        <span class="chip"><b class="num">1</b> chapters and books</span>
+      </div>
+      <div class="chips">
+        <span class="chip"><b class="num">22</b> talks</span>
+        <span class="chip"><b class="num">4</b> patents and software tools</span>
+        <span class="chip"><b class="num">2</b> PyPI packages</span>
+        <span class="chip"><b class="num">12</b> teaching experiences</span>
+        <span class="chip"><b class="num">1</b> journal reviewer</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Applications and packages</span>
+      <div class="chips">
+        <a class="chip" href="https://github.com/madsondeluna/AMPidentifier" target="_blank" rel="noopener">AMPidentifier</a>
+        <a class="chip" href="http://bilbo.delunalab.dev/" target="_blank" rel="noopener">BILBO</a>
+        <a class="chip" href="http://ecampdb.delunalab.dev/" target="_blank" rel="noopener">ecAMPdb</a>
+        <a class="chip" href="https://github.com/madsondeluna/decryptAMP" target="_blank" rel="noopener">decryptAMP</a>
+        <span class="chip">AMPcraft</span>
+        <a class="chip" href="../apps/pure/preview/index.html" target="_blank" rel="noopener">Pure Design</a>
+      </div>
+    </div>
+
+    <!-- aglomerado líquido: unidade de tamanho fixo, que é exatamente o
+         caso do material. Rótulo de largura variável continua .pill. -->
+    <div class="liquid liquid-tight" style="margin-top: auto; align-self: flex-start; --liquid-pad: var(--space-8); --liquid-drop: drop-shadow(0 1px 2px var(--glass-pool)) drop-shadow(0 4px 10px var(--glass-pool))">
+      <div class="liquid-sheet" aria-hidden="true">
+        <span class="liquid-blob"></span><span class="liquid-blob"></span>
+        <span class="liquid-blob"></span><span class="liquid-blob"></span>
+      </div>
+      <div class="liquid-content">
+        <a class="liquid-item" href="mailto:madsondeluna@gmail.com" aria-label="Email">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#mail"/></svg></a>
+        <a class="liquid-item" href="https://github.com/madsondeluna" aria-label="GitHub">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#branch"/></svg></a>
+        <a class="liquid-item" href="https://www.linkedin.com/in/madsonaragao/" aria-label="LinkedIn">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#users"/></svg></a>
+        <a class="liquid-item" href="https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en" aria-label="Scholar">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#book"/></svg></a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="col-right" id="main" tabindex="-1">
+
+    <div class="head">
+      <div class="modes">
+        <button class="mode-btn" type="button" data-mode="" aria-pressed="true"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#sun"/></svg>Light</button>
+        <button class="mode-btn" type="button" data-mode="paper-like" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#book"/></svg>Paper-like</button>
+        <button class="mode-btn" type="button" data-mode="deep-blue" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#moon"/></svg>Deep blue</button>
+        <button class="mode-btn" type="button" data-mode="dark" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#contrast"/></svg>Dark</button>
+      </div>
+    </div>
+
+    <div class="panes">
+    <div class="pane" data-pane="grid">
+        <div class="hairline-grid sections">
+          <button class="section-card lit" data-lit type="button" data-pane="about">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#user"/></svg>01<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>About</h3><p>Background, research focus and academic trajectory.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="skills">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#tool"/></svg>02<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Skills</h3><p>Technical skill set across bioinformatics, AI and product.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="experience">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#branch"/></svg>03<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Experience</h3><p>Positions from academia to industry.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="education">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#book"/></svg>04<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Education</h3><p>Degrees, institutions and academic formation.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="certifications">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#shield"/></svg>05<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Certifications</h3><p>Professional certifications and continuing education.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="publications">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#file"/></svg>06<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Publications</h3><p>Peer-reviewed articles and book chapters.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="talks">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#send"/></svg>07<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Talks</h3><p>Conference presentations and invited talks.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="awards">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#check-circle"/></svg>08<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Awards</h3><p>Academic awards and recognitions.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="teaching">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#users"/></svg>09<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Teaching</h3><p>Courses taught and teaching assistantships.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="materials">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#folder"/></svg>10<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Materials</h3><p>Shared learning materials from courses and lectures.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="code">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#code"/></svg>11<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Code</h3><p>Open-source repositories, pipelines and experiments.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="biohub">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#molecule"/></svg>12<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>BioHub</h3><p>Bioinformatics tools for structural biology analyses.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="gallery">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#image"/></svg>13<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Gallery</h3><p>Scientific renderings and project imagery.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="b101nf0">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#play"/></svg>14<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Opinion</h3><p>Curated videos on structural biology, data science and AI.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="contact">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#mail"/></svg>15<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>Contact</h3><p>Email and academic networks.</p>
+          </button>
+          <button class="section-card lit" data-lit type="button" data-pane="cv">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#download"/></svg>16<svg class="icon icon-sm card-go" aria-hidden="true"><use href="pure/icons.svg#chevron-right"/></svg></span>
+            <h3>CV</h3><p>Short curriculum vitae, three languages.</p>
+          </button>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="about" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>About</h2>
+        </div>
+        <div class="pane-body">
+          <div class="prose prose-justify" style="max-width: var(--measure-wide)">
+            <p>As a PhD student in Bioinformatics I work on software engineering, machine learning,
+            omics, structural biology and chemoinformatics. My research applies deep learning,
+            focusing on generative models, to develop an antimicrobial language that generates
+            synthetic compounds inspired by the immune systems of diverse organisms. The goal is
+            actionable routes to new therapeutics against antimicrobial resistance using scalable
+            <em>in silico</em> methods.</p>
+            <p>I am a Nextflow Ambassador, a specialist in data science and analytics and an MBA
+            student in software engineering, which grounds the research work in reproducible
+            workflows, data governance and software architecture.</p>
+            <p>During my MSc in Genetics and Molecular Biology I developed AMPidentifier, a machine
+            learning tool that identifies antimicrobial sequences in genomic and proteomic data. My
+            BSc is in Biomedical Sciences, with a concentration in bioinformatics and clinical
+            pathology.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="skills" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Skills</h2>
+          <span class="eyebrow num">6 groups</span>
+        </div>
+        <div class="pane-body">
+          <div class="block">
+            <span class="eyebrow">Bioinformatics</span>
+            <div class="chips">
+              <span class="chip">Genomics &amp; Transcriptomics</span>
+              <span class="chip">Genome Assembly</span>
+              <span class="chip">Genome Mining and Annotation</span>
+              <span class="chip">Molecular &amp; Structural Biology</span>
+              <span class="chip">Protein &amp; Membrane Modeling</span>
+              <span class="chip">Protein Design</span>
+              <span class="chip">Molecular Dynamics Simulations</span>
+              <span class="chip">Pipeline Development</span>
+            </div>
+          </div>
+          <div class="block">
+            <span class="eyebrow">AI, Data &amp; Scripting</span>
+            <div class="chips">
+              <span class="chip">Machine Learning</span>
+              <span class="chip">Data Analysis &amp; Visualization</span>
+              <span class="chip">Data Engineering &amp; Governance</span>
+              <span class="chip">Git &amp; Version Control</span>
+              <span class="chip">Python, Bash &amp; Java</span>
+              <span class="chip">MySQL &amp; PostgreSQL</span>
+              <span class="chip">Linux/Unix Systems</span>
+              <span class="chip">Docker &amp; Containerization</span>
+              <span class="chip">Snakemake &amp; Nextflow</span>
+              <span class="chip">HPC Workload Management</span>
+            </div>
+          </div>
+          <div class="block">
+            <span class="eyebrow">Product / Project Management</span>
+            <div class="chips">
+              <span class="chip">Product Lifecycle Management</span>
+              <span class="chip">Agile Methodologies (Scrum, Kanban)</span>
+              <span class="chip">User-Centered Design (UCD)</span>
+              <span class="chip">Roadmap Development</span>
+              <span class="chip">Key Performance Indicators (KPIs)</span>
+              <span class="chip">Market &amp; User Research</span>
+              <span class="chip">Lean Product Development</span>
+              <span class="chip">Design Thinking</span>
+            </div>
+          </div>
+          <div class="block">
+            <span class="eyebrow">Tools &amp; Platforms</span>
+            <div class="chips">
+              <span class="chip">Figma, Miro, Jira, Trello &amp; Azure</span>
+              <span class="chip">Prototyping &amp; Wireframing</span>
+              <span class="chip">Customer Journey Mapping</span>
+              <span class="chip">Version Control &amp; Release Management</span>
+              <span class="chip">Google Workspace &amp; Notion</span>
+              <span class="chip">Tableau &amp; PowerBI</span>
+            </div>
+          </div>
+          <div class="block">
+            <span class="eyebrow">Collaboration &amp; Communication</span>
+            <div class="chips">
+              <span class="chip">Cross-Functional Team Leadership</span>
+              <span class="chip">Stakeholder Management</span>
+              <span class="chip">Technical &amp; Business Communication</span>
+              <span class="chip">Complex Problem-Solving</span>
+              <span class="chip">Data Storytelling</span>
+            </div>
+          </div>
+          <div class="block">
+            <span class="eyebrow">Key Soft Skills</span>
+            <div class="chips">
+              <span class="chip">Active Listening</span>
+              <span class="chip">Critical Thinking</span>
+              <span class="chip">Creativity &amp; Innovation</span>
+              <span class="chip">Adaptability</span>
+              <span class="chip">Teamwork</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="experience" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Experience</h2>
+          <span class="eyebrow num">9 roles</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Scientific Researcher — PhD Student</span>
+              <span class="row-meta">Institute of Biosciences (ICB) — Federal University of Minas Gerais (UFMG)</span>
+              <span class="row-desc">PhD in Bioinformatics at UFMG, focused on deep learning, genomics, and structural biology, specifically in the characterization and design of antimicrobial peptides. Research involves developing computational models for membrane interactions and conducting molecular dynamics simulations to enhance peptide stability and functionality.</span>
+            </span>
+            <span class="row-side mono">Aug 2024 — Present</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Nextflow Ambassador</span>
+              <span class="row-meta">Seqera</span>
+              <span class="row-desc">Selected as a Nextflow Ambassador to advocate for scalable and reproducible data analysis workflows within the scientific community. Role involves disseminating best practices in pipeline orchestration, engaging with the open-source ecosystem, and facilitating the adoption of Nextflow for high-performance and cloud computing in bioinformatics.</span>
+            </span>
+            <span class="row-side mono">Jan 2026 — Present</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Scientific Researcher — Master's Student</span>
+              <span class="row-meta">Department of Genetics (dGEN) — Federal University of Pernambuco (UFPE)</span>
+              <span class="row-desc">Developed AMP-Identifier, a machine learning-based tool to identify antimicrobial peptides (AMPs) in genomic sequences. The project involved applying computational techniques to analyze large datasets, enabling the discovery of new molecules and molecular signatures, contributing to advancements in bioinformatics and potential therapeutic applications.</span>
+            </span>
+            <span class="row-side mono">Jun 2022 — Jul 2024</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Research &amp; Development Analyst</span>
+              <span class="row-meta">PickCells</span>
+              <span class="row-desc">Worked on the development of applications for IoT solutions that use computer vision for pattern recognition in clinically relevant images. Responsibilities included prototyping, developing, and validating systems.</span>
+            </span>
+            <span class="row-side mono">Oct 2020 — Aug 2023</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Undergraduate Researcher Fellow</span>
+              <span class="row-meta">Laboratory of Genetics and Vegetal Biotechnology (LGBV) — Federal University of Pernambuco (UFPE)</span>
+              <span class="row-desc">Conducted research in Bioinformatics aimed at the characterization and optimization of bio-inspired antimicrobial peptides. Additionally, worked on the investigation of eIF4E sequences in Vigna species, focusing on their potential roles in plant defense mechanisms against pathogens.</span>
+            </span>
+            <span class="row-side mono">Jan 2020 — May 2022</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Clinical Pathology Intern</span>
+              <span class="row-meta">Brazilian Hospital Services Company (EBSERH) — Clinical Hospital of UFPE (HC/PE)</span>
+              <span class="row-desc">Engaged in activities related to Clinical Pathology within the Clinical Analysis Laboratory at HC/UFPE, specifically in Sample Screening, Hematology, Biochemistry, Urinalysis, Microbiology, Hormone Testing and Serology.</span>
+            </span>
+            <span class="row-side mono">Oct 2021 — Mar 2022</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Research, Technological Development and Innovation Intern</span>
+              <span class="row-meta">PickCells</span>
+              <span class="row-desc">Contributed to the development of solutions for the molecular diagnosis of SARS-CoV-2.</span>
+            </span>
+            <span class="row-side mono">Apr 2020 — Aug 2020</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Undergraduate Researcher Fellow</span>
+              <span class="row-meta">Oswaldo Cruz Foundation (FIOCRUZ)</span>
+              <span class="row-desc">Engaged in activities in Structural Biology and Theoretical/Computational Chemistry, focusing on Molecular Modeling and Protein Engineering for diagnostic and vaccine purposes in the Department of Virology and Experimental Therapy.</span>
+            </span>
+            <span class="row-side mono">Nov 2016 — Dec 2019</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Undergraduate Researcher Fellow</span>
+              <span class="row-meta">Keizo Asami Institute (iLIKA)</span>
+              <span class="row-desc">Developed scientific activities in the Molecular Biology sector in the areas of Human Genetics and Bioinformatics, with an emphasis on Forensic Genetics, Ancestry Markers and Phenotype Prediction.</span>
+            </span>
+            <span class="row-side mono">May 2015 — Dec 2016</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="education" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Education</h2>
+          <span class="eyebrow num">5 degrees</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">PhD in Bioinformatics (Ongoing)</span>
+              <span class="row-meta">Federal University of Minas Gerais (UFMG), Belo Horizonte, MG, Brazil</span>
+              <span class="row-desc">Focusing on machine learning for the identification and design of antimicrobial peptides and the analysis of immune-related biological compounds encoded in multi-omic data. Currently developing scalable in silico methods for the generation of antimicrobial compounds using Transformer-based models.</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">MBA in Software Engineering (Ongoing)</span>
+              <span class="row-meta">University of São Paulo (USP), São Paulo, Brazil</span>
+              <span class="row-desc">Curriculum encompasses full-stack development using Python and JavaScript, microservices architecture, DevOps methodologies, cloud computing with Docker and Kubernetes, information security, and data engineering.</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Specialization in Data Science and Analytics (2026)</span>
+              <span class="row-meta">Pontifical Catholic University of Rio de Janeiro (PUC-Rio), Rio de Janeiro, Brazil</span>
+              <span class="row-desc">Advanced training in data-driven decision-making through data analysis, statistics and machine learning. Emphasis on Python, data visualization and exploratory analysis.</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">MSc in Genetics and Molecular Biology — Emphasis in Bioinformatics (2024)</span>
+              <span class="row-meta">Federal University of Pernambuco (UFPE), Recife, PE, Brazil</span>
+              <span class="row-desc">Developed AMP-Identifier, a machine learning-based tool for genome mining focused on the discovery of bioactive molecules. Conducted the first comprehensive characterization of defensins in R. communis, integrating genomic, transcriptomic and structural biology analyses.</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">BSc in Biomedical Sciences — Emphasis in Clinical Pathology and Bioinformatics (2022)</span>
+              <span class="row-meta">Federal University of Pernambuco (UFPE), Recife, PE, Brazil</span>
+              <span class="row-desc">Gained practical experience in hospital laboratories and molecular biology research environments. Undergraduate thesis focused on the eIF4E gene family and the impact of mutations on protein synthesis and susceptibility to viruses that hijack the host translation machinery.</span>
+            </span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="certifications" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Certifications</h2>
+          <span class="eyebrow num">13 items</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/in/madsonaragao/details/certifications/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Generative AI</span>
+              <span class="row-meta">Massachusetts Institute of Technology (MIT) — Professional Education</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/e4cfed7c56b77bdf153983332bb767951a2178cb1a5db860050ebef0ff663daa" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Agile Project Management Professional Certificate</span>
+              <span class="row-meta">Atlassian</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/85ca53ce10941490f76e60c7526d1983e7f0ea34cdd409866eb4a03fbf5046b6" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Career Essentials in Project Management</span>
+              <span class="row-meta">Microsoft</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/5ee63bee2bb7701f59d3bda6539a9836e3ae9482fd9b910587a39f7e32367bf5" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Data-Driven Product Management</span>
+              <span class="row-meta">NASBA</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/59e64cb65fc85f7da9046e276e17e959bc3e7f38c31d785d79edecd2586d3f0d" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Microsoft Azure AI Essentials: Workloads and Machine Learning</span>
+              <span class="row-meta">Microsoft</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://pucrio.grupoa.education/academic-services/documents/validate/ed46e6c8" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Requirements Engineering and Agile Product Management</span>
+              <span class="row-meta">PUC-Rio</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/3f2693067d4bd7737ffc58f7b959ac4881263213bd29ee5acaa6b50cf51bfb26" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">The Data Science of Healthcare, Medicine, and Public Health</span>
+              <span class="row-meta">LinkedIn Learning</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/a259a7058366463ad138f0b25cf6827a0fd9da88cdf261ef2db475730b7c6109" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Advanced Gemini for Developers</span>
+              <span class="row-meta">DeepMind / Google</span>
+            </span>
+            <span class="row-side mono">2024</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/4ae0dc753b7d03700014756e5fde701df9f2a5a9f4be14b6a5a6ba81a389e542" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Career Essentials in GitHub Professional Certificate</span>
+              <span class="row-meta">GitHub</span>
+            </span>
+            <span class="row-side mono">2024</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/learning/certificates/d6a8df258a0947294e9597e7b8f10b6d844779e96e6d70842795ae4e3332bb22" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Project Management</span>
+              <span class="row-meta">Project Management Institute (PMI)</span>
+            </span>
+            <span class="row-side mono">2024</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.udemy.com/certificate/UC-4942cbb7-1414-4344-bf7e-a8fde1001d5a/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Python Programming from Basic to Advanced</span>
+              <span class="row-meta">Udemy</span>
+            </span>
+            <span class="row-side mono">2022</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.udemy.com/certificate/UC-33fd2573-d0f8-4be7-b075-8e86a079cd95/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Bioinformatics with Python</span>
+              <span class="row-meta">Udemy</span>
+            </span>
+            <span class="row-side mono">2022</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/in/madsonaragao/details/certifications/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">More Achievements</span>
+              <span class="row-meta">See all certifications on LinkedIn</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="publications" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Publications</h2>
+          <span class="eyebrow num">7 papers</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.3390/ijms27167315" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">The Regulatory Army of Plant Defense: Transcription Factors in the War for Plant Immunity</span>
+              <span class="row-meta">J. R. C. Ferreira-Neto et al. · International Journal of Molecular Sciences</span>
+            </span>
+            <span class="row-side mono">vol. 27, p. 7315, 2026</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.3390/agronomy16070766" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Unveiling Three Functionally Diverse Isoforms of eIF4E in Cowpea Through a Multi-Omics Approach</span>
+              <span class="row-meta">M. A. Luna-Aragão et al. · Agronomy</span>
+            </span>
+            <span class="row-side mono">vol. 16, p. 766, 2026</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.1002/csc2.70257" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Transposable elements: Functional aspects and applications as drivers of crop innovation</span>
+              <span class="row-meta">F. L. B. Medeiros et al. · Crop Science</span>
+            </span>
+            <span class="row-side mono">vol. 66, p. e70257, 2026</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.3390/v17081050" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Deciphering Cowpea Resistance to Potyvirus: Assessment of eIF4E Gene Mutations and Their Impact on the eIF4E-VPg Protein Interaction</span>
+              <span class="row-meta">F. A. de Andrade and M. A. de Luna-Aragão et al. · Viruses</span>
+            </span>
+            <span class="row-side mono">2025</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.1016/j.ijbiomac.2024.135511" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Omics-driven bioinformatics for plant lectins discovery and functional annotation — A comprehensive review</span>
+              <span class="row-meta">R. C. C. da Silva et al. · International Journal of Biological Macromolecules</span>
+            </span>
+            <span class="row-side mono">p. 135511, 2024</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.1002/bip.23524" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Association strength of E6 to E6AP/p53 complex correlates with HPV-mediated oncogenesis risk</span>
+              <span class="row-meta">M. V. F. Ferraz et al. · Biopolymers</span>
+            </span>
+            <span class="row-side mono">vol. 113, no. 10, p. e23524, 2022</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://doi.org/10.1201/9781003243700" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Approaches for Identification and Validation of Antimicrobial Compounds of Plant Origin: A Long Way from the Field to the Market</span>
+              <span class="row-meta">L. M. B. Vilela et al. · Eco-Friendly Biobased Products Used in Microbial Diseases, CRC Press</span>
+            </span>
+            <span class="row-side mono">pp. 183–222, 2022</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="talks" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Talks</h2>
+          <span class="eyebrow num">22 talks</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Compositional Analysis of α-Helical Proteins Suggests Preserved Prebiotic Constraints <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Development of a ML-Based Workflow for Identification of Antimicrobial Peptides Sequences in Genomic Data <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Assessment of eIF4E Isoforms in Cowpea (Vigna unguiculata (L.) Walp): From Genome Mining to Structural Profiling <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Development of a Machine Learning Based Workflow for Identification of AMP Sequences in Genomic Data <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Pairing Up for Plant Protection: An In Silico Look at R. communis Defensins Dimerization <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Structural Assessment of Ricinus communis Defensins and Insights into Their Dimerization Dynamics <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Mining AMPs and Insights into Their Dynamics <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">AMP-Identifier: A Machine Learning–Based Tool for Identifying Antimicrobial Peptide Sequences in Genomic Data <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Structural Prediction of the eIF4E and eIF4G in the Leish-eIF4F Complex <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Basis of E6/E6AP/p53 in HPV-Mediated Oncogenesis Provides Insights into Inhibitory Strategies <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Designing Inhibitors for the E6/E6AP/p53 Complex <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Assessing the Conformational Dynamics and Stability of E6/E6AP/p53 in HPV-Mediated Oncogenesis <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Structural Analysis of the E6/E6AP/p53 Ternary Complex Associated with HPV-Mediated Oncogenesis <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Applications of Bioinformatics Tools in Forensic Genetics: Predicting Phenotype and Biogeographic Ancestry in 1000 Genomes Populations <span class="tag tag-symposium">Symposium</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Extraction and Characterization of Human mtDNA Haplogroup from Whole Genome Sequencing Data <span class="tag tag-symposium">Symposium</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Characterization of Mitochondrial DNA and Inference of Maternal Ancestry in Individuals from Pernambuco <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Genetic Association between IL1B Polymorphism and Lower Susceptibility to Photosensitivity in Systemic Lupus Erythematosus Patients <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Mitochondrial DNA Analysis and Inference of Maternal Ancestry in Admixed Individuals from Pernambuco, Brazil <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Analysis of Mitochondrial Inheritance and Maternal Ancestry in Admixed Individuals from Pernambuco <span class="tag tag-conference">Conference</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Prevalence of the Sickle Cell Disease Allele in 1000 Genomes Populations and Its Relationship with Skin Color and Genetic Ancestry <span class="tag tag-symposium">Symposium</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Interactive Seminars in a Biochemistry Course for Undergraduate Biomedicine: Benefits and Problems of Carbohydrates in Modern Life <span class="tag tag-congress">Congress</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Evaluation of the Efficacy of the MiSeq-FGx Forensic System in 1000 Genomes Populations <span class="tag tag-symposium">Symposium</span></span>
+            </span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="awards" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Awards</h2>
+          <span class="eyebrow num">11 awards</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Next Generation Bioinformatician (NGB) — 21st International Conference of the Brazilian Association for Bioinformatics and Computational Biology (X-Meeting 2025)</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Travel Grant Award, School on Biological Physics and Biomolecular Simulations in the Machine Learning Era — ICTP-SAIFR</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Honorable Mention — Human and Forensic Genetics (CNPq/UFPE)</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Young Geneticist Award of the Northeast (XXI Northeast Genetics Meeting — ENGNE)</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Honorable Mention — Postgraduate Genetics Journey (UFPE)</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Best Poster Award — XIII Journey of the Genetics and Molecular Biology Program</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Travel Grant Award, AI for Protein Design (AI4PD) — The Protein Society</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Certificate of Excellence in the Peer Reviewing — Elsevier</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Highest Admission Score — Ranked first overall among all accepted applicants to the Master's Program in Genetics and Molecular Biology at UFPE</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Highest Admission Score — Ranked first overall among all accepted applicants to the PhD Program in Bioinformatics at UFMG</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Honorable Mention — Pernambuco Chemistry Olympiad (OPEQ), National Chemistry Olympiad Program &amp; Pernambuco Science Space</span>
+            </span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="teaching" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Teaching</h2>
+          <span class="eyebrow num">8 courses</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Docking &amp; Dynamics: Breathing Motion into Life's Building Blocks — 2nd Edition</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2025</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Modeling with Machine Learning Techniques — 2nd Edition</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2025</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Docking &amp; Dynamics: Breathing Motion into Life's Building Blocks — 1st Edition</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2025</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Modeling with Machine Learning Techniques — 1st Edition</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2025</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Bioinformatics: A Theoretical-Practical Approach</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2024</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Introduction to Bioinformatics: From DNA to Proteins: Databases, Annotation and Protein Modeling Techniques</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2022</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Human Genetics</span>
+              <span class="row-meta">Teaching Assistant</span>
+            </span>
+            <span class="row-side mono">2017–2018</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Molecular Tools Applied to Clinical Diagnosis</span>
+              <span class="row-meta">Teaching Assistant</span>
+            </span>
+            <span class="row-side mono">2017–2018</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="materials" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Materials</h2>
+          <span class="eyebrow num">9 repos</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/AMPidentifier" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">AMPidentifier</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/aula_docking_molecular" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Molecular Docking Class Materials</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/translation_class" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Translation Class</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/bits_bytes_biomolecules" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Bits, Bytes and Biomolecules</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/aula_dinamica_molecular" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Molecular Dynamics Class</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/scikit-learn/scikit-learn" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">scikit-learn</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/pytorch/examples" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">PyTorch Examples</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/microsoft/AI-For-Beginners" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">AI For Beginners (Microsoft)</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/harvard-edge/cs249r_book" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">CS249r Book (Harvard Edge)</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="code" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Code</h2>
+          <span class="eyebrow num">6 repos</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/AMPidentifier" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">AMPidentifier</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/unix-commands-for-friends" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Unix Commands for Friends</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/howtogit" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">How to Git</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/getvar_mvp" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">GetVar MVP</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/biohub" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">BioHub</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/mvp_pucrio_data_analytics_and_machine_learning" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">MVP PUC-Rio — Data Analytics &amp; Machine Learning</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="biohub" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>BioHub</h2>
+        </div>
+        <div class="pane-body">
+          <p class="prose" style="max-width: var(--measure-wide)">The BioHub / Signal Hub is also
+          available as a Python CLI providing a hub of tools for structural bioinformatics analyses.
+          The website offers automated graph generation and 3D protein visualisation. Both are under
+          active development.</p>
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="../apps/biohub/index.html" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Open BioHub / Signal Hub</span>
+              <span class="row-meta">Structural bioinformatics tools</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="gallery" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Gallery</h2>
+          <span class="eyebrow num">6 images</span>
+        </div>
+        <div class="pane-body">
+          <div class="shots">
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/umap.png" alt="UMAP representation of protein features" loading="lazy">
+              <figcaption class="eyebrow">ESP from eIF4Es and ESP</figcaption>
+            </figure>
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/memb.png" alt="Membrane structure" loading="lazy">
+              <figcaption class="eyebrow">DPOC membrane</figcaption>
+            </figure>
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/ala.png" alt="Protein structure visualization" loading="lazy">
+              <figcaption class="eyebrow">Data Visualization</figcaption>
+            </figure>
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/eifs.png" alt="eIF4E selection" loading="lazy">
+              <figcaption class="eyebrow">Genomic Analysis</figcaption>
+            </figure>
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/pacman.png" alt="AMP plasticity" loading="lazy">
+              <figcaption class="eyebrow">Machine Learning Model</figcaption>
+            </figure>
+            <figure class="shot">
+              <img class="media" src="../assets/images/gallery/chikv.png" alt="Chikungunya virus proteins" loading="lazy">
+              <figcaption class="eyebrow">Structural Biology</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="b101nf0" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Opinion</h2>
+          <span class="eyebrow num">11 videos</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=d95J8yzvjbQ" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">The Thinking Game — DeepMind Documentary</span>
+              <span class="row-desc">Takes you on a journey into the heart of DeepMind, capturing a team striving to unravel the mysteries of intelligence and life itself. Filmed over five years by the award-winning team behind AlphaGo.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=dbOKB3VRpuE" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Hello Nextflow — Training Course Part 1</span>
+              <span class="row-desc">First part of the Hello Nextflow training course: a very basic domain-agnostic Hello World example, progressively built up to demonstrate the usage of foundational Nextflow logic and components.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=GfH4QL4VqJ0" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Python: The Documentary — An Origin Story</span>
+              <span class="row-desc">The story of the world's most beloved programming language. What began as a side project in Amsterdam during the 1990s became the software powering artificial intelligence, data science and some of the world's biggest companies.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=k-9sQXhHHmk" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Why Building New Proteins from Scratch Is Our New Superpower — David Baker | TED</span>
+              <span class="row-desc">Biochemist David Baker explores his team's Nobel Prize-winning work using AI to design new proteins with functions never before seen in nature.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=aIDgF6BomlE" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">BindCraft — One-Shot Design of Functional Binders</span>
+              <span class="row-desc">Overview of current binder design tools and conceptual explanation of BindCraft's central hallucination process that engages loss and confidence metrics to predict sequence from structure.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=P_fHJIYENdI" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">AI and Drug Discovery</span>
+              <span class="row-desc">The biggest problems in the world might be solved by tiny molecules unlocked using AI.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=cx7l9ZGFZkw" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">The 2024 Nobel Prize in Chemistry — Protein Design and Structure Prediction</span>
+              <span class="row-desc">Inside story of how David Baker, Demis Hassabis and John Jumper won the 2024 Nobel Prize in Chemistry for advances in computer-assisted protein design and structure prediction.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=4GLSzuYXh6w" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Satya Nadella on AGI, Topological Qubits and Microsoft</span>
+              <span class="row-desc">Satya Nadella on why he does not believe in AGI but does believe in 10% economic growth, Microsoft's new topological qubit breakthrough and gaming world models.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=Bj9BD2D3DzA" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Tracing the Thoughts of a Large Language Model — Anthropic</span>
+              <span class="row-desc">AI models are trained and not directly programmed, so we do not understand how they do most of the things they do. Anthropic's researchers have taken significant steps towards understanding the circuits that underlie an AI model's thoughts.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=BNmOI826-_4" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">ESM3 — Simulating 500 Million Years of Evolution with a Language Model</span>
+              <span class="row-desc">ESM3 is a generative language model for programming biology. Researchers found ESM3 can simulate 500M years of evolution to generate new fluorescent proteins.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.youtube.com/watch?v=tAP1eZYEuKA" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Finding Answers, Building Hope — Alexander Disease and AI</span>
+              <span class="row-desc">When Thomas Wagner's son received a diagnosis of Alexander disease, a rare genetic disorder, he set out to learn everything he could. Through these conversations, Thomas has helped jumpstart new research into potential treatments.</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="contact" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>Contact</h2>
+          <span class="eyebrow num">6 links</span>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="mailto:madsondeluna@gmail.com">
+            <span class="row-main">
+              <span class="row-title">Email</span>
+            </span>
+            <span class="row-side mono">madsondeluna@gmail.com</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#arrow-right"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.linkedin.com/in/madsonaragao/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">LinkedIn</span>
+            </span>
+            <span class="row-side mono">madsonaragao</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">GitHub</span>
+            </span>
+            <span class="row-side mono">madsondeluna</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://twitter.com/madsondeluna" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">X / Twitter</span>
+            </span>
+            <span class="row-side mono">@madsondeluna</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://www.researchgate.net/profile/Madson-Aragao" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">ResearchGate</span>
+            </span>
+            <span class="row-side mono">Madson-Aragao</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Google Scholar</span>
+            </span>
+            <span class="row-side mono">GmHvOYsAAAAJ</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="cv" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>CV</h2>
+        </div>
+        <div class="pane-body">
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="../cv/en_cv_madson_professional.pdf" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Curriculum vitae, English</span>
+            </span>
+            <span class="row-side mono">PDF</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="../cv/pt_cv_madson_professional.pdf" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Curriculum vitae, Português</span>
+            </span>
+            <span class="row-side mono">PDF</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="../" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Full profile on the live site</span>
+            </span>
+            <span class="row-side mono">HTML</span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- modo: o estado mora no endereço ---------- */
+const MODES = ["", "paper-like", "deep-blue", "dark"];
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+const probe = document.createElement("div");
+probe.style.cssText = "position:absolute;visibility:hidden";
+document.body.appendChild(probe);
+
+function resolve(name) {
+  probe.style.color = "var(" + name + ")";
+  const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g);
+  return "#" + m.slice(0, 3).map((c) => (+c).toString(16).padStart(2, "0")).join("");
+}
+
+function applyMode(mode, record) {
+  document.documentElement.className = mode;
+  document.querySelectorAll(".mode-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  themeMeta.setAttribute("content", resolve("--bg"));
+  if (!record) return;
+  const url = new URL(location.href);
+  if (mode) url.searchParams.set("mode", mode); else url.searchParams.delete("mode");
+  history.replaceState(null, "", url);
+}
+
+document.querySelectorAll(".mode-btn").forEach((btn) =>
+  btn.addEventListener("click", () => applyMode(btn.dataset.mode, true)));
+
+const asked = new URL(location.href).searchParams.get("mode") || "";
+applyMode(MODES.includes(asked) ? asked : "", false);
+
+/* ---------- paineis ----------
+   A pagina e uma tela so e NENHUM cartao sai dela: os dezesseis abrem
+   subpagina no lugar da grade, no mesmo desenho. Destino externo, quando
+   existe, mora DENTRO do painel, nunca no cartao.
+
+   O estado mora no endereco, entao o botao de voltar do navegador
+   funciona sem handler nenhum. */
+const panes = [...document.querySelectorAll(".pane")];
+
+function showPane(name, record) {
+  const target = panes.some((p) => p.dataset.pane === name) ? name : "grid";
+  /* a grade recua para a esquerda e o detalhe espera a direita: a
+     direcao vem do papel de cada painel, nao da ordem no DOM */
+  panes.forEach((p) => {
+    p.dataset.state = p.dataset.pane === target ? "in"
+      : p.dataset.pane === "grid" ? "left" : "right";
+  });
+  const open = panes.find((p) => p.dataset.state === "in");
+  const body = open.querySelector(".pane-body");
+  if (body) body.scrollTop = 0;
+  if (!record) return;
+  /* o foco vai para o painel que abriu: sem isto o teclado continua no
+     cartao que acabou de sair do fluxo e o Tab recomeca do topo */
+  (open.querySelector("[data-back]") || open).focus({ preventScroll: true });
+  const url = new URL(location.href);
+  if (target === "grid") url.searchParams.delete("open");
+  else url.searchParams.set("open", target);
+  history.pushState({ pane: target }, "", url);
+}
+
+document.querySelectorAll("button[data-pane]").forEach((btn) =>
+  btn.addEventListener("click", () => showPane(btn.dataset.pane, true)));
+document.querySelectorAll("[data-back]").forEach((btn) =>
+  btn.addEventListener("click", () => showPane("grid", true)));
+addEventListener("popstate", () =>
+  showPane(new URL(location.href).searchParams.get("open") || "grid", false));
+
+showPane(new URL(location.href).searchParams.get("open") || "grid", false);
+
+</script>
+<script src="pure/light.js" defer></script>
+</body>
+</html>

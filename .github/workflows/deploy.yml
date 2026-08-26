@@ -49,6 +49,7 @@ jobs:
         run: |
           cp -r assets out/
           cp -r apps out/
+          cp -r beta out/
           cp -r games out/
           cp -r materials out/
           cp -r pymol_guide out/

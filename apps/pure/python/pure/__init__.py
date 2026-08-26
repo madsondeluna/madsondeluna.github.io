@@ -25,7 +25,7 @@ from .palette import (
     tokens,
 )
 
-__version__ = "1.4.1"
+__version__ = "1.6.0"
 
 __all__ = [
     "palette",

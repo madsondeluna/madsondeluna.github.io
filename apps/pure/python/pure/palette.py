@@ -19,7 +19,7 @@ RAMP_SLATE: dict[str, str] = {
     "200": "#dde1e9",
     "250": "#ced3dc",
     "300": "#adbcd0",
-    "400": "#8ca0ba",
+    "400": "#8ea2bc",
     "500": "#748cab",
     "600": "#667e9c",
     "700": "#3e5c76",
@@ -76,10 +76,13 @@ DEEP_BLUE: dict[str, str] = {
     "border": "#2a3f5c",
     "border_hover": "#3e5c76",
     "text": "#f4f6f9",
-    "muted": "#748cab",
-    # accent sobe um passo no escuro: em #3e5c76 o anel de foco fica em
-    # 2,65 contra o fundo, abaixo do minimo de 3:1 da WCAG
-    "accent": "#8ca0ba",
+    # muted subiu para o passo 400 em 1.5.1: em #748cab ele ficava em
+    # 4,02 sobre a superficie, abaixo do piso de 4,5 para texto pequeno,
+    # e a camada de agente inteira poe texto de 12px em muted sobre cartao
+    "muted": "#8ea2bc",
+    # accent sobe junto, para o 300: precisa continuar um passo mais claro
+    # que muted, como no modo dark (graphite-300 sobre graphite-400)
+    "accent": "#adbcd0",
     "secondary": "#748cab",
 }
 
