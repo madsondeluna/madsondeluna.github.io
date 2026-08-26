@@ -1,0 +1,22 @@
+<!-- Favicon: um ponto, e so isso.
+
+     A marca do casaco tem traco fino e miolo vazado, e a 16px numa aba
+     ela vira um borrao que some no escuro. Um disco cheio le em qualquer
+     tamanho, e e a unica forma que sobrevive a 16px.
+
+     A cor NAO e fixa. A aba do Chrome segue o tema do SISTEMA, nao o
+     modo da pagina, entao um ponto sempre branco sumiria numa aba clara
+     e um sempre escuro sumiria numa escura. Favicon em SVG aceita
+     consulta de midia, entao o ponto troca sozinho.
+
+     Os hex sao literais e nao token: nenhum var() resolve dentro do
+     favicon, porque ele e renderizado fora do documento. Sao os passos
+     50 e 950 da rampa graphite, copiados a mao, do mesmo jeito que o
+     theme-color e copiado a mao. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    circle { fill: #0e0f13 }
+    @media (prefers-color-scheme: dark) { circle { fill: #f3f6fb } }
+  </style>
+  <circle cx="16" cy="16" r="11"/>
+</svg>
