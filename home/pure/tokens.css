@@ -383,6 +383,10 @@
      tamanho em que o rosto le a um metro de distancia numa coluna de
      identidade, e ele casa com duas linhas de --text-display-name. */
   --photo-md: 128px;
+  /* e o retrato de abertura, quando a identidade E a tela. Tres degraus
+     e o teto: miniatura de lista, retrato de coluna, retrato de
+     abertura. Um quarto seria taste em vez de papel. */
+  --photo-lg: 160px;
   --control-lg: 2.75rem;
 
   /* interacao: alvo, foco, campo e ancora.

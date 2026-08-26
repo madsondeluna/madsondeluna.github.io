@@ -77,6 +77,17 @@ html, body { height: 100%; overflow: hidden; }
   padding: var(--space-32) var(--space-48) var(--space-24);
   display: flex;
   flex-direction: column;
+  /* O gap e o PISO, nao a medida final: `space-between` reparte o que
+     sobra igualmente entre os blocos. Numa coluna de altura fixa a
+     alternativa e empilhar tudo no topo e deixar um buraco embaixo, e um
+     buraco nao e ritmo.
+
+     Isto e um desvio declarado da escala de tres degraus, e o desvio tem
+     limite: a escala continua governando DENTRO de cada bloco (etiquetas,
+     trilho, folga interna) e continua sendo o piso entre eles. So o que
+     excede a altura do conteudo e que se distribui, e ele so existe
+     porque este painel e chrome de altura fixa, nao documento em fluxo. */
+  justify-content: space-between;
   gap: var(--space-16);
 }
 
@@ -183,8 +194,8 @@ html, body { height: 100%; overflow: hidden; }
 
 .photo-ring {
   flex: none;
-  width: var(--photo-md);
-  height: var(--photo-md);
+  width: var(--photo-lg);
+  height: var(--photo-lg);
   border-radius: var(--radius-circle);
   overflow: hidden;
   background: var(--dim);
@@ -434,34 +445,6 @@ div.row { cursor: default; }
   .row-side { text-align: left; }
 }
 
-/* ---------- telas altas ----------
-   Em 982px de altura sobravam 149px depois do ultimo bloco, e em 1080
-   sobravam 247. Despejar tudo no fim le como buraco; subir um degrau da
-   escala de espaco distribui a folga entre os blocos e continua dentro
-   da escala, que e o que `space-between` abandonaria. */
-@media (min-height: 940px) {
-  .col-left { gap: var(--space-24); padding-top: var(--space-48); }
-  .rail-list li { margin-bottom: var(--space-8); }
-}
-
-@media (min-height: 1040px) {
-  .col-left { gap: var(--space-32); }
-  .chips { gap: var(--space-6); }
-}
-
-/* acima de 1240 a coluna e larga o bastante para as etiquetas quase nao
-   quebrarem, entao a altura sobra de novo: aqui a folga sobe para o
-   segundo degrau de diagramacao da linguagem, 48, e o painel passa a ler
-   como arejado de proposito em vez de curto. */
-@media (min-height: 1240px) {
-  .col-left {
-    gap: var(--space-48);
-    padding-top: var(--space-96);
-    padding-bottom: var(--space-48);
-  }
-  .rail-list li { margin-bottom: var(--space-12); }
-}
-
 /* ---------- telas baixas ----------
    O painel esquerdo cabe numa tela sem rolar, e cabe por MEDIDA. Foi
    medido em quatro alturas: 900 e 982 fecham folgados, 800 estourava em
@@ -681,7 +664,7 @@ div.row { cursor: default; }
 
     <!-- aglomerado líquido: unidade de tamanho fixo, que é exatamente o
          caso do material. Rótulo de largura variável continua .pill. -->
-    <div class="liquid liquid-tight" style="margin-top: auto; align-self: flex-start; --liquid-pad: var(--space-8); --liquid-drop: drop-shadow(0 1px 2px var(--glass-pool)) drop-shadow(0 4px 10px var(--glass-pool))">
+    <div class="liquid liquid-tight" style="align-self: flex-start; --liquid-pad: var(--space-8); --liquid-drop: drop-shadow(0 1px 2px var(--glass-pool)) drop-shadow(0 4px 10px var(--glass-pool))">
       <div class="liquid-sheet" aria-hidden="true">
         <span class="liquid-blob"></span><span class="liquid-blob"></span>
         <span class="liquid-blob"></span><span class="liquid-blob"></span>
