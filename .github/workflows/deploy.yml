@@ -49,13 +49,30 @@ jobs:
         run: |
           cp -r assets out/
           cp -r apps out/
-          cp -r beta out/
           cp -r games out/
           cp -r materials out/
           cp -r pymol_guide out/
           cp google2a0f51da71f41d93.html out/
           cp sitemap.xml out/
           cp robots.txt out/
+
+      # A raiz passa a ser a pagina estatica em home/, e o app Next vai
+      # para /legacy. /pt e /es NAO se movem: estao indexados, e mover
+      # uma URL indexada quebra o que ja aponta para ela. So o ingles
+      # troca de lugar, que e o unico que a nova raiz substitui.
+      - name: Move the previous site to /legacy and publish the new root
+        run: |
+          mkdir -p out/legacy
+          mv out/index.html out/legacy/index.html
+          mv out/index.txt out/legacy/index.txt
+          # o arquivo nao concorre com a raiz na busca: sem isto o Google
+          # ve duas copias do mesmo conteudo e escolhe uma delas sozinho
+          sed -i 's|<meta name="robots" content="index, follow"/>|<meta name="robots" content="noindex, follow"/>|' out/legacy/index.html
+          sed -i 's|<link rel="canonical" href="https://madsondeluna.com"/>|<link rel="canonical" href="https://madsondeluna.com/legacy"/>|' out/legacy/index.html
+          # e diz o que ele e na aba, senao arquivo e raiz tem o mesmo nome
+          sed -i 's|<title>Madson Aragão: Portfolio</title>|<title>Madson Aragão: previous site</title>|' out/legacy/index.html
+          cp home/index.html out/index.html
+          cp -r home/pure out/pure
 
       - uses: actions/upload-pages-artifact@v5
         with:
