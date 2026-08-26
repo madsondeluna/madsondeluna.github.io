@@ -245,7 +245,7 @@
   --text-40: 2.5rem;
   --text-56: 3.5rem;
   --text-display-section: clamp(2.25rem, 4vw, 3.5rem);
-  --text-display-name:    clamp(2rem, 11vw, 2.75rem);
+  --text-display-name:    clamp(2rem, 11vw, 3.5rem);
 
   --leading-none: 1;
   --leading-tight: 1.2;
@@ -379,6 +379,10 @@
   --breakpoint-stack: 768px;
   --hairline: 1px;
   --photo-sm: 96px;
+  /* o retrato de identidade, maior que a miniatura de lista. 128 e o
+     tamanho em que o rosto le a um metro de distancia numa coluna de
+     identidade, e ele casa com duas linhas de --text-display-name. */
+  --photo-md: 128px;
   --control-lg: 2.75rem;
 
   /* interacao: alvo, foco, campo e ancora.

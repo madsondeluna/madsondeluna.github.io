@@ -183,8 +183,8 @@ html, body { height: 100%; overflow: hidden; }
 
 .photo-ring {
   flex: none;
-  width: var(--photo-sm);
-  height: var(--photo-sm);
+  width: var(--photo-md);
+  height: var(--photo-md);
   border-radius: var(--radius-circle);
   overflow: hidden;
   background: var(--dim);
@@ -205,11 +205,15 @@ html, body { height: 100%; overflow: hidden; }
 /* o cargo fecha o bloco de identidade: sem ele o nome gigante caia
    direto num paragrafo, e o salto de 44px para 15px nao tinha degrau */
 .role {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--text-12);
   color: var(--muted);
   line-height: var(--leading-snug);
 }
+.role-line { white-space: nowrap; }
 .role .sep { padding: 0 var(--space-2); opacity: 0.6; }
 
 .lede {
@@ -430,6 +434,34 @@ div.row { cursor: default; }
   .row-side { text-align: left; }
 }
 
+/* ---------- telas altas ----------
+   Em 982px de altura sobravam 149px depois do ultimo bloco, e em 1080
+   sobravam 247. Despejar tudo no fim le como buraco; subir um degrau da
+   escala de espaco distribui a folga entre os blocos e continua dentro
+   da escala, que e o que `space-between` abandonaria. */
+@media (min-height: 940px) {
+  .col-left { gap: var(--space-24); padding-top: var(--space-48); }
+  .rail-list li { margin-bottom: var(--space-8); }
+}
+
+@media (min-height: 1040px) {
+  .col-left { gap: var(--space-32); }
+  .chips { gap: var(--space-6); }
+}
+
+/* acima de 1240 a coluna e larga o bastante para as etiquetas quase nao
+   quebrarem, entao a altura sobra de novo: aqui a folga sobe para o
+   segundo degrau de diagramacao da linguagem, 48, e o painel passa a ler
+   como arejado de proposito em vez de curto. */
+@media (min-height: 1240px) {
+  .col-left {
+    gap: var(--space-48);
+    padding-top: var(--space-96);
+    padding-bottom: var(--space-48);
+  }
+  .rail-list li { margin-bottom: var(--space-12); }
+}
+
 /* ---------- telas baixas ----------
    O painel esquerdo cabe numa tela sem rolar, e cabe por MEDIDA. Foi
    medido em quatro alturas: 900 e 982 fecham folgados, 800 estourava em
@@ -450,7 +482,7 @@ div.row { cursor: default; }
   .col-left { padding-top: var(--space-16); padding-bottom: var(--space-16); gap: var(--space-10); }
   .identity { gap: var(--space-16); }
   .name { font-size: var(--text-32); }
-  .photo-ring { width: var(--space-64); height: var(--space-64); }
+  .photo-ring { width: var(--space-56); height: var(--space-56); }
   .rail-list li { margin-bottom: var(--space-2); }
   .col-right { padding-top: var(--space-24); padding-bottom: var(--space-24); }
   .liquid { --liquid-pad: var(--space-4); --liquid-size: var(--space-40); }
@@ -471,7 +503,7 @@ div.row { cursor: default; }
   .chip { padding-block: 0; }
   .chips { gap: var(--space-2); }
   .name { font-size: var(--text-24); }
-  .photo-ring { width: var(--space-56); height: var(--space-56); }
+  .photo-ring { width: var(--space-48); height: var(--space-48); }
 }
 
 /* 1280x720 sobrava 6px com o nome da instituicao visivel. Preferi tirar
@@ -578,7 +610,10 @@ div.row { cursor: default; }
       </span>
       <span class="ident-text">
         <h1 class="name">Madson<br>Aragão</h1>
-        <span class="role">Bioinformatician <span class="sep">/</span> DevOps engineer</span>
+        <span class="role">
+          <span class="role-line">Bioinformatician <span class="sep">/</span> DevOps engineer</span>
+          <span class="role-line">Data scientist <span class="sep">/</span> Product designer</span>
+        </span>
       </span>
     </div>
 
