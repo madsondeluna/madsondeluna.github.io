@@ -203,9 +203,12 @@ a.chip:hover { border-color: var(--border-hover); color: var(--text); }
 .foot a:hover { color: var(--text); }
 
 /* o visor 3D e a area de grafico: caixa de midia, raio de midia */
+/* O visor 3D e o gráfico são MÍDIA: a caixa vem de uma proporção, não de
+   uma altura em pixels. Altura literal aqui seria o único valor cru do
+   arquivo, e ela quebra no estreito, onde 500px comem a tela inteira. */
 .viewport {
   width: 100%;
-  height: var(--viewport-h, 400px);
+  aspect-ratio: 4 / 3;
   background: var(--dim);
   --surface-context: var(--dim);
   border: var(--hairline) solid var(--border);
@@ -325,6 +328,13 @@ a.chip:hover { border-color: var(--border-hover); color: var(--text); }
 
 @media (max-width: 768px) {
   .shell { padding: 0 var(--space-24); }
+
+  /* Os nomes das ferramentas sao UMA palavra, e uma palavra nao quebra:
+     "ElectrostaticSurf" a 41px (11vw) mede 373px numa coluna de 312 e
+     empurra a pagina inteira na horizontal. O titulo desce um degrau no
+     estreito, e a quebra fica como rede: ela so dispara no nome que
+     ainda assim nao couber. */
+  h1 { font-size: var(--text-32); overflow-wrap: break-word; }
   .band { padding: var(--space-48) 0; }
   .cols { grid-template-columns: minmax(0, 1fr); }
   .modes { justify-content: flex-start; }

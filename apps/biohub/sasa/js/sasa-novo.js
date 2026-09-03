@@ -200,12 +200,12 @@ function displayResults() {
     // Total SASA
     totalSasaDiv.innerHTML = `
         <h3>Total SASA</h3>
-        <p class="value">${totalSASA.toFixed(2)} <span class="unit">Ų</span></p>
+        <p class="value">${totalSASA.toFixed(2)} <span class="unit">Å²</span></p>
     `;
     
     // Resultados texto
     let resultsText = 'Residue-level SASA:\n';
-    resultsText += 'Chain\tResidue\tNumber\tSASA (Ų)\n';
+    resultsText += 'Chain\tResidue\tNumber\tSASA (Å²)\n';
     resultsText += '─'.repeat(50) + '\n';
     
     for (const residue of residues) {
@@ -213,7 +213,7 @@ function displayResults() {
     }
     
     resultsText += '─'.repeat(50) + '\n';
-    resultsText += `Total: ${totalSASA.toFixed(2)} Ų\n`;
+    resultsText += `Total: ${totalSASA.toFixed(2)} Å²\n`;
     resultsText += `Atoms: ${atoms.length}\n`;
     resultsText += `Residues: ${residues.length}\n`;
     
