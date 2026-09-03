@@ -235,25 +235,26 @@ function displayChart() {
     
     const maxSASA = Math.max(...topResidues.map(r => r.sasa));
     
-    let html = '<h3 style="margin: 1rem 0;">Top 10 Residues by SASA</h3>';
-    html += '<div style="font-size: 12px;">';
-    
+    // A cor e o espaco saem de tool.css: nenhum literal aqui. A barra
+    // cresce por transform, nao por width.
+    let html = '<h3>Top ten residues by SASA</h3>';
+    html += '<div class="bars">';
+
     for (const res of topResidues) {
-        const percent = (res.sasa / maxSASA) * 100;
-        const barWidth = percent;
+        const fraction = res.sasa / maxSASA;
         html += `
-            <div style="margin-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <div class="bar-row">
+                <div class="bar-head">
                     <span>${res.resName}-${res.resSeq}</span>
-                    <span>${res.sasa.toFixed(1)}</span>
+                    <span class="num">${res.sasa.toFixed(1)}</span>
                 </div>
-                <div style="width: 100%; height: 20px; background: #333; border-radius: 4px; overflow: hidden;">
-                    <div style="width: ${barWidth}%; height: 100%; background: linear-gradient(to right, #0000FF, #FF0000);"></div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="transform: scaleX(${fraction})"></div>
                 </div>
             </div>
         `;
     }
-    
+
     html += '</div>';
     chartContainer.innerHTML = html;
 }
@@ -278,7 +279,7 @@ function loadVisualization() {
     
     // Mostrar container
     const container = document.getElementById('viewer-container');
-    if (container) container.style.display = 'block';
+    if (container) container.classList.remove('hidden');
     
     // Carregar PDB
     viewer.loadPDB(pdbText)
@@ -305,12 +306,12 @@ if (calculateBtn) {
         const pdbText = pdbInput.value.trim();
         
         if (!pdbText) {
-            alert('Por favor, forneça um PDB');
+            alert('Provide a PDB structure first.');
             return;
         }
         
         if (!parsePDB(pdbText)) {
-            alert('PDB inválido ou vazio');
+            alert('The PDB content is empty or invalid.');
             return;
         }
         
@@ -334,12 +335,12 @@ if (clearBtn) {
         pdbInput.value = '';
         resultsOutput.value = '';
         totalSasaDiv.innerHTML = '';
-        chartContainer.innerHTML = '<p>Gráfico aparecerá após cálculo</p>';
+        chartContainer.innerHTML = '<p>The chart appears after a calculation.</p>';
         atoms = [];
         residues = [];
         
         const container = document.getElementById('viewer-container');
-        if (container) container.style.display = 'none';
+        if (container) container.classList.add('hidden');
         
         if (viewer && viewer.component && viewer.stage) {
             viewer.stage.removeComponent(viewer.component);
@@ -356,7 +357,7 @@ if (clearBtn) {
 if (copyBtn) {
     copyBtn.addEventListener('click', () => {
         if (!resultsOutput.value) {
-            alert('Nada para copiar');
+            alert('Nothing to copy.');
             return;
         }
         
@@ -374,7 +375,7 @@ if (copyBtn) {
 if (downloadBtn) {
     downloadBtn.addEventListener('click', () => {
         if (residues.length === 0) {
-            alert('Calcule SASA primeiro');
+            alert('Run the SASA calculation first.');
             return;
         }
         

@@ -122,15 +122,15 @@ function useSimplifiedMode(pdbText) {
     console.log('Usando modo simplificado (residue-based)...');
     
     if (!parsePDBWithCharges(pdbText)) {
-        updateStatus('Erro ao processar PDB', 'error');
+        updateStatus('Could not parse the PDB file.', 'error');
         return;
     }
     
     // Mostrar container
-    if (viewerContainer) viewerContainer.style.display = 'block';
-    if (resultsContainer) resultsContainer.style.display = 'none';
+    if (viewerContainer) viewerContainer.classList.remove('hidden');
+    if (resultsContainer) resultsContainer.classList.add('hidden');
     
-    updateStatus('Carregando estrutura em modo simplificado...', 'loading');
+    updateStatus('Loading the structure in simplified mode.', 'loading');
     
     // Carregar no viewer
     viewer.loadPDB(pdbText)
@@ -142,16 +142,16 @@ function useSimplifiedMode(pdbText) {
             colorByCharge(charges);
             
             updateStatus(`
-                <strong>Modo Simplificado Ativo!</strong><br>
+                <strong>Simplified mode</strong><br>
                 <span style="font-size: 0.9rem;">
                 Usando modelo residue-based: ARG/LYS=positivo, ASP/GLU=negativo<br>
-                Este eh um modelo simplificado. Para Poisson-Boltzmann real, instale APBS local.
+                This is an approximation. For a real Poisson-Boltzmann calculation, install APBS locally.
                 </span>
             `, 'success');
         })
         .catch((error) => {
             console.error('Erro:', error);
-            updateStatus('Erro ao carregar estrutura: ' + error.message, 'error');
+            updateStatus('Could not load the structure: ' + error.message, 'error');
         });
 }
 
@@ -226,11 +226,11 @@ if (calculateBtn) {
         const pdbText = pdbInput.value.trim();
         
         if (!pdbText) {
-            updateStatus('Por favor, forneca um PDB', 'error');
+            updateStatus('Provide a PDB structure first.', 'error');
             return;
         }
         
-        updateStatus('Processando...', 'loading');
+        updateStatus('Processing.', 'loading');
         
         // Usar sempre modo simplificado agora
         setTimeout(() => {
@@ -247,11 +247,11 @@ if (simpleModeBtn) {
         const pdbText = pdbInput.value.trim();
         
         if (!pdbText) {
-            updateStatus('Por favor, forneca um PDB', 'error');
+            updateStatus('Provide a PDB structure first.', 'error');
             return;
         }
         
-        updateStatus('Iniciando modo simplificado...', 'loading');
+        updateStatus('Starting simplified mode.', 'loading');
         
         setTimeout(() => {
             useSimplifiedMode(pdbText);
@@ -271,8 +271,8 @@ if (clearBtn) {
         
         updateStatus('Upload a PDB file and click "Calculate" to start', 'info');
         
-        if (viewerContainer) viewerContainer.style.display = 'none';
-        if (resultsContainer) resultsContainer.style.display = 'none';
+        if (viewerContainer) viewerContainer.classList.add('hidden');
+        if (resultsContainer) resultsContainer.classList.add('hidden');
         
         if (viewer && viewer.component && viewer.stage) {
             viewer.stage.removeComponent(viewer.component);

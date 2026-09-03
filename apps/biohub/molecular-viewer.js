@@ -72,7 +72,15 @@ class MolecularViewer {
             
             // Criar stage
             this.stage = new NGL.Stage(this.viewportElement, {
-                backgroundColor: '#000000',
+                backgroundColor: (function () {
+                    // token resolvido: NGL nao le var()
+                    const probe = document.createElement('div');
+                    probe.style.cssText = 'position:absolute;visibility:hidden;color:var(--dim)';
+                    document.body.appendChild(probe);
+                    const c = getComputedStyle(probe).color;
+                    probe.remove();
+                    return c;
+                })(),
                 antialias: true,
                 quality: 'medium'
             });

@@ -44,32 +44,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function plotHydrophobicity(positions, scores) {
+        // Plotly nao resolve var(): as cores vem resolvidas de pureChart().
+        const c = window.pureChart();
+
         const data = [{
             x: positions,
             y: scores,
             type: 'scatter',
             mode: 'lines',
             line: {
-                color: 'var(--color-primary)',
+                color: c.series[0],
                 width: 2
             }
         }];
 
         const layout = {
-            title: 'Hydrophobicity Profile (Window Size: 9)',
-            paper_bgcolor: '#ffffff',
-            plot_bgcolor: '#ffffff',
-            font: { 
-                color: '#333333'
+            title: 'Hydrophobicity profile, window size 9',
+            paper_bgcolor: c.paper,
+            plot_bgcolor: c.plot,
+            font: {
+                color: c.ink
             },
             xaxis: {
-                title: 'Residue Number',
-                gridcolor: '#e0e0e0'
+                title: 'Residue number',
+                gridcolor: c.grid,
+                linecolor: c.grid,
+                zerolinecolor: c.grid
             },
             yaxis: {
-                title: 'Hydrophobicity Index',
-                zerolinecolor: 'var(--color-danger)',
-                gridcolor: '#e0e0e0'
+                title: 'Hydropathy index',
+                gridcolor: c.grid,
+                linecolor: c.grid,
+                zerolinecolor: c.grid
             },
             hovermode: 'x unified',
             margin: { l: 60, r: 30, b: 50, t: 50 }

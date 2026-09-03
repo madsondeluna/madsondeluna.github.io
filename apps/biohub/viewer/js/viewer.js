@@ -10,7 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- INICIALIZAÇÃO DO NGL ---
-    const stage = new NGL.Stage("viewport", { backgroundColor: "#1e1e1e" });
+    // NGL nao le var(): o fundo do palco vem do token JA resolvido, e
+    // volta a ser lido a cada troca de modo.
+    function stageBg() {
+        const probe = document.createElement("div");
+        probe.style.cssText = "position:absolute;visibility:hidden;color:var(--dim)";
+        document.body.appendChild(probe);
+        const c = getComputedStyle(probe).color;
+        probe.remove();
+        return c;
+    }
+    const stage = new NGL.Stage("viewport", { backgroundColor: stageBg() });
+    document.querySelectorAll(".mode-btn").forEach((b) =>
+        b.addEventListener("click", () =>
+            requestAnimationFrame(() => stage.setParameters({ backgroundColor: stageBg() }))));
     let currentStructure; // Variável para armazenar a estrutura carregada
 
     // --- ELEMENTOS DO DOM ---

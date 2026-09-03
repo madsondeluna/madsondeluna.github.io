@@ -1,0 +1,363 @@
+/* =========================================================
+   Diagramacao das oito paginas de ferramenta do Bio Signal Hub.
+
+   Um arquivo para as oito, e nao oito arquivos: o desenho e o mesmo em
+   todas, e o unico jeito de ele continuar sendo o mesmo e nao existir
+   em oito lugares. Cor, tipo, raio, sombra, curva e espaco vem todos de
+   /pure/tokens.css: nenhum literal abaixo desta linha.
+
+   A segunda metade do arquivo estiliza classes que o JAVASCRIPT injeta
+   (.results-table, .info-card, .sasa-summary e irmas). Elas nao aparecem
+   no HTML e some-las e o jeito silencioso de a pagina sair sem estilo
+   depois do primeiro clique.
+   ========================================================= */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell { max-width: var(--container-xl); margin: 0 auto; padding: 0 var(--space-32); }
+
+.band   { padding: var(--space-96) 0; }
+main.band { padding-top: 0; }
+
+/* barra de topo: a volta comeca na coluna 1, o seletor de modo fecha na 12 */
+.head-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+h1 {
+  margin: var(--space-48) 0 0;
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-size: var(--text-display-name);
+  font-weight: var(--weight-light);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-display);
+  color: var(--text);
+}
+
+.lede {
+  margin: var(--space-24) 0 0;
+  max-width: var(--measure-wide);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+}
+
+/* etiqueta de metadado: mono, 11, --muted e nunca --secondary */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-2) var(--space-8);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-mark);
+  background: var(--surface);
+  --surface-context: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+  line-height: var(--leading-snug);
+  text-decoration: none;
+  transition: border-color var(--duration-3) var(--ease-standard),
+              color var(--duration-3) var(--ease-standard);
+}
+a.chip:hover { border-color: var(--border-hover); color: var(--text); }
+
+/* piso de alvo: pilula de volta e link de rodape sao controles */
+.head-bar .chip,
+.foot a {
+  min-height: var(--hit-min);
+  padding-block: var(--space-6);
+  box-sizing: border-box;
+}
+.foot a { display: inline-flex; align-items: center; }
+
+.modes { display: flex; flex-wrap: wrap; gap: var(--space-6); justify-content: flex-end; }
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--hit-min);
+  padding: var(--space-6) var(--space-12);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition: color var(--duration-3) var(--ease-standard),
+              border-color var(--duration-3) var(--ease-standard);
+}
+.mode-btn:hover { color: var(--text); }
+.mode-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+
+/* ---------- painel ----------
+   Duas colunas em tela larga, uma abaixo do ponto de quebra. Entrada a
+   esquerda, saida a direita, e a ordem no DOM e a ordem de leitura. */
+
+.cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-24);
+  align-items: start;
+}
+.cols-1 { grid-template-columns: minmax(0, 1fr); }
+
+.panel {
+  background: var(--surface);
+  --surface-context: var(--surface);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-surface);
+  padding: var(--space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+}
+.panel h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text);
+}
+/* subtitulo dentro do painel: o painel ja e o degrau, o filho e rotulo */
+.panel h3 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-wide);
+  color: var(--muted);
+}
+
+/* sequência, coordenada e resultado são DADO, e dado é mono. O tamanho
+   continua --text-field: abaixo de 16px o iOS dá zoom ao focar. */
+.textarea { font-family: var(--font-mono); }
+
+.row-actions { display: flex; flex-wrap: wrap; gap: var(--space-8); }
+.row-actions .pill { flex: none; }
+
+/* o rotulo de upload e um label que age como botao: ele leva .pill e
+   por isso nao ha regra propria aqui alem do alvo */
+.upload-btn { min-height: var(--hit-min); }
+
+.params { display: flex; flex-direction: column; gap: var(--space-12); }
+.param-info {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+  line-height: var(--leading-snug);
+}
+
+.note { margin: 0; max-width: var(--measure-wide); font-size: var(--text-13); line-height: var(--leading-normal); color: var(--muted); }
+
+/* aviso: a cor e --status-*, nunca uma fatia da paleta de series, e ela
+   nunca vem sozinha, sempre com o rotulo ao lado */
+.callout {
+  border: var(--hairline) solid var(--border);
+  border-left: var(--stroke) solid var(--status-warning);
+  border-radius: var(--radius-field);
+  background: var(--dim);
+  --surface-context: var(--dim);
+  padding: var(--space-16) var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+.callout h2 { font-size: var(--text-13); }
+.callout p { margin: 0; font-size: var(--text-13); color: var(--muted); line-height: var(--leading-normal); }
+.callout code {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--text);
+}
+.callout a { color: var(--text); }
+
+.foot {
+  border-top: var(--hairline) solid var(--border);
+  padding: var(--space-24) 0 var(--space-48);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+}
+.foot a { color: var(--muted); text-decoration: none; }
+.foot a:hover { color: var(--text); }
+
+/* o visor 3D e a area de grafico: caixa de midia, raio de midia */
+.viewport {
+  width: 100%;
+  height: var(--viewport-h, 400px);
+  background: var(--dim);
+  --surface-context: var(--dim);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-media);
+}
+.plot { width: 100%; min-height: var(--space-96); }
+
+/* ---------- classes que o javascript injeta ---------- */
+
+.hidden { display: none !important; }
+
+.placeholder-text { margin: 0; color: var(--muted); font-size: var(--text-13); }
+
+/* tabela de parametros do SeqParam */
+.results-table { width: 100%; border-collapse: collapse; font-size: var(--text-13); text-align: left; }
+.results-table th {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  color: var(--muted);
+  padding: var(--space-8) var(--space-12) var(--space-8) 0;
+  border-bottom: var(--hairline) solid var(--border);
+  white-space: nowrap;
+}
+.results-table td {
+  padding: var(--space-8) var(--space-12) var(--space-8) 0;
+  border-bottom: var(--hairline) solid var(--border);
+  vertical-align: top;
+}
+/* numero que se compara sai em mono, para as casas alinharem */
+.results-table td + td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.results-table tr:last-child td { border-bottom: 0; }
+.results-table .sub-header {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--muted);
+  padding-top: var(--space-16);
+}
+
+/* cartoes de cabecalho do PDB, no ContactMapGen */
+.pdb-info-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-12);
+}
+.info-card {
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-field);
+  padding: var(--space-12) var(--space-16);
+  min-width: 0;
+}
+.info-card h3 {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted);
+}
+.small-text { margin: 0; font-size: var(--text-13); color: var(--text); word-break: break-word; }
+
+/* barra de progresso: ela cresce por transform, nunca por width */
+.progress-track {
+  height: var(--meter);
+  border-radius: var(--radius-control);
+  background: var(--dim);
+  overflow: hidden;
+}
+#progress-bar {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+#progress-text { font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); }
+
+/* resumo do SASA */
+.sasa-summary:empty { display: none; }
+.sasa-summary .value {
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-24);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.sasa-summary .unit { font-size: var(--text-13); color: var(--muted); }
+
+.chart-container:empty { display: none; }
+.chart-container p { margin: 0; font-size: var(--text-13); color: var(--muted); }
+
+.stats-box:empty { display: none; }
+.stats-box p { margin: 0 0 var(--space-4); font-size: var(--text-13); color: var(--muted); }
+.stats-box strong { color: var(--text); font-weight: var(--weight-medium); }
+
+.status-box p { margin: 0; font-size: var(--text-13); color: var(--muted); }
+
+/* escala de cor de uma figura: legenda de dado, com os dois extremos
+   nomeados em texto. A rampa em si nao carrega rotulo sozinha. */
+.scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-field);
+}
+.scale-row { display: flex; align-items: center; gap: var(--space-12); }
+.scale-bar { flex: 1; height: var(--space-12); border-radius: var(--radius-control); }
+.scale-sasa { background: linear-gradient(to right, var(--seq-1), var(--seq-4), var(--seq-7)); }
+.scale-esp  { background: linear-gradient(to right, var(--div-1), var(--div-5), var(--div-9)); }
+.scale-note { font-family: var(--font-mono); font-size: var(--text-11); color: var(--muted); }
+
+/* ---------- estreito ----------
+   O ponto de quebra e o da linguagem, 768px, e e literal porque @media
+   nao le var(). Area de toque decide-se por pointer, nunca por largura. */
+
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-24); }
+  .band { padding: var(--space-48) 0; }
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .modes { justify-content: flex-start; }
+  .head-bar { gap: var(--space-12); }
+}
+
+@media (pointer: coarse) {
+  .mode-btn,
+  .head-bar .chip,
+  .foot a,
+  .upload-btn { min-height: var(--hit-min-touch); padding-block: var(--space-10); }
+}
+
+/* barras do SASA por resíduo, montadas pelo script */
+.bars { display: flex; flex-direction: column; gap: var(--space-8); }
+.bar-row { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.bar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+.bar-track {
+  height: var(--space-8);
+  border-radius: var(--radius-control);
+  background: var(--dim);
+  overflow: hidden;
+}
+/* fatia de gráfico, não cor de estado */
+.bar-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--chart-1);
+  transform-origin: left;
+}

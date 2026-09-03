@@ -1,141 +1,182 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate and visualize electrostatic surface potential using PDB2PQR/APBS">
-    <title>Electrostatic Surface</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/ngl@2.0.0-dev.38/dist/ngl.js"></script>
-    <script src="../molecular-viewer.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0E0F13">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>ElectrostaticSurf</title>
+<meta name="description" content="Electrostatic surface potential of a protein structure, through PDB2PQR and APBS."/>
+<meta name="author" content="Madson Allan de Luna Aragão"/>
+<link rel="canonical" href="https://madsondeluna.com/apps/biohub/electrostatic/"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- A mesma cópia da linguagem que a raiz do site serve, e uma folha só
+     para as oito ferramentas. Ordem obrigatória: tokens, patterns, light. -->
+<link rel="stylesheet" href="/pure/tokens.css">
+<link rel="stylesheet" href="/pure/patterns.css">
+<link rel="stylesheet" href="/pure/light.css">
+<link rel="stylesheet" href="../tool.css">
+
+<script>
+/* O modo entra ANTES da primeira pintura, senão a página abre clara e
+   pisca. Mesma chave da raiz do site. */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Electrostatic Surface Calculator</h1>
-                <p id="typing-text"></p>
-            </div>
-            <nav>
-                <a href="../index.html" class="nav-link">← Back to Bio Signal Hub</a>
-            </nav>
-        </header>
+<body class="lit-cursor-only">
 
-        <main>
-            <div class="info-note" style="background: rgba(255, 193, 7, 0.1); border: 1px solid #ffc107; border-radius: 4px; padding: 1rem; margin-bottom: 1.5rem;">
-                <h3 style="margin: 0 0 0.5rem 0; color: #ffc107; font-size: 1rem;">Important: API Instability Notice</h3>
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem; line-height: 1.5;">
-                    The <strong>PDB2PQR/APBS web server API is undergoing changes</strong>, which may cause connection instability or failures. This is <u>not an error in this tool</u>, it's a temporary limitation.
-                </p>
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem; line-height: 1.5;">
-                    <strong>Automatic Fallback:</strong> If the APBS server fails, the tool will automatically switch to a 
-                    <em>simplified electrostatic model</em> based on residue charges (ARG/LYS: positive, ASP/GLU: negative). 
-                    While less accurate, this provides immediate results for quick analysis.
-                </p>
-                <p style="margin: 0; font-size: 0.9rem; line-height: 1.5;">
-                    <strong>Skip the Wait:</strong> Click <strong>"Use Simplified Mode"</strong> button to directly use the fallback model without trying APBS first.
-                </p>
-                <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #999;">
-                    <strong>Simple Solution:</strong> Install a CORS browser extension (e.g., "CORS Unblock") or use local APBS installation for production work. See <code>CORS_SETUP.md</code> for details.
-                </p>
-            </div>
-            
-            <div class="converter-grid">
-                <div class="io-box">
-                    <h2>PDB Input</h2>
-                    <label for="pdb-upload" class="upload-btn">Upload PDB File</label>
-                    <input type="file" id="pdb-upload" accept=".pdb" hidden>
-                    <textarea 
-                        id="pdb-input" 
-                        rows="15" 
-                        placeholder="Or paste PDB content here..."></textarea>
-                    
-                    <div class="params-box">
-                        <h3>APBS Parameters</h3>
-                        <div class="param-group">
-                            <label for="forcefield">Force Field:</label>
-                            <select id="forcefield">
-                                <option value="AMBER">AMBER</option>
-                                <option value="CHARMM">CHARMM</option>
-                                <option value="PARSE">PARSE</option>
-                                <option value="TYL06">TYL06</option>
-                                <option value="PEOEPB">PEOEPB</option>
-                                <option value="SWANSON">SWANSON</option>
-                            </select>
-                            <span class="param-info">Charge assignment method</span>
-                        </div>
-                        <div class="param-group">
-                            <label for="ph">pH:</label>
-                            <input type="number" id="ph" value="7.0" min="0" max="14" step="0.1">
-                            <span class="param-info">Solution pH</span>
-                        </div>
-                        <div class="param-group">
-                            <label for="ion-conc">Ion Concentration (M):</label>
-                            <input type="number" id="ion-conc" value="0.15" min="0" max="1" step="0.01">
-                            <span class="param-info">Ionic strength</span>
-                        </div>
-                    </div>
-                </div>
+<!-- A lente do cursor dobra o fundo em vez de desfocá-lo, e precisa da
+     definição do filtro no documento. Uma por documento. -->
+<svg class="pure-defs" aria-hidden="true" focusable="false" width="0" height="0"><defs>
+  <filter id="pure-lens" x="-50%" y="-50%" width="200%" height="200%"
+          primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(190%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(136%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(120%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(66%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(0%2C190%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(0%2C136%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(0%2C120%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(0%2C66%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-body"/>
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-rim"/>
+    <feDisplacementMap in="SourceGraphic" in2="lens-body" scale="0.52" xChannelSelector="R" yChannelSelector="G" result="lens-warp"/>
+    <feDisplacementMap in="lens-warp" in2="lens-rim" scale="0.18" xChannelSelector="R" yChannelSelector="G" result="lens-bent"/>
+    <feGaussianBlur in="lens-bent" stdDeviation="0.005"/>
+  </filter>
 
-                <div class="io-box">
-                    <h2>Electrostatic Results</h2>
-                    
-                    <div id="status-container" class="status-box">
-                        <p>Upload a PDB file and click "Calculate" to start</p>
-                    </div>
+</defs></svg>
 
-                    <div id="viewer-container" style="display: none; margin: 20px 0;">
-                        <h3 style="font-size: 14px; margin-bottom: 10px;">3D Visualization</h3>
-                        <div class="viewer-controls" style="margin-bottom: 10px;">
-                            <button id="toggle-spin" class="control-button">Toggle Spin</button>
-                            <button id="center-view" class="control-button">Center View</button>
-                            <button id="toggle-surface" class="control-button">Toggle Surface</button>
-                        </div>
-                        <div id="viewport" style="width: 100%; height: 500px; background: #000; border-radius: 4px;"></div>
-                        <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 4px;">
-                            <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: var(--color-text-secondary);">Electrostatic Potential Scale:</div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 11px; color: var(--color-text-secondary);">-5 kT/e</span>
-                                <div style="flex: 1; height: 20px; background: linear-gradient(to right, #FF0000, #FF8888, #FFFFFF, #8888FF, #0000FF); border-radius: 4px;"></div>
-                                <span style="font-size: 11px; color: var(--color-text-secondary);">+5 kT/e</span>
-                            </div>
-                            <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-secondary); text-align: center;">
-                                Red = Negative (acidic) | Blue = Positive (basic)
-                            </div>
-                        </div>
-                    </div>
+<div class="lit-cursor" aria-hidden="true"></div>
 
-                    <div id="results-container" style="display: none;">
-                        <h3>Analysis Summary</h3>
-                        <textarea id="results-output" rows="10" readonly placeholder="Results will appear here..."></textarea>
-                        <div class="output-controls">
-                            <button id="download-pqr">Download PQR</button>
-                            <button id="download-dx">Download DX (Potential Grid)</button>
-                        </div>
-                    </div>
-                </div>
+<a class="skip-link pill" href="#main">Skip to content</a>
 
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button id="calculate-btn" style="flex: 2;">Calculate with APBS (Try Server First)</button>
-                    <button id="simple-mode-btn" style="flex: 1; background: var(--color-warning, #ffc107); border-color: var(--color-warning, #ffc107);">Use Simplified Mode</button>
-                </div>
-                <button id="clear-btn" style="margin-top: 10px; width: 100%;">Clear</button>
-            </div> 
-        </main>
-        
-        <footer>
-            <p>© 2025. GROMADS. All rights reserved.</p>
-            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--color-text-secondary);">
-                Powered by <a href="https://server.poissonboltzmann.org/" target="_blank" style="color: var(--primary-color);">PDB2PQR/APBS Server</a>
-            </p>
-        </footer>
+<div class="shell">
+
+  <header class="band">
+    <div class="head-bar">
+      <a class="chip" href="../index.html">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>Bio Signal Hub</a>
+      <div class="modes">
+        <button class="mode-btn" type="button" data-mode="" aria-pressed="true"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#sun"/></svg>Light</button>
+        <button class="mode-btn" type="button" data-mode="paper-like" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#book"/></svg>Paper-like</button>
+        <button class="mode-btn" type="button" data-mode="deep-blue" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#moon"/></svg>Deep blue</button>
+        <button class="mode-btn" type="button" data-mode="dark" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#contrast"/></svg>Dark</button>
+      </div>
+    </div>
+    <h1>ElectrostaticSurf</h1>
+    <p class="lede">Runs PDB2PQR and APBS to compute electrostatic surface potential and maps it onto the 3D structure. A simplified residue charge model is available as a fallback.</p>
+  </header>
+
+  <main class="band" id="main" tabindex="-1">
+    <div class="callout">
+      <h2>The PDB2PQR and APBS server API is unstable</h2>
+      <p>The upstream API is changing, so connections may fail. That is a limitation of the
+        server, not of this tool.</p>
+      <p>If APBS fails, the tool falls back to a simplified electrostatic model based on residue
+        charges: ARG and LYS positive, ASP and GLU negative. It is less accurate and returns
+        immediately.</p>
+      <p>Use simplified mode to skip the APBS attempt altogether. For production work, install
+        APBS locally or run the browser with a CORS extension; <code>CORS_SETUP.md</code> has the
+        details.</p>
     </div>
 
-    <script src="js/electrostatic-novo.js"></script>
+    <div class="cols" style="margin-top: var(--space-24)">
+
+      <section class="panel">
+        <h2>PDB input</h2>
+        <div class="row-actions">
+          <label for="pdb-upload" class="pill upload-btn">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#upload"/></svg>Upload PDB file</label>
+          <input type="file" id="pdb-upload" accept=".pdb" hidden>
+        </div>
+        <textarea class="textarea" id="pdb-input" rows="15" placeholder="Or paste PDB content here"></textarea>
+
+        <h3>APBS parameters</h3>
+        <div class="params">
+          <div class="field">
+            <label class="field-label" for="forcefield">Force field</label>
+            <span class="select-shell">
+              <select class="select" id="forcefield">
+                <option value="AMBER">AMBER</option>
+                <option value="CHARMM">CHARMM</option>
+                <option value="PARSE">PARSE</option>
+                <option value="TYL06">TYL06</option>
+                <option value="PEOEPB">PEOEPB</option>
+                <option value="SWANSON">SWANSON</option>
+              </select>
+            </span>
+            <span class="param-info">Charge assignment method.</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="ph">pH</label>
+            <input class="input" type="number" id="ph" value="7.0" min="0" max="14" step="0.1">
+            <span class="param-info">Solution pH.</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="ion-conc">Ion concentration, M</label>
+            <input class="input" type="number" id="ion-conc" value="0.15" min="0" max="1" step="0.01">
+            <span class="param-info">Ionic strength.</span>
+          </div>
+        </div>
+
+        <div class="row-actions">
+          <button class="pill" type="button" id="calculate-btn">Calculate with APBS</button>
+          <button class="pill pill-solid" type="button" id="simple-mode-btn">Use simplified mode</button>
+          <button class="pill pill-solid" type="button" id="clear-btn">Clear</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Results</h2>
+
+        <div id="status-container" class="status-box">
+          <p>Upload a PDB file and start a calculation.</p>
+        </div>
+
+        <div id="viewer-container" class="hidden">
+          <h3>3D visualisation</h3>
+          <div class="row-actions">
+            <button class="pill pill-solid control-button" type="button" id="toggle-spin">Toggle spin</button>
+            <button class="pill pill-solid control-button" type="button" id="center-view">Center view</button>
+            <button class="pill pill-solid control-button" type="button" id="toggle-surface">Toggle surface</button>
+          </div>
+          <div id="viewport" class="viewport" style="--viewport-h: 500px"></div>
+          <div class="scale">
+            <span class="scale-note">Electrostatic potential, kT/e</span>
+            <div class="scale-row">
+              <span class="scale-note">−5, acidic</span>
+              <span class="scale-bar scale-esp"></span>
+              <span class="scale-note">+5, basic</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+          <h3>Analysis summary</h3>
+          <textarea class="textarea" id="results-output" rows="10" readonly placeholder="Results appear here"></textarea>
+          <div class="row-actions">
+            <button class="pill pill-solid" type="button" id="download-pqr">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#download"/></svg>Download PQR</button>
+            <button class="pill pill-solid" type="button" id="download-dx">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#download"/></svg>Download DX</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <p class="note" style="margin-top: var(--space-24)">Computation runs on the
+      <a href="https://server.poissonboltzmann.org/" target="_blank" rel="noopener">PDB2PQR and APBS server</a>.</p>
+  </main>
+
+  <footer class="foot">
+    <span>Bio Signal Hub, GROMADS</span>
+    <a href="/">madsondeluna.com</a>
+  </footer>
+
+</div>
+
+<script src="https://unpkg.com/ngl@2.0.0-dev.38/dist/ngl.js"></script>
+<script src="../molecular-viewer.js"></script>
+<script src="js/electrostatic-novo.js"></script>
+<script src="../tool.js"></script>
+<script src="/pure/light.js" defer></script>
 </body>
 </html>

@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÃO HELPER PARA ATUALIZAR O PROGRESSO ---
     function updateProgress(percent, text) {
-        progressBar.style.width = `${percent}%`;
+        // o medidor cresce por transform, nunca por width: largura e
+        // propriedade de layout e reflui a pagina a cada quadro
+        progressBar.style.transform = `scaleX(${percent / 100})`;
         progressText.textContent = `${text} ${Math.round(percent)}%`;
     }
 
@@ -63,14 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         updateProgress(90, 'Rendering heatmap...');
                         displayPDBInfo(pdbData.info);
-                        plotDistanceHeatmap(distanceMatrix, pdbData.residueLabels);
-                        
+
                         updateProgress(100, 'Done!');
-                        
+
                         setTimeout(() => {
                             resultsSection.classList.remove('hidden');
                             progressContainer.classList.add('hidden');
                             uploadButton.classList.remove('hidden');
+
+                            // O grafico so sabe a propria largura DEPOIS de a
+                            // secao sair de display:none. Desenhado antes disso
+                            // ele mede zero e sai vazio, sem erro nenhum.
+                            plotDistanceHeatmap(distanceMatrix, pdbData.residueLabels);
                         }, 500);
 
                     }, 50);
@@ -146,19 +152,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function plotDistanceHeatmap(matrix, labels) {
+        // Plotly nao resolve var(): as cores vem resolvidas de pureChart().
+        // Distancia e grandeza de uma ponta so, entao a escala e a
+        // sequencial da linguagem, nao a divergente.
+        const c = window.pureChart();
+
         const data = [{
             z: matrix,
             x: labels,
             y: labels,
             type: 'heatmap',
-            colorscale: 'RdBu',
+            colorscale: c.sequential,
             reversescale: true,
             showscale: true,
             colorbar: {
                 title: 'Distance (Å)',
                 titleside: 'right',
-                tickfont: { color: '#333' },
-                titlefont: { color: '#333' }
+                tickfont: { color: c.muted },
+                titlefont: { color: c.ink }
             },
             hovertemplate: '<b>Interaction</b><br>' +
                            'Residue 1: %{y}<br>' +
@@ -175,14 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const layout = {
                 title: {
-                    text: 'Residue-Residue Distance Matrix (Cα, Å)',
+                    text: 'Residue-residue distance matrix, Cα, Å',
                     font: {
-                        color: '#333' // Cor do título do gráfico
+                        color: c.ink
                     }
                 },
-                paper_bgcolor: '#ffffff', // Fundo BRANCO para o paper (incluindo margens e título)
-                plot_bgcolor: '#ffffff',  // Fundo BRANCO para a área interna do gráfico
-                font: { color: '#333' },    // Cor escura para os textos em geral
+                paper_bgcolor: c.paper,
+                plot_bgcolor: c.plot,
+                font: { color: c.ink },
                 width: squareSize,            // Define a largura do gráfico
                 height: squareSize,           // Define a ALTURA do gráfico igual à largura (QUADRADO)
                 xaxis: { 
