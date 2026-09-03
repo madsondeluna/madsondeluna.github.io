@@ -70,7 +70,7 @@ const SECTIONS = [
   {
     number: "12",
     label: "biohub",
-    title: "BioHub",
+    title: "Bio Signal Hub",
     description: "A collection of bioinformatics tools for structural biology analyses.",
   },
   {

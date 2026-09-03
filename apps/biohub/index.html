@@ -1,88 +1,383 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIOHUB</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0E0F13">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Bio Signal Hub</title>
+<meta name="description" content="Bio Signal Hub is a set of browser tools for structural bioinformatics: PDB and FASTA conversion, sequence parameters, hydropathy profiles, contact maps, solvent accessible surface area, electrostatic surface potential and 3D structure viewing."/>
+<meta name="author" content="Madson Allan de Luna Aragão"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://madsondeluna.com/apps/biohub/"/>
+<meta property="og:title" content="Bio Signal Hub"/>
+<meta property="og:description" content="Browser tools for structural bioinformatics: conversion, sequence parameters, hydropathy, contact maps, SASA, electrostatics and 3D viewing."/>
+<meta property="og:url" content="https://madsondeluna.com/apps/biohub/"/>
+<meta property="og:site_name" content="Madson Aragão"/>
+<meta property="og:type" content="website"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- A mesma copia da linguagem que a raiz do site serve. Nao ha copia
+     propria aqui de proposito: uma segunda copia e uma segunda versao. -->
+<link rel="stylesheet" href="/pure/tokens.css">
+<link rel="stylesheet" href="/pure/patterns.css">
+<link rel="stylesheet" href="/pure/light.css">
+
+<script>
+/* O modo entra ANTES da primeira pintura, senao a pagina abre clara e
+   pisca. A chave e a mesma da raiz, entao quem escolheu um modo la
+   chega aqui nele. Quem nunca escolheu cai no escuro grafite. */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
+
+<style>
+/* =========================================================
+   Diagramacao desta pagina. Cor, tipo, raio, sombra, curva e espaco
+   vem todos de /pure/tokens.css: nenhum literal abaixo desta linha.
+
+   O desenho e o mesmo da raiz do site, e as regras de cartao, pilula
+   de modo e rodape sao as de la, sem redesenho.
+   ========================================================= */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell { max-width: var(--container-xl); margin: 0 auto; padding: 0 var(--space-32); }
+.grid  { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-24); }
+.grid > * { min-width: 0; }
+
+/* os dois eixos da linguagem */
+.axis-a      { grid-column: 1 / 7; }
+.axis-a-wide { grid-column: 1 / 10; }
+.axis-b      { grid-column: 9 / 13; }
+.bleed       { grid-column: 1 / 13; }
+
+.step-1 { margin-top: var(--space-24); }
+.step-2 { margin-top: var(--space-48); }
+.band   { padding: var(--space-96) 0; }
+main.band { padding-top: 0; }
+
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-size: var(--text-display-name);
+  font-weight: var(--weight-light);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-display);
+  color: var(--text);
+}
+
+.lede {
+  margin: 0;
+  max-width: var(--measure-wide);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+}
+.note { margin: 0; max-width: var(--measure-wide); font-size: var(--text-13); line-height: var(--leading-normal); color: var(--muted); }
+
+/* etiqueta de metadado: mono, 11, --muted e nunca --secondary */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-2) var(--space-8);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-mark);
+  background: var(--surface);
+  --surface-context: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+  line-height: var(--leading-snug);
+  text-decoration: none;
+  transition: border-color var(--duration-3) var(--ease-standard),
+              color var(--duration-3) var(--ease-standard);
+}
+a.chip:hover { border-color: var(--border-hover); color: var(--text); }
+
+/* grade de ferramentas: os vaos de 1px sobre --border desenham a grade,
+   entao a celula nao tem borda, nem raio, nem sombra propria */
+.tools { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+.tool-card {
+  background: var(--surface);
+  --surface-context: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-20);
+  border: 0;
+  border-radius: 0;
+  min-height: var(--space-56);
+  text-align: left;
+  text-decoration: none;
+  color: var(--text);
+  transition: background var(--duration-3) var(--ease-standard),
+              transform var(--duration-1) var(--ease-out);
+}
+.tool-card:hover { background: var(--surface-hover); }
+.tool-card:active { transform: scale(0.995); }
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+}
+.tool-card h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text);
+}
+.tool-card p { margin: 0; font-size: var(--text-13); color: var(--muted); }
+.tool-name { display: flex; align-items: baseline; gap: var(--space-8); flex-wrap: wrap; }
+
+.card-go {
+  margin-left: auto;
+  opacity: 0.55;
+  transition: opacity var(--duration-3) var(--ease-standard),
+              transform var(--duration-3) var(--ease-out-expo);
+}
+.tool-card:hover .card-go { opacity: 1; transform: translateX(var(--nudge-1)); }
+
+.head-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+.head-bar .chip { flex: none; }
+
+/* piso de alvo: a pilula de volta e o link do rodape sao controles, e o
+   piso e --hit-min, 44 no dedo. Link dentro de prosa nao entra: ele e
+   texto, nao controle. */
+.head-bar .chip,
+.foot a {
+  min-height: var(--hit-min);
+  padding-block: var(--space-6);
+  box-sizing: border-box;
+}
+.foot a { display: inline-flex; align-items: center; }
+
+.modes { display: flex; flex-wrap: wrap; gap: var(--space-6); justify-content: flex-end; }
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--hit-min);
+  padding: var(--space-6) var(--space-12);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition: color var(--duration-3) var(--ease-standard),
+              border-color var(--duration-3) var(--ease-standard);
+}
+.mode-btn:hover { color: var(--text); }
+.mode-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+
+@media (pointer: coarse) {
+  .mode-btn,
+  .head-bar .chip,
+  .foot a { min-height: var(--hit-min-touch); padding-block: var(--space-10); }
+}
+
+.foot {
+  border-top: var(--hairline) solid var(--border);
+  padding: var(--space-24) 0 var(--space-48);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  color: var(--muted);
+}
+.foot a { color: var(--muted); text-decoration: none; }
+.foot a:hover { color: var(--text); }
+
+/* Estreito. O ponto de quebra e o da linguagem, 768px, e e literal
+   porque @media nao le var(). */
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-24); }
+  .axis-a, .axis-a-wide, .axis-b { grid-column: 1 / 13; }
+  .band { padding: var(--space-48) 0; }
+  .modes { justify-content: flex-start; }
+  .head-bar { gap: var(--space-12); }
+  .tools { grid-template-columns: 1fr; }
+}
+</style>
 </head>
-<body>
-    <div class="container"> <header>
-            <img src="logo/icon.png" alt="Logotipo" class="header-logo">
-            <h1>Signal Hub</h1>
-            <p id="typing-text" class="typing-container"></p>
-        </header>
+<body class="lit-cursor-only">
 
-        <main>
-            <div class="tool-cards-container">
+<!-- A lente do cursor dobra o fundo em vez de desfoca-lo, e precisa da
+     definicao do filtro no documento. Uma por documento. -->
+<svg class="pure-defs" aria-hidden="true" focusable="false" width="0" height="0"><defs>
+  <filter id="pure-lens" x="-50%" y="-50%" width="200%" height="200%"
+          primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(190%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(136%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(120%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(66%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.06%22%20stop-color%3D%22rgb(0%2C190%2C0)%22%2F%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb(0%2C136%2C0)%22%2F%3E%3Cstop%20offset%3D%220.5%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb(0%2C120%2C0)%22%2F%3E%3Cstop%20offset%3D%220.94%22%20stop-color%3D%22rgb(0%2C66%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-body"/>
+    <feImage href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(255%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(128%2C0%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb(0%2C255%2C0)%22%2F%3E%3Cstop%20offset%3D%220.1%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%220.9%22%20stop-color%3D%22rgb(0%2C128%2C0)%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb(0%2C0%2C0)%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgb(128%2C128%2C0)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23r)%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22url(%23g)%22%20style%3D%22mix-blend-mode%3Ascreen%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens-rim"/>
+    <feDisplacementMap in="SourceGraphic" in2="lens-body" scale="0.52" xChannelSelector="R" yChannelSelector="G" result="lens-warp"/>
+    <feDisplacementMap in="lens-warp" in2="lens-rim" scale="0.18" xChannelSelector="R" yChannelSelector="G" result="lens-bent"/>
+    <feGaussianBlur in="lens-bent" stdDeviation="0.005"/>
+  </filter>
 
-                <a href="viewer/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>PDBViewer</h3>
-                    <p>PDBViewer is a lightweight web tool for visualizing and converting PDB files, allowing quick inspection and export of protein structures in multiple formats.</p>
-                </a>
-                
-                <a href="pdb2fasta/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>PDB2FASTA</h3>
-                    <p>A tool to convert protein structures in PDB format to FASTA sequences quickly and efficiently.</p>
-                </a>
+</defs></svg>
 
-                <a href="csv2fasta/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>CSV2FASTA</h3>
-                    <p>Convert CSV files containing protein sequences to FASTA format with customizable column selection for IDs and sequences.</p>
-                </a>
+<div class="lit-cursor" aria-hidden="true"></div>
 
-                <a href="hydrop/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>HydrophScale</h3>
-                    <p>A tool for analyzing protein hydrophobicity using the Kyte-Doolittle scale and generating informative plots for structural and functional interpretation.</p>
-                </a>
+<a class="skip-link pill" href="#main">Skip to content</a>
 
-                <a href="bioparam/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>SeqParam</h3>
-                    <p>Calculate a variety of physicochemical parameters from a protein sequence, including molecular weight, pI, and more.</p>
-                </a>
+<div class="shell">
 
-                 <a href="contactmap/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>ContactMapGen</h3>
-                    <p>Visualize residue distances and structural data from a PDB file. ContactMapGen is a simple tool for generating and visualizing protein contact maps from structural data, enabling quick structural analysis.</p>
-                </a>
-
-                <a href="sasa/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>SASA [BETA]</h3>
-                    <p>Calculate Solvent Accessible Surface Area (SASA) from PDB structures using the Shrake-Rupley algorithm with customizable probe radius and sampling parameters.</p>
-                </a>
-
-                <a href="electrostatic/index.html" target="_blank" rel="noopener noreferrer" class="tool-card">
-                    <h3>ElectrostaticSurf [BETA]</h3>
-                    <p>Calculate and visualize electrostatic surface potential using PDB2PQR/APBS. Analyze charge distribution and electrostatic properties of protein structures with interactive 3D visualization.</p>
-                </a>
-
-                </div>
-        </main>
-        
-        <footer>
-            <p>© 2025. GROMADS. All rights reserved.</p>
-        </footer>
+  <header class="band">
+    <div class="grid">
+      <div class="bleed head-bar">
+      <a class="chip" href="/">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>madsondeluna.com</a>
+      <div class="modes">
+        <button class="mode-btn" type="button" data-mode="" aria-pressed="true"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#sun"/></svg>Light</button>
+        <button class="mode-btn" type="button" data-mode="paper-like" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#book"/></svg>Paper-like</button>
+        <button class="mode-btn" type="button" data-mode="deep-blue" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#moon"/></svg>Deep blue</button>
+        <button class="mode-btn" type="button" data-mode="dark" aria-pressed="false"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#contrast"/></svg>Dark</button>
+      </div>
+      </div>
+      <h1 class="axis-a-wide step-2">Bio Signal Hub</h1>
+      <p class="lede axis-a-wide step-1">Eight browser tools for structural bioinformatics: PDB and FASTA
+        conversion, sequence parameters, hydropathy profiles, contact maps, solvent accessible surface
+        area, electrostatic surface potential and 3D structure viewing. Each tool opens in its own tab.</p>
     </div>
+  </header>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const typingElement = document.getElementById('typing-text');
-            const textToType = "A collection of bioinformatics tools for structural biology analyses...";
-            const typingSpeed = 75;
-            let charIndex = 0;
-            function type() {
-                if (charIndex < textToType.length) {
-                    typingElement.textContent += textToType.charAt(charIndex);
-                    charIndex++;
-                    setTimeout(type, typingSpeed);
-                }
-            }
-            if (typingElement) type();
-        });
-    </script>
+  <main class="band" id="main" tabindex="-1">
+    <div class="grid">
+      <div class="bleed hairline-grid tools">
+
+        <a class="tool-card lit" data-lit href="viewer/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#molecule"/></svg>01<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>PDBViewer</h2></div>
+          <p>Loads a PDB file, renders the structure in 3D and exports it to other formats.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="pdb2fasta/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#file"/></svg>02<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>PDB2FASTA</h2></div>
+          <p>Extracts the amino acid sequence from a PDB structure and writes it as FASTA.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="csv2fasta/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#table"/></svg>03<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>CSV2FASTA</h2></div>
+          <p>Converts a CSV to FASTA, with the identifier and sequence columns chosen at load time.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="hydrop/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#chart-line"/></svg>04<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>HydrophScale</h2></div>
+          <p>Plots a Kyte-Doolittle hydropathy profile along a protein sequence.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="bioparam/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#chart-bar"/></svg>05<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>SeqParam</h2></div>
+          <p>Computes molecular weight, isoelectric point and other physicochemical parameters from a protein sequence.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="contactmap/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#grid"/></svg>06<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>ContactMapGen</h2></div>
+          <p>Builds a residue contact map from a PDB file and plots the pairwise distance matrix.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="sasa/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#helix"/></svg>07<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>SASA</h2><span class="chip">Beta</span></div>
+          <p>Computes solvent accessible surface area with the Shrake-Rupley algorithm, with probe radius and sampling density as parameters.</p>
+        </a>
+
+        <a class="tool-card lit" data-lit href="electrostatic/index.html" target="_blank" rel="noopener">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#sparkle"/></svg>08<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+          <div class="tool-name"><h2>ElectrostaticSurf</h2><span class="chip">Beta</span></div>
+          <p>Runs PDB2PQR and APBS to compute electrostatic surface potential and maps it onto the 3D structure.</p>
+        </a>
+
+      </div>
+
+      <aside class="bleed step-2">
+        <p class="note">The hub is under active development. Suggestions and bug reports are welcome
+          through the contact section of <a href="/">madsondeluna.com</a>.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>Bio Signal Hub, GROMADS</span>
+    <a href="/">madsondeluna.com</a>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* ---------- modo: o estado mora no endereco, e o guardado e o da raiz ---------- */
+const MODES = ["", "paper-like", "deep-blue", "dark"];
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+const probe = document.createElement("div");
+probe.style.cssText = "position:absolute;visibility:hidden";
+document.body.appendChild(probe);
+
+function resolve(name) {
+  probe.style.color = "var(" + name + ")";
+  const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g);
+  return "#" + m.slice(0, 3).map((c) => (+c).toString(16).padStart(2, "0")).join("");
+}
+
+function applyMode(mode, record) {
+  document.documentElement.className = mode;
+  try { localStorage.setItem("mode", mode || "light"); } catch (e) {}
+  document.querySelectorAll(".mode-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  themeMeta.setAttribute("content", resolve("--bg"));
+  if (!record) return;
+  const url = new URL(location.href);
+  if (mode) url.searchParams.set("mode", mode); else url.searchParams.delete("mode");
+  history.replaceState(null, "", url);
+}
+
+document.querySelectorAll(".mode-btn").forEach((btn) =>
+  btn.addEventListener("click", () => applyMode(btn.dataset.mode, true)));
+
+/* o endereco vence o guardado, e o guardado vence o padrao */
+const asked = new URL(location.href).searchParams.get("mode");
+let stored = null;
+try { stored = localStorage.getItem("mode"); } catch (e) {}
+const start = MODES.includes(asked) ? asked
+  : stored !== null && MODES.includes(stored === "light" ? "" : stored) ? (stored === "light" ? "" : stored)
+  : "dark";
+applyMode(start, false);
+</script>
+<script src="/pure/light.js" defer></script>
 </body>
 </html>

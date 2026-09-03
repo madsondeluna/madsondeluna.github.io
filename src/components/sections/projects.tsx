@@ -175,18 +175,18 @@ export function BioHubSection() {
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2.5rem" }}>
         <SectionHeader
           number="12"
-          title="BioHub"
+          title="Bio Signal Hub"
           description="A collection of bioinformatics tools for structural biology analyses."
         />
         <FadeIn>
           <p style={{ fontSize: "0.9rem", color: "var(--muted)", lineHeight: 1.7, maxWidth: "640px", marginBottom: "2rem" }}>
-            The BioHub / Signal Hub is also available as a Python CLI providing a hub of tools for
+            Bio Signal Hub is also available as a Python CLI providing a hub of tools for
             structural bioinformatics analyses. The website offers additional features including
             automated graph generation and 3D protein visualization. Both tools are currently
             under active development.
           </p>
           <a href="/apps/biohub/index.html" target="_blank" rel="noopener noreferrer" className="link-cta">
-            open BioHub / Signal Hub <span style={{ fontSize: "0.75rem" }}>&#8594;</span>
+            open Bio Signal Hub <span style={{ fontSize: "0.75rem" }}>&#8594;</span>
           </a>
         </FadeIn>
       </div>
