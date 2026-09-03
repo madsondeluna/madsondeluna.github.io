@@ -794,20 +794,24 @@ div.row { cursor: default; }
             <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#molecule"/></svg>12<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
             <h3>Bio Signal Hub</h3><p>Bioinformatics tools for structural biology analyses.</p>
           </button>
+          <button class="section-card lit" data-lit type="button" data-pane="pymol">
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#helix"/></svg>13<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+            <h3>pymol-vitral</h3><p>Publication figures of proteins, ligands and membranes in PyMOL.</p>
+          </button>
           <button class="section-card lit" data-lit type="button" data-pane="gallery">
-            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#image"/></svg>13<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#image"/></svg>14<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
             <h3>Gallery</h3><p>Scientific renderings and project imagery.</p>
           </button>
           <button class="section-card lit" data-lit type="button" data-pane="b101nf0">
-            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#play"/></svg>14<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#play"/></svg>15<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
             <h3>Opinion</h3><p>Curated videos on structural biology, data science and AI.</p>
           </button>
           <button class="section-card lit" data-lit type="button" data-pane="contact">
-            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>15<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>16<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
             <h3>Contact</h3><p>Email and academic networks.</p>
           </button>
           <button class="section-card lit" data-lit type="button" data-pane="cv">
-            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#download"/></svg>16<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
+            <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#download"/></svg>17<svg class="icon icon-sm card-go" aria-hidden="true"><use href="/pure/icons.svg#chevron-right"/></svg></span>
             <h3>CV</h3><p>Short curriculum vitae, three languages.</p>
           </button>
         </div>
@@ -1650,6 +1654,38 @@ div.row { cursor: default; }
         </div>
       </div>
 
+      <div class="pane" data-pane="pymol" data-state="right">
+        <div class="pane-head">
+          <button class="pill glass lit lit-swell" data-lit type="button" data-back>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>Back
+          </button>
+          <h2>pymol-vitral</h2>
+        </div>
+        <div class="pane-body">
+          <p class="prose" style="max-width: var(--measure-wide)">Visualisation presets for PyMOL,
+          aimed at molecular simulation systems: lipid bilayers, proteins and peptides. The protocol
+          splits the loaded system into independent objects, applies a calibrated material and
+          exposes numbered presets that combine one representation per component. It runs on
+          PyMOL 2.x, open-source or incentive, with no external dependencies.</p>
+          <div class="rows">
+          <a class="row hover-surface lit" data-lit href="/pymol-vitral/" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Open the documentation</span>
+              <span class="row-meta">Presets, images and commands</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
+          </a>
+          <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/pymol-vitral" target="_blank" rel="noopener">
+            <span class="row-main">
+              <span class="row-title">Repository</span>
+              <span class="row-meta">madsondeluna/pymol-vitral</span>
+            </span>
+            <svg class="icon icon-sm row-go" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
+          </a>
+          </div>
+        </div>
+      </div>
+
       <div class="pane" data-pane="gallery" data-state="right">
         <div class="pane-head">
           <button class="pill glass lit lit-swell" data-lit type="button" data-back>
@@ -1913,7 +1949,7 @@ const start = MODES.includes(asked) ? asked
 applyMode(start, false);
 
 /* ---------- paineis ----------
-   A pagina e uma tela so e NENHUM cartao sai dela: os dezesseis abrem
+   A pagina e uma tela so e NENHUM cartao sai dela: os dezessete abrem
    subpagina no lugar da grade, no mesmo desenho. Destino externo, quando
    existe, mora DENTRO do painel, nunca no cartao.
 
