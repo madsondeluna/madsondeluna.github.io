@@ -371,9 +371,23 @@ a.chip:hover { border-color: var(--border-hover); color: var(--text); }
   font: inherit;
   color: var(--text);
 }
-.section-card .eyebrow { display: flex; align-items: center; gap: var(--space-8); }
+.section-card .eyebrow { display: flex; align-items: center; gap: var(--space-8); flex: none; }
 .section-card h3 { margin: 0; font-size: var(--text-15); font-weight: var(--weight-medium); }
-.section-card p { margin: 0; font-size: var(--text-13); color: var(--muted); }
+/* A celula tem a altura da fileira, nao a do texto, e um titulo que
+   quebra em duas linhas empurrava a descricao para fora: o corte caia no
+   meio da linha, com meia palavra visivel. Cortar POR LINHA e o que
+   arruma, e o clamp so acontece onde falta espaco. */
+.section-card p {
+  margin: 0; font-size: var(--text-13); color: var(--muted);
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--card-lines, 3);
+  overflow: hidden;
+}
+
+/* --card-lines vem do script: quantas linhas cabem depende da altura da
+   fileira E de o titulo ter quebrado em duas linhas, e nenhuma consulta
+   de CSS le as duas coisas juntas. Sem numero escrito, tres linhas. */
+.pane[data-pane="grid"] .sections .section-card { overflow: hidden; }
 .section-card:hover { background: var(--surface-hover); }
 /* o cartao afunda um fio ao ser premido. 2px e --nudge-1, e o suficiente
    para o clique ter resposta antes de o painel comecar a escorregar */
@@ -484,6 +498,9 @@ div.row { cursor: default; }
      propria dentro de pagina que tambem rola sao duas barras brigando */
   .pane-body { overflow: visible; }
   .pane[data-pane="grid"] .sections { grid-auto-rows: auto; }
+  /* fileira `auto`: a altura vem do conteudo e o cartao nao pode conter
+     o proprio tamanho, senao ele fecha em 56px e corta tudo */
+  .section-card p { -webkit-line-clamp: none; display: block; }
   .sections { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .row { flex-wrap: wrap; }
   .row-side { text-align: left; }
@@ -517,12 +534,6 @@ div.row { cursor: default; }
   /* a grade tambem perde altura: a descricao do cartao fecha em duas
      linhas em vez de tres, e o cartao recorta em vez de empurrar */
   .section-card { padding: var(--space-12) var(--space-16); overflow: hidden; }
-  .section-card p {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
 }
 
 @media (max-height: 800px) {
@@ -2040,6 +2051,49 @@ addEventListener("popstate", () =>
   showPane(new URL(location.href).searchParams.get("open") || "grid", false));
 
 showPane(new URL(location.href).searchParams.get("open") || "grid", false);
+
+/* ---------- quantas linhas cabem no cartao ----------
+   A celula tem a altura da fileira, nao a do texto. Um titulo que quebra
+   em duas linhas empurra a descricao para fora e o corte cai no meio da
+   linha, com meia palavra visivel. A conta e por cartao, porque so ele
+   sabe quanto o proprio titulo ocupou, e e refeita quando a grade muda
+   de tamanho. No estreito a fileira volta a ser `auto` e o texto inteiro
+   cabe: ali nao se clampa nada. */
+(function () {
+  var grid = document.querySelector('.pane[data-pane="grid"] .sections');
+  if (!grid) return;
+  var narrow = window.matchMedia("(max-width: 768px)");
+
+  function fit() {
+    var cards = grid.querySelectorAll(".section-card");
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var p = card.querySelector("p");
+      if (!p) continue;
+      if (narrow.matches) {
+        p.style.removeProperty("--card-lines");
+        p.style.removeProperty("display");
+        continue;
+      }
+      var cs = getComputedStyle(card);
+      var gap = parseFloat(cs.rowGap) || 0;
+      var room = card.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      var kids = card.children;
+      for (var k = 0; k < kids.length; k++) {
+        if (kids[k] !== p) room -= kids[k].offsetHeight + gap;
+      }
+      var lh = parseFloat(getComputedStyle(p).lineHeight) || 20;
+      var lines = Math.floor(room / lh);
+      p.style.display = lines < 1 ? "none" : "";
+      p.style.setProperty("--card-lines", String(Math.max(lines, 1)));
+    }
+  }
+
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(grid);
+  else window.addEventListener("resize", fit);
+})();
 
 </script>
 <script src="/pure/light.js" defer></script>
