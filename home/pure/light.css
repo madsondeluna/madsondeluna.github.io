@@ -225,6 +225,30 @@
     var(--light-fill),
     transparent
   );
+  /* A luz e cortada pela caixa da secao, e o corte le como um retangulo
+     mais claro na pagina: aresta reta, vertical, no lugar onde o campo
+     acaba. O defeito aparece com o ponteiro na goteira, fora do
+     contentor, quando o circulo cai quase todo do lado de fora e so
+     sobra dele a fatia colada na borda.
+
+     A mascara apaga a luz ANTES da aresta, nos dois eixos: no eixo em
+     que a caixa e estreita ela come a maior parte do campo, no eixo
+     longo quase nada, e em nenhum dos dois existe uma linha onde a luz
+     termina de uma vez. O campo passa a acabar no ar.
+
+     Duas camadas e `intersect` porque a interseccao e o que apaga os
+     quatro lados; a soma, que e o padrao, acenderia a faixa central de
+     cada eixo inteira e devolveria a aresta. O par -webkit- vem antes
+     pelo Safari, que so entende `source-in`. */
+  --light-fade: calc(var(--light-reach) * 0.75);
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 var(--light-fade), #000 calc(100% - var(--light-fade)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--light-fade), #000 calc(100% - var(--light-fade)), transparent);
+  mask-image:
+    linear-gradient(to right, transparent, #000 var(--light-fade), #000 calc(100% - var(--light-fade)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--light-fade), #000 calc(100% - var(--light-fade)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
   opacity: var(--light-near, 0);
   transition: opacity var(--duration-4) var(--ease-out-soft);
 }
