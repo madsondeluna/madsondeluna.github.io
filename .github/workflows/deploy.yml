@@ -61,6 +61,8 @@ jobs:
           cp -r games out/
           cp -r materials out/
           cp -r pymol_guide out/
+          cp -r agent-skills out/
+          cp -r cli-skill-ui out/
           cp google2a0f51da71f41d93.html out/
           cp sitemap.xml out/
           cp robots.txt out/

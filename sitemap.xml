@@ -86,6 +86,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://madsondeluna.com/agent-skills/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://madsondeluna.com/cli-skill-ui/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://madsondeluna.com/latent-atlas/models/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

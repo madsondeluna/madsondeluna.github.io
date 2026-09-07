@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4F6F9">
+<title>CLI Skill UI | Madson Aragão</title>
+<meta name="description" content="A skill for building and auditing command line tools that survive a pipe and still look like something: behaviour first, visual layer second.">
+<link rel="canonical" href="https://madsondeluna.com/cli-skill-ui/">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pure/tokens.css">
+<link rel="stylesheet" href="/pure/patterns.css">
+<link rel="stylesheet" href="/pure/light.css">
+<script>
+/* mesma chave da raiz: quem chega daqui ve a pagina na cor que escolheu la */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
+<style>
+/* Diagramacao local. Cor, tipo, raio, sombra, curva e espaco saem de
+   pure/tokens.css: nada aqui inventa valor. */
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: var(--text-15); line-height: var(--leading-normal); margin: 0; }
+a { color: inherit; text-decoration: none; }
+h1, h2 { font-family: var(--font-display); font-stretch: var(--font-display-stretch); font-weight: var(--weight-light); letter-spacing: var(--tracking-display); line-height: var(--leading-tight); margin: 0; }
+h1 { font-size: var(--text-display-section); }
+h2 { font-size: var(--text-24); }
+h3 { margin: 0; font-size: var(--text-16); font-weight: var(--weight-medium); }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); }
+
+.shell { max-width: var(--container-lg); margin: 0 auto; padding: 0 var(--space-32); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); padding: var(--space-24) 0; margin-bottom: var(--space-48); }
+.mark { display: inline-flex; align-items: center; gap: var(--space-10); }
+.mark svg { color: var(--text); }
+.mark span { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+.back { display: inline-flex; align-items: center; gap: var(--space-8); min-height: var(--hit-min); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); }
+.back:hover { color: var(--text); }
+
+.head { margin-bottom: var(--space-48); }
+.eyebrow-line { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+.lede { max-width: var(--measure-wide); color: var(--muted); margin-top: var(--space-16); text-align: justify; text-wrap: pretty; hyphens: auto; }
+.meta { display: flex; flex-wrap: wrap; gap: var(--space-8); margin-top: var(--space-24); }
+.chip { font-family: var(--font-mono); font-size: var(--text-11); letter-spacing: var(--tracking-eyebrow); color: var(--muted); border: var(--hairline) solid var(--border); border-radius: var(--radius-control); padding: var(--space-4) var(--space-12); }
+
+.band { margin: var(--space-48) 0; }
+.band > h2 { margin-bottom: var(--space-16); }
+.band p { color: var(--muted); max-width: var(--measure-wide); text-align: justify; hyphens: auto; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); }
+.block { border-top: var(--hairline) solid var(--border); padding-top: var(--space-16); display: flex; flex-direction: column; gap: var(--space-8); }
+.block p { font-size: var(--text-14); }
+.list { margin: 0; padding-left: var(--space-16); }
+.list li { font-size: var(--text-14); color: var(--muted); line-height: var(--leading-relaxed); margin-bottom: var(--space-6); }
+
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16); margin-top: var(--space-24); }
+figure { margin: 0; display: flex; flex-direction: column; gap: var(--space-8); }
+figure img { width: 100%; height: auto; display: block; border: var(--hairline) solid var(--border); border-radius: var(--radius-media); background: var(--surface); }
+figcaption { font-family: var(--font-mono); font-size: var(--text-11); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+
+pre { margin: var(--space-16) 0 0; padding: var(--space-20); overflow-x: auto; background: var(--surface); --surface-context: var(--surface); border: var(--hairline) solid var(--border); border-radius: var(--radius-surface); font-family: var(--font-mono); font-size: var(--text-13); line-height: var(--leading-relaxed); color: var(--text); }
+
+.rows { display: grid; gap: var(--hairline); background: var(--border); border: var(--hairline) solid var(--border); border-radius: var(--radius-surface); overflow: hidden; margin-top: var(--space-24); }
+.row { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-16) var(--space-20); background: var(--surface); --surface-context: var(--surface); min-height: var(--hit-min-touch); transition: background var(--duration-3) var(--ease-standard); }
+a.row:hover { background: var(--surface-hover); }
+.row-main { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; flex: 1; }
+.row-title { font-size: var(--text-14); }
+.row-meta { font-size: var(--text-12); color: var(--muted); }
+
+.foot { border-top: var(--hairline) solid var(--border); padding: var(--space-24) 0 var(--space-48); margin-top: var(--space-48); display: flex; justify-content: space-between; gap: var(--space-16); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); flex-wrap: wrap; }
+.icon { width: var(--space-16); height: var(--space-16); stroke: currentColor; fill: none; stroke-width: var(--stroke); stroke-linecap: round; stroke-linejoin: round; }
+.icon-lg { width: var(--space-24); height: var(--space-24); }
+
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-16); }
+  .pair, .shots { grid-template-columns: 1fr; }
+  .lede, .band p, .list li { text-align: left; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link pill" href="#main">Skip to content</a>
+<div class="shell lit-field" data-lit>
+
+  <header class="top">
+    <a class="mark" href="/">
+      <svg class="icon icon-lg" aria-hidden="true"><use href="/pure/icons.svg#helix"/></svg>
+      <span>Madson Aragão</span>
+    </a>
+    <a class="back" href="/agent-skills/">
+      <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>All skills
+    </a>
+  </header>
+
+  <main id="main">
+    <div class="head">
+      <span class="eyebrow-line">Skill for LLM agents · MIT · version 1.0.0</span>
+      <h1 style="margin-top: var(--space-12)">CLI Skill UI</h1>
+      <p class="lede">A skill that builds and audits command line tools which survive a pipe and still look
+        like something. The two goals are not in tension: the discipline that makes output safe to redirect,
+        streams kept apart and terminal detection done properly, is exactly what allows the visual layer to be
+        applied without breaking a script downstream.</p>
+      <div class="meta">
+        <span class="chip">Bash</span>
+        <span class="chip">Python</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">Go</span>
+        <span class="chip">Rust</span>
+        <span class="chip">34 references</span>
+        <span class="chip">3 scripts</span>
+      </div>
+    </div>
+
+    <section class="band">
+      <h2>Two modes, opposite defaults</h2>
+      <div class="pair" style="margin-top: var(--space-24)">
+        <div class="block">
+          <h3>Build</h3>
+          <p>A new tool, or a new command inside one. Everything the skill carries becomes a default to apply:
+            command shape, flags, help text, exit codes, and the visual identity on top of them.</p>
+        </div>
+        <div class="block">
+          <h3>Audit</h3>
+          <p>A tool that already works. Here the skill reads and runs, and does not modify. Findings are ranked
+            by what they cost the user, not by distance from its own taste, and a tool with its own visual
+            language keeps it. Working behaviour is a specification, because scripts depend on it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>What it covers</h2>
+      <div class="pair" style="margin-top: var(--space-24)">
+        <div class="block">
+          <h3>Behaviour, first</h3>
+          <ul class="list">
+            <li>Subcommand shape, option syntax and defaults</li>
+            <li>Standard output against standard error, and structured output for machines</li>
+            <li>Terminal detection, and what changes when there is no terminal or the run is automated</li>
+            <li>Help and usage text, error messages and exit codes</li>
+            <li>Configuration precedence between flags, environment and files</li>
+            <li>Prompts, confirmation, shell completion, accessibility and translation</li>
+          </ul>
+        </div>
+        <div class="block">
+          <h3>Appearance, second</h3>
+          <ul class="list">
+            <li>A teal to blue to violet gradient as the identity, with a fallback where colour is off</li>
+            <li>Block letter banner, spinners, progress and live panels</li>
+            <li>Tables, trees, diffs and streaming output that stay legible when redirected</li>
+            <li>Keyboard-driven interfaces in the shape of Claude Code, Gemini CLI, Crush and lazygit</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Seen working</h2>
+      <p>The example that ships with the skill is <span class="mono">pseq</span>, a tool for protein FASTA
+        analysis. Same banner, same table, same behaviour under a pipe.</p>
+      <div class="shots">
+        <figure>
+          <img src="media/pseq-banner.png" alt="Terminal showing the pseq banner in block letters over a teal to violet gradient, with the command help below" loading="lazy">
+          <figcaption>The launcher and its help</figcaption>
+        </figure>
+        <figure>
+          <img src="media/pseq-stats.png" alt="Terminal showing a table of protein statistics with columns for identifier, length, molecular weight and isoelectric point" loading="lazy">
+          <figcaption>A table that survives redirection</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>What comes in the box</h2>
+      <div class="rows">
+        <div class="row">
+          <span class="row-main">
+            <span class="row-title">Thirty-four reference files</span>
+            <span class="row-meta">One per topic: streams, flags, exit codes, colour, motion, palette, and one stack guide each for Bash, Python, TypeScript, Go and Rust</span>
+          </span>
+        </div>
+        <div class="row">
+          <span class="row-main">
+            <span class="row-title">An audit script</span>
+            <span class="row-meta">Runs the command several times and reports what breaks. Point it at a read-only subcommand: it never audits something that writes or deletes</span>
+          </span>
+        </div>
+        <div class="row">
+          <span class="row-main">
+            <span class="row-title">Theme and templates</span>
+            <span class="row-meta">The palette as data, a spinner set, and starting projects for Python and TypeScript</span>
+          </span>
+        </div>
+        <div class="row">
+          <span class="row-main">
+            <span class="row-title">A worked example</span>
+            <span class="row-meta">pseq, with its tests, so the conventions can be read as code rather than as prose</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Install</h2>
+      <p>A skill that lives only in its repository cannot be loaded, whatever a listing says. Installing is
+        what makes it available by name.</p>
+<pre><code>git clone https://github.com/madsondeluna/skill-cli-devops-and-ui
+cd skill-cli-devops-and-ui
+make install          # copies into ~/.claude/skills
+make verify-install   # fails when the installed copy has drifted</code></pre>
+      <div class="rows">
+        <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/skill-cli-devops-and-ui" target="_blank" rel="noopener">
+          <span class="row-main">
+            <span class="row-title">Repository</span>
+            <span class="row-meta">madsondeluna/skill-cli-devops-and-ui</span>
+          </span>
+          <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
+        </a>
+        <a class="row hover-surface lit" data-lit href="/agent-skills/">
+          <span class="row-main">
+            <span class="row-title">The other skills</span>
+            <span class="row-meta">Visual language, command design and scientific review</span>
+          </span>
+          <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-right"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>CLI Skill UI<span style="margin: 0 var(--space-10)"> / </span>Behaviour first, visual layer second</span>
+    <a class="back" href="/">madsondeluna.com</a>
+  </footer>
+
+</div>
+<script src="/pure/light.js" defer></script>
+</body>
+</html>

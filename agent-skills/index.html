@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4F6F9">
+<title>Skills for LLM agents | Madson Aragão</title>
+<meta name="description" content="Packaged instruction sets that give a coding agent a specific craft: a visual language, command-line tooling and scientific manuscript review.">
+<link rel="canonical" href="https://madsondeluna.com/agent-skills/">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pure/tokens.css">
+<link rel="stylesheet" href="/pure/patterns.css">
+<link rel="stylesheet" href="/pure/light.css">
+<script>
+/* O modo entra antes da primeira pintura e vem da mesma chave da raiz do
+   site, entao quem chega daqui ve a pagina na cor que escolheu la. */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
+<style>
+/* Diagramacao local. Cor, tipo, raio, sombra, curva e espaco saem todos de
+   pure/tokens.css: nada aqui inventa valor. */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-15);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+* { box-sizing: border-box; }
+a { color: inherit; text-decoration: none; }
+h1, h2 {
+  font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+h1 { font-size: var(--text-display-section); }
+h2 { font-size: var(--text-24); }
+h3 { margin: 0; font-size: var(--text-16); font-weight: var(--weight-medium); }
+p { margin: 0; }
+
+.shell { max-width: var(--container-lg); margin: 0 auto; padding: 0 var(--space-32); }
+.top {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-16);
+  padding: var(--space-24) 0; margin-bottom: var(--space-48);
+}
+.back { display: inline-flex; align-items: center; gap: var(--space-8); min-height: var(--hit-min); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); }
+.back:hover { color: var(--text); }
+.mark { display: inline-flex; align-items: center; gap: var(--space-10); }
+.mark svg { color: var(--text); }
+.mark span { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+
+.head { margin-bottom: var(--space-48); }
+.head .lede { max-width: var(--measure-wide); color: var(--muted); margin-top: var(--space-16); text-align: justify; text-wrap: pretty; hyphens: auto; }
+.count { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+
+.rows { display: grid; gap: var(--hairline); background: var(--border); border: var(--hairline) solid var(--border); border-radius: var(--radius-surface); overflow: hidden; }
+.row {
+  display: flex; align-items: flex-start; gap: var(--space-20);
+  padding: var(--space-20); background: var(--surface); --surface-context: var(--surface);
+  min-height: var(--hit-min-touch);
+}
+a.row { transition: background var(--duration-3) var(--ease-standard); }
+a.row:hover { background: var(--surface-hover); }
+.row-body { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; flex: 1; }
+.row-body p { font-size: var(--text-13); color: var(--muted); line-height: var(--leading-relaxed); text-align: justify; hyphens: auto; }
+.row-top { display: flex; align-items: baseline; gap: var(--space-12); flex-wrap: wrap; }
+.repo { font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); }
+.row-go { flex: none; color: var(--muted); margin-top: var(--space-2); }
+.state {
+  font-family: var(--font-mono); font-size: var(--text-11); letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted); border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-control); padding: var(--space-2) var(--space-10); white-space: nowrap;
+}
+
+.band { margin: var(--space-48) 0; }
+.band h2 { margin-bottom: var(--space-16); }
+.band p { color: var(--muted); max-width: var(--measure-wide); text-align: justify; hyphens: auto; }
+pre {
+  margin: var(--space-16) 0 0; padding: var(--space-20); overflow-x: auto;
+  background: var(--surface); --surface-context: var(--surface);
+  border: var(--hairline) solid var(--border); border-radius: var(--radius-surface);
+  font-family: var(--font-mono); font-size: var(--text-13); line-height: var(--leading-relaxed); color: var(--text);
+}
+.foot { border-top: var(--hairline) solid var(--border); padding: var(--space-24) 0 var(--space-48); margin-top: var(--space-48); display: flex; justify-content: space-between; gap: var(--space-16); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); flex-wrap: wrap; }
+.icon { width: var(--space-16); height: var(--space-16); stroke: currentColor; fill: none; stroke-width: var(--stroke); stroke-linecap: round; stroke-linejoin: round; }
+.icon-lg { width: var(--space-24); height: var(--space-24); }
+
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-16); }
+  .row { flex-direction: column; gap: var(--space-12); }
+  .head .lede, .row-body p, .band p { text-align: left; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link pill" href="#main">Skip to content</a>
+<div class="shell lit-field" data-lit>
+
+  <header class="top">
+    <a class="mark" href="/">
+      <svg class="icon icon-lg" aria-hidden="true"><use href="/pure/icons.svg#helix"/></svg>
+      <span>Madson Aragão</span>
+    </a>
+    <a class="back" href="/">
+      <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>Back to the site
+    </a>
+  </header>
+
+  <main id="main">
+    <div class="head">
+      <span class="count">Skills for LLM agents</span>
+      <h1 style="margin-top: var(--space-12)">Craft, packaged.</h1>
+      <p class="lede">A skill is a set of instructions a coding agent loads before it starts working, so the
+        work comes out in a known shape instead of a generic one. These five carry the conventions I use every
+        day: a visual language with verified tokens, command-line tooling, and manuscript review in two
+        languages. Two are open; the rest run locally.</p>
+    </div>
+
+    <section class="rows" aria-label="Skills">
+
+      <a class="row hover-surface lit" data-lit href="https://github.com/madsondeluna/skill-pure-design-ui" target="_blank" rel="noopener">
+        <div class="row-body">
+          <div class="row-top">
+            <h3>Pure Design UI</h3>
+            <span class="repo">madsondeluna/skill-pure-design-ui</span>
+            <span class="state">Open</span>
+          </div>
+          <p>The visual language behind every interface here. Four colour modes, tokens checked by script,
+            glass and liquid materials, a pointer-driven light layer, motion recipes, twelve review routines
+            and matplotlib and plotly themes. It ships the language files, so a project starts already inside
+            the conventions.</p>
+        </div>
+        <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
+      </a>
+
+      <a class="row hover-surface lit" data-lit href="/cli-skill-ui/">
+        <div class="row-body">
+          <div class="row-top">
+            <h3>CLI DevOps with ultimate UI</h3>
+            <span class="repo">madsondeluna/skill-cli-devops-and-ui</span>
+            <span class="state">Open · page</span>
+          </div>
+          <p>Terminal tools that survive a pipe and still look like something. Behaviour comes first: streams,
+            exit codes, help text, TTY detection, configuration precedence, completion. Appearance follows:
+            gradients, spinners, live panels, tables and diffs. Covers Bash, Python, TypeScript, Go and Rust,
+            and audits an existing tool without rewriting what already works.</p>
+        </div>
+        <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
+      </a>
+
+      <div class="row">
+        <div class="row-body">
+          <div class="row-top">
+            <h3>CLI design</h3>
+            <span class="state">Local</span>
+          </div>
+          <p>The behaviour half on its own: command and flag naming, defaults, prompts and confirmations,
+            error messages, exit codes, and what changes when the program is not attached to a terminal.
+            Unix and PowerShell aware.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-body">
+          <div class="row-top">
+            <h3>Claire, scientific writing</h3>
+            <span class="state">Local</span>
+          </div>
+          <p>Writes, edits and reviews scientific manuscripts in English: language editing, numeric
+            consistency audits, a Reviewer 2 appraisal, thesis structure, cover letters and responses to
+            reviewers. Checks citations, identifiers and journal rules against the literature databases
+            without sending the manuscript anywhere.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-body">
+          <div class="row-top">
+            <h3>Clara, revisora científica</h3>
+            <span class="state">Local</span>
+          </div>
+          <p>The same craft in Brazilian Portuguese, with what the language demands of its own: gene and
+            species nomenclature, decimal comma, and the vocabulary rules that keep academic prose from
+            sounding machine-written.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="band">
+      <h2>Install one</h2>
+      <p>A skill is a folder with a <span class="mono">SKILL.md</span> and its references. Copy it into the
+        agent's skills directory and it becomes available by name. A skill that exists only in its repository
+        cannot be loaded, whatever a listing says.</p>
+<pre><code>git clone https://github.com/madsondeluna/skill-pure-design-ui
+cp -R skill-pure-design-ui/skills/* ~/.claude/skills/</code></pre>
+    </section>
+
+    <section class="band">
+      <h2>Seen working</h2>
+      <p>The atlas of protein language models on this site is built entirely inside the first two: the
+        interface follows Pure Design, and every check it had to pass came from the review routines that ship
+        with the skill.</p>
+      <p style="margin-top: var(--space-16)">
+        <a class="link-cta lit" data-lit href="/latent-atlas/">Open Proteins in a World of LLMs
+          <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-right"/></svg></a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Skills for LLM agents<span style="margin: 0 var(--space-10); color: var(--muted)"> / </span>Instruction sets, not models</span>
+    <a class="back" href="/">madsondeluna.com</a>
+  </footer>
+
+</div>
+<script src="/pure/light.js" defer></script>
+</body>
+</html>
