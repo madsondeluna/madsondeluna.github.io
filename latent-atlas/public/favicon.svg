@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64">
+  <!-- a helice do conjunto do Pure, sem moldura: o icone e o desenho, e o
+       fundo fica com quem exibe. currentColor nao vale em favicon, entao a
+       cor acompanha o esquema do sistema por media query. -->
+  <style>
+    path { stroke: #101c1f; }
+    @media (prefers-color-scheme: dark) { path { stroke: #eef1f6; } }
+  </style>
+  <g fill="none" stroke-width="1.6" stroke-linecap="round">
+    <path d="M7 3.5C7 9 17 9.5 17 12s-10 3-10 8.5"/>
+    <path d="M17 3.5C17 9 7 9.5 7 12s10 3 10 8.5"/>
+    <path d="M9.6 6.6h4.8"/>
+    <path d="M8.2 12h7.6"/>
+    <path d="M9.6 17.4h4.8"/>
+  </g>
+</svg>

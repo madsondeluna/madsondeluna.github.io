@@ -37,6 +37,9 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            latent-atlas/package-lock.json
 
       - run: npm ci
 
@@ -44,6 +47,12 @@ jobs:
         run: npm run sync:pure
 
       - run: npm run build
+
+      - name: Build Latent Atlas as a static export under /latent-atlas
+        run: |
+          npm ci --prefix latent-atlas
+          npm run build --prefix latent-atlas
+          cp -r latent-atlas/out out/latent-atlas
 
       - name: Copy legacy static assets
         run: |
