@@ -67,8 +67,14 @@ p { margin: 0; }
   padding: var(--space-20); background: var(--surface); --surface-context: var(--surface);
   min-height: var(--hit-min-touch);
 }
-a.row { transition: background var(--duration-3) var(--ease-standard); }
-a.row:hover { background: var(--surface-hover); }
+a.row, button.row { transition: background var(--duration-3) var(--ease-standard); }
+a.row:hover, button.row:hover { background: var(--surface-hover); }
+/* o botao herda tipo, cor e alinhamento do que a fileira ja e: sem isto
+   o agente do navegador centraliza o texto e troca a fonte. */
+button.row {
+  width: 100%; border: 0; margin: 0; text-align: left; cursor: pointer;
+  font: inherit; color: inherit;
+}
 .row-body { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; flex: 1; }
 .row-body p { font-size: var(--text-13); color: var(--muted); line-height: var(--leading-relaxed); text-align: justify; hyphens: auto; }
 .row-top { display: flex; align-items: baseline; gap: var(--space-12); flex-wrap: wrap; }
@@ -92,6 +98,17 @@ pre {
 .foot { border-top: var(--hairline) solid var(--border); padding: var(--space-24) 0 var(--space-48); margin-top: var(--space-48); display: flex; justify-content: space-between; gap: var(--space-16); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); flex-wrap: wrap; }
 .icon { width: var(--space-16); height: var(--space-16); stroke: currentColor; fill: none; stroke-width: var(--stroke); stroke-linecap: round; stroke-linejoin: round; }
 .icon-lg { width: var(--space-24); height: var(--space-24); }
+
+.ask {
+  width: min(34rem, calc(100vw - var(--space-32)));
+  padding: var(--space-24); border: 0; color: var(--text); cursor: auto;
+  border-radius: var(--radius-surface);
+}
+.ask::backdrop { background: rgba(9, 12, 20, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.ask-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-16); margin-bottom: var(--space-20); }
+.ask form { display: grid; gap: var(--space-16); }
+.ask .form-actions { margin-top: var(--space-4); justify-content: flex-end; }
+.ask .note { font-size: var(--text-12); color: var(--muted); line-height: var(--leading-relaxed); }
 
 @media (max-width: 768px) {
   .shell { padding: 0 var(--space-16); }
@@ -121,7 +138,7 @@ pre {
       <p class="lede">A skill is a set of instructions a coding agent loads before it starts working, so the
         work comes out in a known shape instead of a generic one. These five carry the conventions I use every
         day: a visual language with verified tokens, command-line tooling, and manuscript review in two
-        languages. Two are open; the rest run locally.</p>
+        languages. Two are public; the other three are shared on request.</p>
     </div>
 
     <section class="rows" aria-label="Skills">
@@ -156,42 +173,45 @@ pre {
         <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#external"/></svg>
       </a>
 
-      <div class="row">
+      <button class="row hover-surface lit" data-lit type="button" data-skill="CLI design">
         <div class="row-body">
           <div class="row-top">
             <h3>CLI design</h3>
-            <span class="state">Local</span>
+            <span class="state">Private, on request</span>
           </div>
           <p>The behaviour half on its own: command and flag naming, defaults, prompts and confirmations,
             error messages, exit codes, and what changes when the program is not attached to a terminal.
             Unix and PowerShell aware.</p>
         </div>
-      </div>
+        <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>
+      </button>
 
-      <div class="row">
+      <button class="row hover-surface lit" data-lit type="button" data-skill="Claire, scientific writing">
         <div class="row-body">
           <div class="row-top">
             <h3>Claire, scientific writing</h3>
-            <span class="state">Local</span>
+            <span class="state">Private, on request</span>
           </div>
           <p>Writes, edits and reviews scientific manuscripts in English: language editing, numeric
             consistency audits, a Reviewer 2 appraisal, thesis structure, cover letters and responses to
             reviewers. Checks citations, identifiers and journal rules against the literature databases
             without sending the manuscript anywhere.</p>
         </div>
-      </div>
+        <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>
+      </button>
 
-      <div class="row">
+      <button class="row hover-surface lit" data-lit type="button" data-skill="Clara, revisora científica">
         <div class="row-body">
           <div class="row-top">
             <h3>Clara, revisora científica</h3>
-            <span class="state">Local</span>
+            <span class="state">Private, on request</span>
           </div>
           <p>The same craft in Brazilian Portuguese, with what the language demands of its own: gene and
             species nomenclature, decimal comma, and the vocabulary rules that keep academic prose from
             sounding machine-written.</p>
         </div>
-      </div>
+        <svg class="icon row-go" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>
+      </button>
 
     </section>
 
@@ -222,6 +242,91 @@ cp -R skill-pure-design-ui/skills/* ~/.claude/skills/</code></pre>
   </footer>
 
 </div>
+
+<dialog class="ask card-glass" id="ask">
+  <div class="ask-top">
+    <h2 style="font-size: var(--text-20)">Request access</h2>
+    <button class="pill pill-sm pill-solid" type="button" data-close aria-label="Close">
+      <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#close"/></svg>
+    </button>
+  </div>
+  <form id="ask-form">
+    <label class="field">
+      <span class="field-label">Skill</span>
+      <span class="select-shell">
+        <select class="select" name="skill" id="ask-skill">
+          <option>CLI design</option>
+          <option>Claire, scientific writing</option>
+          <option>Clara, revisora científica</option>
+        </select>
+      </span>
+    </label>
+    <label class="field">
+      <span class="field-label">Name</span>
+      <input class="input" type="text" name="name" required autocomplete="name">
+    </label>
+    <label class="field">
+      <span class="field-label">Email</span>
+      <input class="input" type="email" name="email" required autocomplete="email">
+    </label>
+    <label class="field">
+      <span class="field-label">Affiliation</span>
+      <input class="input" type="text" name="affiliation" autocomplete="organization">
+    </label>
+    <label class="field">
+      <span class="field-label">Intended use</span>
+      <textarea class="textarea" name="use" rows="4" required></textarea>
+    </label>
+    <p class="note">This opens your mail client with the request written out. I reply with the skill archive.</p>
+    <div class="form-actions">
+      <button class="pill pill-solid" type="button" data-close>Cancel</button>
+      <button class="pill lit lit-edge" data-lit type="submit">
+        <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#send"/></svg>Open mail
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* Pagina estatica, sem servidor: o pedido sai pelo cliente de correio do
+   visitante, com assunto e corpo ja escritos. Um formulario que fingisse
+   enviar precisaria de um terceiro guardando nome e email de quem pede. */
+(function () {
+  var dialog = document.getElementById("ask");
+  var form = document.getElementById("ask-form");
+  var pick = document.getElementById("ask-skill");
+  if (!dialog || !form || !pick) return;
+
+  document.querySelectorAll("button.row[data-skill]").forEach(function (row) {
+    row.addEventListener("click", function () {
+      pick.value = row.getAttribute("data-skill");
+      dialog.showModal();
+    });
+  });
+
+  dialog.querySelectorAll("[data-close]").forEach(function (b) {
+    b.addEventListener("click", function () { dialog.close(); });
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var d = new FormData(form);
+    var body = [
+      "Skill: " + d.get("skill"),
+      "Name: " + d.get("name"),
+      "Email: " + d.get("email"),
+      "Affiliation: " + (d.get("affiliation") || "-"),
+      "",
+      "Intended use:",
+      d.get("use")
+    ].join("\n");
+    window.location.href = "mailto:madsondeluna@gmail.com"
+      + "?subject=" + encodeURIComponent("Skill access request: " + d.get("skill"))
+      + "&body=" + encodeURIComponent(body);
+    dialog.close();
+  });
+})();
+</script>
 <script src="/pure/light.js" defer></script>
 </body>
 </html>
