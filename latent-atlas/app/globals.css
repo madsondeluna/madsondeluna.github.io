@@ -1,4 +1,4 @@
-/* Proteins in a World of LLMs, em Pure Design.
+/* Ghost in the Fold, em Pure Design.
    theme.css traz o Tailwind e os tokens; patterns.css traz as classes
    de superficie, controle e estado. A camada do app abaixo so usa
    var(--token): nenhum literal de cor, tipo, raio, sombra ou curva. */
@@ -108,20 +108,28 @@ p { margin: 0; }
 
 /* ---------- sidebar ---------- */
 .museum-sidebar [data-slot=sidebar-inner] { padding: var(--space-24) var(--space-16) var(--space-16); }
+/* A marca empilha: a coluna de texto passa a ter a largura inteira do
+   cabecalho em vez dos 171px que sobravam ao lado do simbolo, e com isso
+   nome e subtitulo cabem cada um em uma linha nas duas linguas. Inline,
+   "linguagem · estrutura · design" precisava de 198px e quebrava deixando
+   o separador comecando a segunda linha. */
 .brand {
-  display: flex; align-items: center; gap: var(--space-12);
+  display: grid; justify-items: start; gap: var(--space-8);
   font-family: var(--font-display); font-stretch: var(--font-display-stretch);
-  font-weight: var(--weight-light); font-size: var(--text-20); letter-spacing: var(--tracking-display);
+  font-weight: var(--weight-light); font-size: var(--text-18); letter-spacing: var(--tracking-display);
   line-height: var(--leading-tight); color: var(--text);
 }
 .brand svg { color: var(--text); flex-shrink: 0; }
 .brand small {
   display: block; margin-top: var(--space-4);
-  font-family: var(--font-mono); font-size: var(--text-11); letter-spacing: var(--tracking-eyebrow);
+  font-family: var(--font-mono); font-size: var(--text-11); letter-spacing: normal;
   color: var(--muted);
 }
 .nav-label { margin: var(--space-20) var(--space-8) var(--space-6); }
 .museum-sidebar [data-slot=sidebar-content] > .nav-label:first-child { margin-top: var(--space-8); }
+/* Sem o rotulo do primeiro grupo, a lista encostava no subtitulo da marca.
+   O respiro que o rotulo dava volta como margem do proprio menu. */
+.museum-sidebar [data-slot=sidebar-content] > [data-slot=sidebar-menu]:first-child { margin-top: var(--space-20); }
 /* No ponteiro fino o item fica em 32px, que e o suficiente para o clique e
    cabe a lista inteira sem rolagem; sob o dedo ele volta para 44. */
 .nav-item {
@@ -596,7 +604,7 @@ p { margin: 0; }
 .canvas-panel + .flow,
 .deep-read + .canvas-panel,
 .zoo-grid + .info-grid { margin-top: var(--space-48); }
-.brand-mark { flex: none; color: var(--text); }
+.brand-mark { flex: none; color: var(--text); stroke-width: var(--stroke); }
 
 /* o seletor de familia e o painel do grafico ficavam encostados: um e botao,
    o outro e superficie, e sem folga a borda de um vira a borda do outro */

@@ -34,16 +34,30 @@ export default function Shell({lang = 'en', active, title, children}: {lang?: La
       <Sidebar className="museum-sidebar">
         <SidebarHeader>
           <Link className="brand" href={L('/')}>
-            {/* helice do sprite do Pure: o conjunto da linguagem divide
-                caixa, ponta e espessura com o resto da interface */}
-            <svg className="brand-mark" viewBox="0 0 24 24" aria-hidden="true" width="32" height="32">
-              <use href="/latent-atlas/pure/icons.svg#helix" />
+            {/* Marca propria, nao icone do sprite: um logo nao pertence a um
+                conjunto de interface. A cadeia e desenhada como um
+                traco unico com duas dobras, a topologia de meandro, simetrico
+                por rotacao de 180 graus e por isso sem colisao com letra. No
+                centro da dobra um anel vazado: o fantasma. So caixa, ponta e
+                espessura vem da linguagem. */}
+            <svg
+              className="brand-mark"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              width="32"
+              height="32"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 20V10a4 4 0 0 1 8 0v4a4 4 0 0 0 8 0V4" />
+              <circle cx="12" cy="12" r="1.5" />
             </svg>
             <span>{t.brand}<small>{t.brandSub}</small></span>
           </Link>
         </SidebarHeader>
         <SidebarContent>
-          <div className="eyebrow nav-label">{t.groupAtlas}</div>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={active === 'map'} className="nav-item">
@@ -119,7 +133,7 @@ export function Footer({lang = 'en'}: {lang?: Lang}) {
   const t = ui[lang];
   return (
     <footer className="footer">
-      <span>Proteins in a World of LLMs<span className="footer-sep"> / </span>{t.footerTag}</span>
+      <span>Ghost in the Fold<span className="footer-sep"> / </span>{t.footerTag}</span>
       <span>{t.footerNote}</span>
     </footer>
   );

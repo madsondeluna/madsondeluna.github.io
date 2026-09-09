@@ -3,7 +3,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import {Play, Pause, RotateCcw} from 'lucide-react';
 import {Control, Choice, Panel, Stats} from './common';
 import {fitClassic, points, type Fit} from '@/lib/museum/classic';
-import {t as tr} from '@/lib/museum/i18n';
+import {t as tr, num as nm} from '@/lib/museum/i18n';
 import {type Lang} from '@/lib/atlas/pt';
 
 const ALGORITHMS: [string, string][] = [
@@ -53,7 +53,8 @@ const FAMILY: Record<string, string> = {
 
 /** Superficie de decisao e nuvem de pontos no mesmo SVG. A grade vem pronta
  *  do ajuste, entao aqui nao ha calculo: so desenho. */
-function Surface({fit, frame, dataset}: {fit: Fit; frame: number; dataset: string}) {
+function Surface({fit, frame, dataset, lang = 'en'}: {fit: Fit; frame: number; dataset: string; lang?: Lang}) {
+  const t = (k: string) => tr(lang, k);
   const pts = useMemo(() => points(dataset), [dataset]);
   const grid = fit.frames[Math.min(frame, fit.frames.length - 1)]?.grid ?? fit.grid;
   const n = fit.gridSize;
@@ -103,7 +104,7 @@ function Surface({fit, frame, dataset}: {fit: Fit; frame: number; dataset: strin
           </g>
         ))}
         <rect x="0" y="0" width="260" height="260" fill="none" stroke="var(--border)" />
-        <text x="0" y="276" fill="var(--muted)" fontSize="9">Feature x₁ −1</text>
+        <text x="0" y="276" fill="var(--muted)" fontSize="9">{t('Feature x₁')} −1</text>
         <text x="260" y="276" textAnchor="end" fill="var(--muted)" fontSize="9">+1</text>
       </g>
     </svg>
@@ -145,6 +146,7 @@ function Curve({fit, frame, lang = 'en'}: {fit: Fit; frame: number; lang?: Lang}
 
 export function ClassicZoo({lang = 'en'}: {lang?: Lang}) {
   const t = (k: string) => tr(lang, k);
+  const dec = (v: number, d: number) => nm(lang, v, d);
   const [algorithm, setAlgorithm] = useState('logistic');
   const [dataset, setDataset] = useState('linear');
   const [strength, setStrength] = useState(0.5);
@@ -210,6 +212,7 @@ export function ClassicZoo({lang = 'en'}: {lang?: Lang}) {
         ))}
       </div>
       <Panel
+        lang={lang}
         title={t('Nine classifiers, one plane')}
         hint={t('Pick a family, then watch it train')}
         inspector={
@@ -218,6 +221,7 @@ export function ClassicZoo({lang = 'en'}: {lang?: Lang}) {
             <h3>{t(FAMILY[algorithm])}</h3>
             <Choice label={t('Synthetic dataset')} value={dataset} onChange={setDataset} items={[['linear', t('Linear')], ['xor', 'XOR'], ['circle', t('Circle')]]} />
             <Control
+              lang={lang}
               label={t(KNOB[algorithm])}
               value={strength}
               onChange={setStrength}
@@ -258,17 +262,18 @@ export function ClassicZoo({lang = 'en'}: {lang?: Lang}) {
         }
       >
         <div className="zoo-plots">
-          <Surface fit={fit} frame={frame} dataset={dataset} />
+          <Surface fit={fit} frame={frame} dataset={dataset} lang={lang} />
           <Curve fit={fit} frame={frame} lang={lang} />
         </div>
         <Stats
           items={[
-            [`${(shown.train * 100).toFixed(0)}%`, t('training accuracy')],
-            [`${(shown.val * 100).toFixed(0)}%`, t('validation accuracy')],
-            [fit.axis === 'iteration' ? shown.loss.toFixed(3) : shown.loss.toFixed(3), fit.axis === 'iteration' ? t('inertia') : t('log loss')],
+            [`${dec(shown.train * 100,0)}%`, t('training accuracy')],
+            [`${dec(shown.val * 100,0)}%`, t('validation accuracy')],
+            [fit.axis === 'iteration' ? dec(shown.loss,3) : dec(shown.loss,3), fit.axis === 'iteration' ? t('inertia') : t('log loss')],
           ]}
         />
         <Control
+          lang={lang}
           label={t('Step through the training')}
           value={frame}
           onChange={(v) => {

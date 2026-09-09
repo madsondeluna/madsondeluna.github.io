@@ -1,4 +1,4 @@
-# Proteins in a World of LLMs
+# Ghost in the Fold
 
 Protein language models, structure prediction and design, model by model. Static Next.js export served at `/latent-atlas/` on madsondeluna.com and built by the site workflow. Styled in Pure Design; the colour mode is shared with the site root through the `mode` key in `localStorage`. English at the root, Portuguese under `/pt`.
 

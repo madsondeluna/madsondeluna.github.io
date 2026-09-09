@@ -32,3 +32,12 @@ export const termsFor = (lang: Lang): Term[] =>
 /** Rotulo de interface. Em ingles devolve a propria chave, entao o codigo
  *  chama t('Dictionary') e continua legivel sem consultar tabela. */
 export const t = (lang: Lang, key: string) => (lang === 'pt' ? labPt[key] ?? key : key);
+
+/** Numero decimal na convencao da lingua. Em portugues o separador e a
+ *  virgula, e isso vale para tudo que a tela mostra como quantidade: pesos,
+ *  probabilidades, perdas, celulas da matriz de atencao. Identificadores
+ *  (ESM-2, posto 1), anos e os trechos de codigo continuam com ponto. */
+export const num = (lang: Lang, value: number, digits: number) => {
+  const fixed = value.toFixed(digits);
+  return lang === 'pt' ? fixed.replace('.', ',') : fixed;
+};

@@ -6,8 +6,8 @@ export type Lang = 'en' | 'pt';
 
 export const ui = {
   en: {
-    brand: 'Proteins',
-    brandSub: 'in a world of LLMs',
+    brand: 'Ghost in the Fold',
+    brandSub: 'language · structure · design',
     tagline: 'LLMs for beginners in protein design, and for anyone who forgets the basics',
     groupAtlas: 'The atlas',
     groupFoundations: 'The foundations',
@@ -75,7 +75,7 @@ export const ui = {
     routesHead: ['Three ways ', 'in'],
     routesLede:
       'Nobody needs all fourteen models. Pick the sentence that sounds like you, then follow the steps in order. Each step says why it comes where it does.',
-    homeKicker: 'Proteins in a world of LLMs',
+    homeKicker: 'Ghost in the Fold',
     homeHead: ['Attention is all you need to ', 'fold proteins'],
     homeLede:
       'This is the closest we have come to what nature does in seconds, and what nature does remains the better-kept secret. Here is how a transformer trained on amino acids ends up predicting a structure, and what separates AlphaFold from ESM3. Start with a route, read a model, or open the experiments and change the numbers yourself.',
@@ -98,8 +98,8 @@ export const ui = {
     } as Record<string, string>,
   },
   pt: {
-    brand: 'Proteínas',
-    brandSub: 'num mundo de LLMs',
+    brand: 'Ghost in the Fold',
+    brandSub: 'linguagem · estrutura · design',
     tagline: 'LLMs para quem está começando em design de proteínas, e para quem esquece o básico',
     groupAtlas: 'O atlas',
     groupFoundations: 'Os fundamentos',
@@ -167,7 +167,7 @@ export const ui = {
     routesHead: ['Três portas de ', 'entrada'],
     routesLede:
       'Ninguém precisa dos catorze modelos. Escolha a frase que soa como você e siga os passos na ordem. Cada passo diz por que vem onde vem.',
-    homeKicker: 'Proteínas num mundo de LLMs',
+    homeKicker: 'Ghost in the Fold',
     homeHead: ['A atenção basta para ', 'dobrar proteínas'],
     homeLede:
       'É o mais perto que chegamos do que a natureza faz em segundos, e o que a natureza faz continua sendo o segredo mais bem guardado. Aqui está como um transformer treinado em aminoácidos acaba prevendo uma estrutura, e o que separa o AlphaFold do ESM3. Comece por um roteiro, leia um modelo, ou abra os experimentos e mude os números você mesmo.',
@@ -194,6 +194,7 @@ export const ui = {
 /** Texto de modelo em portugues. O que nao aparece aqui cai no ingles, e a
  *  pagina continua de pe em vez de mostrar um campo vazio. */
 type ModelText = {
+  name?: string;
   tagline?: string;
   what?: string;
   standing?: string;
@@ -644,6 +645,7 @@ export const modelsPt: Record<string, ModelText> = {
       'Atividade catalítica numa triagem de menos de 96 designs é um resultado forte para design, e ainda longe de uma enzima otimizada. Os números de renovação relatados vêm de estudos de caso individuais.',
   },
   prottrans: {
+    name: 'ProtT5 e ProtBERT',
     tagline: 'Os codificadores que chegaram antes.',
     what:
       'Uma família de transformers treinados em UniRef e BFD com os objetivos de seus equivalentes em texto. O codificador do T5 é a parte normalmente usada, e seus embeddings por resíduo alimentam cabeças supervisionadas pequenas.',

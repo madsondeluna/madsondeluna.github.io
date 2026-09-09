@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Proteins in a World of LLMs",
+  title: "Ghost in the Fold",
   description: "Protein language models and structure prediction, from a masked residue to an all-atom diffusion decoder. Architectures you can click through, and every claim traced to its source.",
   icons: {
     icon: "/latent-atlas/favicon.svg",

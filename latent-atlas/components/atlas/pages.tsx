@@ -47,7 +47,7 @@ function ModelCard({m, lang}: {m: ModelEntry; lang: Lang}) {
         <span>{t.taskNames[m.task] ?? m.task}</span>
         <span className="num">{m.year}</span>
       </span>
-      <h3>{m.name}</h3>
+      <h3>{l.name}</h3>
       <p className="model-tagline">{l.tagline}</p>
       <p>{l.what.split('. ')[0]}.</p>
       <span className="card-link">
@@ -127,11 +127,11 @@ export function ModelPage({slug, lang = 'en'}: {slug: string; lang?: Lang}) {
   const pt = lang === 'pt' ? teachingPt[base.slug] : undefined;
   const teach = en ? {...en, ...pt, example: en.example ? {...en.example, ...pt?.example} : undefined} : undefined;
   return (
-    <Shell lang={lang} active="models" title={base.name}>
+    <Shell lang={lang} active="models" title={m.name}>
       <div className="intro">
         <div>
           <span className="eyebrow">{t.taskNames[base.task] ?? base.task} · {base.family} · {base.year}</span>
-          <h1>{base.name}</h1>
+          <h1>{m.name}</h1>
           <p className="justify">{m.what}</p>
         </div>
       </div>
