@@ -2,8 +2,8 @@ import type { Locale } from "@/lib/cv";
 import { CV, LOCALE_TAG, CERTIFICATIONS, PUBLICATIONS, AWARDS, TEACHING, LINKS } from "@/lib/cv";
 
 const PDF: Record<Locale, string> = {
-  pt: "/cv/pt_cv_madson_professional.pdf",
-  es: "/cv/en_cv_madson_professional.pdf",
+  pt: "/cv/bioinformatics-pt/",
+  es: "/cv/bioinformatics-en/",
 };
 
 const OTHER: Record<Locale, { href: string; label: string }[]> = {

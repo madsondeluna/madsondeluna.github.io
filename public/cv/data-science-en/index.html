@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0E0F13">
+<title>Data science CV | Madson Aragão</title>
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,300..400&family=Public+Sans:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/pure/tokens.css">
+<link rel="stylesheet" href="/pure/patterns.css">
+<link rel="stylesheet" href="/pure/light.css">
+<script>
+/* mesma chave da raiz: quem chega daqui ve a pagina na cor que escolheu la */
+try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+</script>
+<style>
+/* Diagramacao local. Cor, tipo, raio, sombra, curva e espaco saem de
+   pure/tokens.css: nada aqui inventa valor. */
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: var(--text-15); line-height: var(--leading-normal); margin: 0; }
+a { color: inherit; text-decoration: none; }
+h1 { font-family: var(--font-display); font-stretch: var(--font-display-stretch); font-weight: var(--weight-light); letter-spacing: var(--tracking-display); line-height: var(--leading-tight); font-size: var(--text-display-section); margin: var(--space-12) 0 0; }
+p { margin: 0; }
+
+.shell { max-width: var(--container-md); margin: 0 auto; padding: 0 var(--space-32); min-height: 100vh; display: flex; flex-direction: column; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); padding: var(--space-24) 0; }
+.mark { display: inline-flex; align-items: center; gap: var(--space-10); }
+.mark span { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+.back { display: inline-flex; align-items: center; gap: var(--space-8); min-height: var(--hit-min); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); transition: color var(--duration-3) var(--ease-standard); }
+.back:hover { color: var(--text); }
+
+main { flex: 1; display: flex; align-items: center; padding: var(--space-48) 0; }
+.panel { width: 100%; padding: var(--space-32); border-radius: var(--radius-surface); }
+.eyebrow-line { font-family: var(--font-mono); font-size: var(--text-12); letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+.lede { max-width: var(--measure-wide); color: var(--muted); margin-top: var(--space-16); text-wrap: pretty; }
+
+.rows { display: grid; gap: var(--hairline); background: var(--border); border: var(--hairline) solid var(--border); border-radius: var(--radius-field); overflow: hidden; margin-top: var(--space-24); }
+/* as linhas assentam no fundo, e nao na mesma cor do painel: dentro do
+   vidro, superficie sobre superficie desaparece no modo escuro */
+.row { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-16) var(--space-20); background: var(--bg); --surface-context: var(--bg); min-height: var(--hit-min-touch); transition: background var(--duration-3) var(--ease-standard); }
+a.row:hover { background: var(--surface-hover); }
+.row-main { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; flex: 1; }
+.row-title { font-size: var(--text-14); }
+.row-meta { font-size: var(--text-12); color: var(--muted); }
+
+.foot { border-top: var(--hairline) solid var(--border); padding: var(--space-24) 0; display: flex; justify-content: space-between; gap: var(--space-16); font-family: var(--font-mono); font-size: var(--text-12); color: var(--muted); flex-wrap: wrap; }
+.icon { width: var(--space-16); height: var(--space-16); stroke: currentColor; fill: none; stroke-width: var(--stroke); stroke-linecap: round; stroke-linejoin: round; }
+.icon-lg { width: var(--space-24); height: var(--space-24); }
+
+@media (max-width: 768px) {
+  .shell { padding: 0 var(--space-16); }
+  .panel { padding: var(--space-20); }
+}
+</style>
+</head>
+<body>
+<a class="skip-link pill" href="#main">Back</a>
+<div class="shell lit-field" data-lit>
+
+  <header class="top">
+    <a class="mark" href="/">
+      <svg class="icon icon-lg" aria-hidden="true"><use href="/pure/icons.svg#helix"/></svg>
+      <span>Madson Aragão</span>
+    </a>
+    <a class="back" href="/">
+      <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>Back
+    </a>
+  </header>
+
+  <main id="main">
+    <div class="panel card-glass lit lit-edge" data-lit>
+      <span class="eyebrow-line">Curriculum vitae · Data science</span>
+      <h1>Not available right now</h1>
+      <p class="lede">This file is not publicly available at the moment. A copy is sent on request by email.</p>
+      <div class="rows">
+        <a class="row hover-surface lit" data-lit href="mailto:madsondeluna@gmail.com?subject=Data%20science%20CV%20request">
+          <span class="row-main">
+            <span class="row-title">Request a copy</span>
+            <span class="row-meta">madsondeluna@gmail.com</span>
+          </span>
+          <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#mail"/></svg>
+        </a>
+        <a class="row hover-surface lit" data-lit href="/">
+          <span class="row-main">
+            <span class="row-title">Back to the site</span>
+            <span class="row-meta">Experience, education and publications</span>
+          </span>
+          <svg class="icon" aria-hidden="true"><use href="/pure/icons.svg#arrow-right"/></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>Data science CV</span>
+    <a class="back" href="/">madsondeluna.com</a>
+  </footer>
+
+</div>
+<script src="/pure/light.js" defer></script>
+</body>
+</html>

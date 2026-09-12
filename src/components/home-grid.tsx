@@ -97,8 +97,8 @@ const SECTIONS = [
     title: "CV",
     description: "Short curriculum vitae.",
     links: [
-      { label: "English", href: "/cv/en_cv_madson_professional.pdf" },
-      { label: "Português", href: "/cv/pt_cv_madson_professional.pdf" },
+      { label: "English", href: "/cv/bioinformatics-en/" },
+      { label: "Português", href: "/cv/bioinformatics-pt/" },
     ],
   },
 ];
