@@ -74,7 +74,7 @@ export const CV: Record<Locale, Copy> = {
       talksNote: "22 apresentações em congressos, conferências e simpósios. Lista completa no portfólio.",
       teachingNote: "Turmas como professor convidado ou monitor.",
       awardsNote: "Prêmios mantidos no idioma original de concessão.",
-      pdf: "Currículo em PDF",
+      pdf: "Currículo completo",
     },
   },
   es: {
@@ -132,7 +132,7 @@ export const CV: Record<Locale, Copy> = {
       talksNote: "22 presentaciones en congresos, conferencias y simposios. Lista completa en el portafolio.",
       teachingNote: "Cursos como profesor invitado o monitor.",
       awardsNote: "Premios en el idioma original de concesión.",
-      pdf: "Currículum en PDF (inglés)",
+      pdf: "Currículum completo (inglés)",
     },
   },
 };
