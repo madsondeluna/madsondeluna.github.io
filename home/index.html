@@ -69,19 +69,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* o campo de luz é a página inteira: a luz fica ATRÁS de todo vidro
-   que mora nela, e é o backdrop-filter das superfícies de cima que a
-   distorce. É daí que vem a leitura de vidro líquido. */
 /* uma tela so. A pagina nao rola: quem rola e o painel aberto, e so
    quando o conteudo dele nao cabe. */
 html, body { height: 100%; overflow: hidden; }
 
-/* O campo de luz mora numa folha sem filhos, e nao no .app. --light-x,
-   --light-y e --light-near sao registrados com `inherits: true`: escritos
-   no .app a cada quadro, eles obrigavam o navegador a recalcular o estilo
-   da pagina inteira (cerca de 1200 elementos). No WebKit isso custava
-   3,9 ms por escrita e atrasava a lente, que e o cursor visivel. Na folha
-   o recalculo e de um elemento so, e a luz continua atras de todo vidro. */
+/* Sem campo de luz na pagina inteira, como no delunalab. O campo era um
+   gradiente do tamanho da tela redesenhado a cada movimento do ponteiro,
+   e o Safari refazia o desfoque de todo vidro por cima dele: a lente, que
+   e o cursor visivel, chegava atrasada. Testado no Safari em 2026-11-20:
+   sem o campo o atraso some. A lente, o realce dos cartoes e o vidro
+   ficam. */
 .app {
   position: relative;
   isolation: isolate;
@@ -90,13 +87,6 @@ html, body { height: 100%; overflow: hidden; }
   grid-template-columns: 42% 1fr;
   height: 100svh;
   overflow: hidden;
-}
-
-.app > .field-plane {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
 }
 
 .col-left {
@@ -657,8 +647,6 @@ div.row { cursor: default; }
 <div class="lit-cursor" aria-hidden="true"></div>
 
 <div class="app lit-cursor-only">
-
-  <div class="field-plane lit-field" data-lit aria-hidden="true"></div>
 
   <aside class="col-left">
     <div class="identity">
