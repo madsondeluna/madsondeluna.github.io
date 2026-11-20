@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f4f6f9">
+<meta name="theme-color" content="#0E0F13">
 <!-- Um ponto, e so isso. A marca do casaco tem traco fino e miolo
      vazado, e a 16px numa aba ela vira borrao. O ponto troca de cor com o
      tema da ABA, nao com o modo da pagina: favicon em SVG aceita consulta
@@ -44,11 +44,10 @@
 <link rel="stylesheet" href="/pure/motion.css">
 <link rel="stylesheet" href="/pure/agent.css">
 <script>
-/* O padrao e o claro. O modo entra ANTES da primeira pintura, senao a
-   pagina pisca. So conta a escolha feita com clique, guardada em
-   "mode-choice": a chave antiga "mode" era gravada a cada visita, entao
-   todo visitante tinha o escuro salvo sem ter escolhido nada. */
-try{var m=localStorage.getItem("mode-choice");if(m&&m!=="light")document.documentElement.className=m}catch(e){}
+/* O padrao e o escuro grafite. O modo entra ANTES da primeira pintura,
+   senao a pagina pisca. So conta a escolha feita com clique, guardada em
+   "mode-choice"; abrir a pagina nunca grava modo. */
+try{var m=localStorage.getItem("mode-choice");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
 </script>
 <style>
 /* =========================================================
@@ -81,12 +80,53 @@ html, body { height: 100%; overflow: hidden; }
    ficam. */
 .app {
   position: relative;
+  z-index: 1;
   isolation: isolate;
   --surface-context: var(--bg);
   display: grid;
   grid-template-columns: 42% 1fr;
   height: 100svh;
   overflow: hidden;
+}
+
+/* Fundo animado, o mesmo do delunalab: uma grade de caracteres que
+   piscam devagar e acendem perto do ponteiro.
+
+   Ele mora FORA do .app, fixo e numa camada propria (will-change), e o
+   .app fica por cima com z-index 1. Medido no Safari 27.2 em 2026-11-20:
+   dentro do .app cada quadro do canvas repintava a pagina inteira, 121 ms
+   por quadro e 124 ms de atraso do ponteiro; em camada propria, 17 ms e
+   3 ms. Pelo mesmo motivo a grade nao leva mascara.
+
+   A coluna esquerda e texto denso: ali uma faixa estatica de --bg a 85%
+   apaga a grade ate virar textura. As outras tres bordas apagam no --bg
+   para a grade nao terminar numa aresta. */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity var(--duration-4) var(--ease-out-soft);
+}
+/* painel aberto e texto corrido direto sobre o fundo, sem cartao por
+   baixo: ali a grade inteira recua para textura. Opacidade numa camada
+   propria e composicao, nao repintura. */
+body.pane-open .bg-canvas { opacity: 0.15; }
+.bg-canvas canvas { display: block; }
+.bg-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right,
+      color-mix(in oklab, var(--bg) 85%, transparent) 0%,
+      color-mix(in oklab, var(--bg) 85%, transparent) 36%,
+      transparent 46%),
+    linear-gradient(to top, var(--bg) 9%, transparent 30%),
+    linear-gradient(to left, var(--bg) 0%, transparent 10%),
+    linear-gradient(to bottom, var(--bg) 0%, transparent 10%);
 }
 
 .col-left {
@@ -463,7 +503,10 @@ div.row { cursor: default; }
   padding: var(--space-6) var(--space-12);
   border: var(--hairline) solid var(--border);
   border-radius: var(--radius-control);
-  background: none;
+  /* fundo solido, o mesmo dos chips: sobre a grade animada o botao
+     transparente perdia a leitura */
+  background: var(--surface);
+  --surface-context: var(--surface);
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: var(--text-12);
@@ -490,6 +533,7 @@ div.row { cursor: default; }
    porque @media não lê var(). Abaixo dele a coluna esquerda deixa de
    ser fixa: um painel de 100svh grudado no topo come a tela inteira. */
 @media (max-width: 768px) {
+  .bg-canvas { display: none; }
   html, body { height: auto; overflow: visible; }
   .app { grid-template-columns: 1fr; height: auto; overflow: visible; }
   .col-left {
@@ -645,6 +689,8 @@ div.row { cursor: default; }
 <a class="skip-link pill" href="#main">Skip to content</a>
 
 <div class="lit-cursor" aria-hidden="true"></div>
+
+<div class="bg-canvas" aria-hidden="true"><canvas></canvas></div>
 
 <div class="app lit-cursor-only">
 
@@ -2036,7 +2082,7 @@ let stored = null;
 try { stored = localStorage.getItem("mode-choice"); } catch (e) {}
 const start = MODES.includes(asked) ? asked
   : stored !== null && MODES.includes(stored === "light" ? "" : stored) ? (stored === "light" ? "" : stored)
-  : "";
+  : "dark";
 applyMode(start, false);
 
 /* ---------- paineis ----------
@@ -2057,6 +2103,7 @@ function showPane(name, record) {
       : p.dataset.pane === "grid" ? "left" : "right";
   });
   const open = panes.find((p) => p.dataset.state === "in");
+  document.body.classList.toggle("pane-open", target !== "grid");
   /* painel escondido continua com geometria (visibility, nao display), e
      o light.js mediria e escreveria nas linhas dele a cada quadro. Fora
      do painel aberto o atributo dorme, e a luz so mede o que se ve. */
@@ -2132,6 +2179,101 @@ showPane(new URL(location.href).searchParams.get("open") || "grid", false);
   else window.addEventListener("resize", fit);
 })();
 
+</script>
+<script>
+/* ---------- fundo animado ----------
+   Porte direto do HeroCanvas do delunalab: mesma grade de 18px, mesmos
+   caracteres, mesma cadencia e o mesmo raio de 150px em volta do
+   ponteiro. A cor e a de --text, lida uma vez por troca de modo e nao a
+   cada quadro. Abaixo de 768px o canvas nem existe na tela, e o laco nao
+   roda. Com movimento reduzido ele desenha uma vez e para. */
+(function () {
+  var wrap = document.querySelector(".bg-canvas");
+  if (!wrap) return;
+  var canvas = wrap.querySelector("canvas");
+  var ctx = canvas.getContext("2d");
+  var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%@&*!?[]{}|;:<>+-=~^/\\";
+  var CELL = 18;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var narrow = window.matchMedia("(max-width: 768px)");
+  var cells = [], cols = 0, rows = 0, w = 0, h = 0;
+  var mx = -9999, my = -9999, raf = 0, rgb = "116,140,171";
+
+  function randomChar() { return CHARS[Math.floor(Math.random() * CHARS.length)]; }
+
+  function readColor() {
+    var probe = document.createElement("span");
+    probe.style.cssText = "position:absolute;visibility:hidden;color:var(--text)";
+    document.body.appendChild(probe);
+    var m = getComputedStyle(probe).color.match(/[\d.]+/g);
+    probe.remove();
+    if (m) rgb = m.slice(0, 3).join(",");
+  }
+
+  function init() {
+    w = wrap.clientWidth; h = wrap.clientHeight;
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    canvas.style.width = w + "px"; canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(w / CELL); rows = Math.ceil(h / CELL);
+    cells = [];
+    for (var i = 0; i < cols * rows; i++) {
+      cells.push({ char: randomChar(), opacity: Math.random() * 0.55 + 0.1,
+                   target: Math.random() * 0.55 + 0.1, timer: Math.floor(Math.random() * 120) });
+    }
+  }
+
+  function draw() {
+    raf = 0;
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = CELL * 0.7 + "px monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    var still = reduced.matches;
+    for (var i = 0; i < cells.length; i++) {
+      var c = cells[i];
+      var x = (i % cols) * CELL + CELL / 2;
+      var y = Math.floor(i / cols) * CELL + CELL / 2;
+      var dx = x - mx, dy = y - my;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var boost = dist < 150 ? (1 - dist / 150) * 0.6 : 0;
+      if (!still) {
+        if (--c.timer <= 0) {
+          c.target = Math.random() * 0.55 + 0.1;
+          c.timer = 30 + Math.floor(Math.random() * 100);
+          if (Math.random() > 0.72) c.char = randomChar();
+        }
+        c.opacity += (c.target - c.opacity) * 0.04;
+      }
+      var a = Math.min(1, c.opacity + boost);
+      if (a < 0.01) continue;
+      ctx.fillStyle = "rgba(" + rgb + "," + a + ")";
+      ctx.fillText(c.char, x, y);
+    }
+    if (!still && !narrow.matches) raf = requestAnimationFrame(draw);
+  }
+
+  function restart() {
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    if (narrow.matches) return;
+    init();
+    draw();
+  }
+
+  window.addEventListener("pointermove", function (e) {
+    var r = canvas.getBoundingClientRect();
+    mx = e.clientX - r.left; my = e.clientY - r.top;
+  }, { passive: true });
+  new MutationObserver(function () { readColor(); if (reduced.matches) draw(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  if (window.ResizeObserver) new ResizeObserver(restart).observe(wrap);
+  narrow.addEventListener("change", restart);
+  reduced.addEventListener("change", restart);
+
+  readColor();
+  restart();
+})();
 </script>
 <script src="/pure/light.js" defer></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://madsondeluna.com/#person","name":"Madson Allan de Luna Aragão","alternateName":["Madson Aragão","Madson de Luna Aragão","Luna-Aragão, M. A.","Madson A. de Luna Aragao"],"url":"https://madsondeluna.com","email":"mailto:madsondeluna@gmail.com","nationality":"Brazilian","jobTitle":["Bioinformatician","Health Data Scientist","Research and Development Analyst","Product Manager","PhD Candidate in Bioinformatics"],"description":"Bioinformatician and health data scientist working on multi-omics data analysis, machine learning and deep learning applied to structural biology, antimicrobial peptide discovery and drug design. Nextflow Ambassador and creator of AMPidentifier.","image":"https://madsondeluna.com/assets/images/profile/me.jpeg","sameAs":["https://www.linkedin.com/in/madsonaragao/","https://github.com/madsondeluna","https://twitter.com/madsondeluna","https://www.researchgate.net/profile/Madson-Aragao","https://scholar.google.com.br/citations?user=GmHvOYsAAAAJ&hl=en","https://www.ampidentifier.com/"],"knowsLanguage":[{"@type":"Language","name":"Portuguese","alternateName":"pt-BR"},{"@type":"Language","name":"English","alternateName":"en"},{"@type":"Language","name":"Spanish","alternateName":"es"}],"knowsAbout":["bioinformatician","bioinformatics","bioinformatics consultant","bioinformatics specialist","computational biology","computational biologist","data scientist","health data scientist","healthcare data science","biomedical data science","clinical bioinformatics","biostatistics","statistical genetics","research and development analyst","product manager","technical product manager","data-driven product management","machine learning","machine learning engineer","deep learning","artificial intelligence","AI in healthcare","AI in drug discovery","generative AI","large language models","protein language models","transformers","neural networks","MLOps","predictive modeling","feature engineering","model interpretability","XGBoost","LightGBM","scikit-learn","PyTorch","TensorFlow","multi-omics","multi-omics integration","omics data analysis","genomics","functional genomics","comparative genomics","population genomics","transcriptomics","RNA-seq","single-cell RNA-seq","scRNA-seq","proteomics","peptidomics","metabolomics","epigenomics","metagenomics","microbiome analysis","next-generation sequencing","NGS","whole genome sequencing","whole exome sequencing","long-read sequencing","Nanopore","Illumina","variant calling","variant annotation","GWAS","structural variants","copy number variation","gene expression analysis","differential expression","pathway enrichment","functional annotation","structural biology","structural bioinformatics","protein structure prediction","AlphaFold","molecular docking","molecular dynamics","PyMOL","chemoinformatics","cheminformatics","drug discovery","drug design","peptide design","de novo protein design","antimicrobial peptides","AMP prediction","AMPidentifier","antimicrobial resistance","antibiotic resistance","host defense peptides","neoantigens","immunoinformatics","vaccine design","dark genome","biomarkers","precision medicine","personalized medicine","digital health","public health data","translational research","workflow automation","reproducible research","Nextflow","Nextflow Ambassador","nf-core","Snakemake","Docker","Singularity","containers","high-performance computing","HPC","cloud computing","AWS","Google Cloud","Microsoft Azure","Linux","Bash","Python","R","SQL","Git","GitHub","GitHub Actions","CI/CD","software engineering","software architecture","agile","Scrum","Kanban","data engineering","data governance","data visualization","dashboards","Streamlit","Flask","NCBI","Ensembl","UniProt","PDB","KEGG","biological databases","PhD in Bioinformatics","MBA in Software Engineering","MSc Genetics and Molecular Biology","BSc Biomedical Sciences","UFMG","UFPE","USP","PUC-Rio","MIT Professional Education","scientific writing","peer review","teaching bioinformatics","Madson Aragao","Madson Allan de Luna Aragao","Luna-Aragao M","bioinformata","bioinformática","biólogo computacional","biologia computacional","cientista de dados","cientista de dados em saúde","ciência de dados","análise de dados biológicos","bioestatística","aprendizado de máquina","aprendizado profundo","inteligência artificial","IA na saúde","IA aplicada à descoberta de fármacos","modelos generativos","multiômicas","análise multiômica","genômica","transcriptômica","proteômica","metabolômica","metagenômica","microbioma","sequenciamento de nova geração","análise de variantes","expressão gênica","anotação funcional","biologia estrutural","predição de estrutura de proteínas","ancoragem molecular","dinâmica molecular","quimioinformática","descoberta de fármacos","desenho de peptídeos","peptídeos antimicrobianos","resistência antimicrobiana","resistência a antibióticos","neoantígenos","genoma escuro","biomarcadores","medicina de precisão","saúde digital","fluxos de trabalho reprodutíveis","computação de alto desempenho","engenharia de software","gestão de produtos","gerente de produto","governança de dados","visualização de dados","doutorado em bioinformática","mestrado em genética e biologia molecular","biomedicina","patologia clínica","pesquisa e desenvolvimento","docência em bioinformática","Madson Aragão","Madson Allan de Luna Aragão","bioinformático","bioinformática","biología computacional","científico de datos","ciencia de datos en salud","aprendizaje automático","aprendizaje profundo","inteligencia artificial","IA en salud","modelos generativos","multiómica","análisis multiómico","genómica","transcriptómica","proteómica","metabolómica","metagenómica","microbioma","secuenciación de nueva generación","análisis de variantes","expresión génica","anotación funcional","biología estructural","predicción de estructura de proteínas","acoplamiento molecular","dinámica molecular","quimioinformática","descubrimiento de fármacos","diseño de péptidos","péptidos antimicrobianos","resistencia antimicrobiana","resistencia a antibióticos","neoantígenos","biomarcadores","medicina de precisión","salud digital","flujos de trabajo reproducibles","computación de alto rendimiento","ingeniería de software","gestión de productos","gobernanza de datos","visualización de datos","doctorado en bioinformática","investigación y desarrollo","Madson Aragão"],"alumniOf":[{"@type":"CollegeOrUniversity","name":"Federal University of Minas Gerais (UFMG)","url":"https://ufmg.br"},{"@type":"CollegeOrUniversity","name":"University of São Paulo (USP)","url":"https://www5.usp.br"},{"@type":"CollegeOrUniversity","name":"Pontifical Catholic University of Rio de Janeiro (PUC-Rio)","url":"https://www.puc-rio.br"},{"@type":"CollegeOrUniversity","name":"Federal University of Pernambuco (UFPE)","url":"https://www.ufpe.br"}],"hasCredential":[{"@type":"EducationalOccupationalCredential","credentialCategory":"degree","educationalLevel":"Doctorate","name":"PhD in Bioinformatics (ongoing)","recognizedBy":{"@type":"CollegeOrUniversity","name":"Federal University of Minas Gerais (UFMG)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"degree","educationalLevel":"Postgraduate","name":"MBA in Software Engineering (ongoing)","recognizedBy":{"@type":"CollegeOrUniversity","name":"University of São Paulo (USP)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"degree","educationalLevel":"Postgraduate","name":"Specialization in Data Science and Analytics","recognizedBy":{"@type":"CollegeOrUniversity","name":"Pontifical Catholic University of Rio de Janeiro (PUC-Rio)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"degree","educationalLevel":"Master's Degree","name":"MSc in Genetics and Molecular Biology, emphasis in Bioinformatics","recognizedBy":{"@type":"CollegeOrUniversity","name":"Federal University of Pernambuco (UFPE)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"degree","educationalLevel":"Bachelor's Degree","name":"BSc in Biomedical Sciences, emphasis in Clinical Pathology and Bioinformatics","recognizedBy":{"@type":"CollegeOrUniversity","name":"Federal University of Pernambuco (UFPE)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Generative AI","recognizedBy":{"@type":"Organization","name":"Massachusetts Institute of Technology (MIT) Professional Education"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Advanced Gemini for Developers","recognizedBy":{"@type":"Organization","name":"Google DeepMind"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Microsoft Azure AI Essentials: Workloads and Machine Learning","recognizedBy":{"@type":"Organization","name":"Microsoft"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Career Essentials in Project Management","recognizedBy":{"@type":"Organization","name":"Microsoft"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Career Essentials in GitHub Professional Certificate","recognizedBy":{"@type":"Organization","name":"GitHub"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Agile Project Management Professional Certificate","recognizedBy":{"@type":"Organization","name":"Atlassian"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Project Management","recognizedBy":{"@type":"Organization","name":"Project Management Institute (PMI)"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Data-Driven Product Management","recognizedBy":{"@type":"Organization","name":"NASBA"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Requirements Engineering and Agile Product Management","recognizedBy":{"@type":"Organization","name":"PUC-Rio"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"The Data Science of Healthcare, Medicine, and Public Health","recognizedBy":{"@type":"Organization","name":"LinkedIn Learning"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Python Programming from Basic to Advanced","recognizedBy":{"@type":"Organization","name":"Udemy"}},{"@type":"EducationalOccupationalCredential","credentialCategory":"certificate","name":"Bioinformatics with Python","recognizedBy":{"@type":"Organization","name":"Udemy"}}],"award":["Next Generation Bioinformatician (NGB), X-Meeting 2025","Travel Grant Award, ICTP-SAIFR School on Biological Physics and Biomolecular Simulations in the Machine Learning Era","Travel Grant Award, AI for Protein Design (AI4PD), The Protein Society","Young Geneticist Award of the Northeast (XXI ENGNE)","Honorable Mention, Human and Forensic Genetics (CNPq/UFPE)","Honorable Mention, Postgraduate Genetics Journey (UFPE)","Best Poster Award, XIII Journey of the Genetics and Molecular Biology Program","Certificate of Excellence in Peer Reviewing, Elsevier","Highest admission score, MSc in Genetics and Molecular Biology (UFPE)","Highest admission score, PhD in Bioinformatics (UFMG)"],"memberOf":[{"@type":"Organization","name":"Nextflow Ambassador Program","url":"https://www.nextflow.io/ambassadors.html"}],"subjectOf":[{"@type":"ScholarlyArticle","name":"The Regulatory Army of Plant Defense: Transcription Factors in the War for Plant Immunity","isPartOf":{"@type":"Periodical","name":"International Journal of Molecular Sciences"},"identifier":"https://doi.org/10.3390/ijms27167315","url":"https://doi.org/10.3390/ijms27167315","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Unveiling Three Functionally Diverse Isoforms of eIF4E in Cowpea Through a Multi-Omics Approach","isPartOf":{"@type":"Periodical","name":"Agronomy"},"identifier":"https://doi.org/10.3390/agronomy16070766","url":"https://doi.org/10.3390/agronomy16070766","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Transposable elements: Functional aspects and applications as drivers of crop innovation","isPartOf":{"@type":"Periodical","name":"Crop Science"},"identifier":"https://doi.org/10.1002/csc2.70257","url":"https://doi.org/10.1002/csc2.70257","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Deciphering Cowpea Resistance to Potyvirus: Assessment of eIF4E Gene Mutations and Their Impact on the eIF4E-VPg Protein Interaction","isPartOf":{"@type":"Periodical","name":"Viruses"},"identifier":"https://doi.org/10.3390/v17081050","url":"https://doi.org/10.3390/v17081050","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Omics-driven bioinformatics for plant lectins discovery and functional annotation","isPartOf":{"@type":"Periodical","name":"International Journal of Biological Macromolecules"},"identifier":"https://doi.org/10.1016/j.ijbiomac.2024.135511","url":"https://doi.org/10.1016/j.ijbiomac.2024.135511","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Association strength of E6 to E6AP/p53 complex correlates with HPV-mediated oncogenesis risk","isPartOf":{"@type":"Periodical","name":"Biopolymers"},"identifier":"https://doi.org/10.1002/bip.23524","url":"https://doi.org/10.1002/bip.23524","author":{"@id":"https://madsondeluna.com/#person"}},{"@type":"ScholarlyArticle","name":"Approaches for Identification and Validation of Antimicrobial Compounds of Plant Origin","isPartOf":{"@type":"Periodical","name":"Eco-Friendly Biobased Products Used in Microbial Diseases, CRC Press"},"identifier":"https://doi.org/10.1201/9781003243700","url":"https://doi.org/10.1201/9781003243700","author":{"@id":"https://madsondeluna.com/#person"}}]},{"@type":"WebSite","@id":"https://madsondeluna.com/#website","url":"https://madsondeluna.com","name":"Madson Aragão","inLanguage":["en","pt-BR","es"],"author":{"@id":"https://madsondeluna.com/#person"},"publisher":{"@id":"https://madsondeluna.com/#person"}},{"@type":"SoftwareApplication","name":"AMPidentifier","url":"https://www.ampidentifier.com/","applicationCategory":"Scientific Software","operatingSystem":"Web","author":{"@id":"https://madsondeluna.com/#person"},"description":"Ensemble machine learning toolkit for antimicrobial peptide prediction."}]}</script>
