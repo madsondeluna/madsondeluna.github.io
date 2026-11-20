@@ -75,11 +75,27 @@ body {
    quando o conteudo dele nao cabe. */
 html, body { height: 100%; overflow: hidden; }
 
+/* O campo de luz mora numa folha sem filhos, e nao no .app. --light-x,
+   --light-y e --light-near sao registrados com `inherits: true`: escritos
+   no .app a cada quadro, eles obrigavam o navegador a recalcular o estilo
+   da pagina inteira (cerca de 1200 elementos). No WebKit isso custava
+   3,9 ms por escrita e atrasava a lente, que e o cursor visivel. Na folha
+   o recalculo e de um elemento so, e a luz continua atras de todo vidro. */
 .app {
+  position: relative;
+  isolation: isolate;
+  --surface-context: var(--bg);
   display: grid;
   grid-template-columns: 42% 1fr;
   height: 100svh;
   overflow: hidden;
+}
+
+.app > .field-plane {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .col-left {
@@ -639,7 +655,9 @@ div.row { cursor: default; }
 
 <div class="lit-cursor" aria-hidden="true"></div>
 
-<div class="app lit-field lit-cursor-only" data-lit>
+<div class="app lit-cursor-only">
+
+  <div class="field-plane lit-field" data-lit aria-hidden="true"></div>
 
   <aside class="col-left">
     <div class="identity">
@@ -707,7 +725,7 @@ div.row { cursor: default; }
         <span class="chip"><b class="num">4</b> patents and software tools</span>
         <span class="chip"><b class="num">2</b> PyPI packages</span>
         <span class="chip"><b class="num">4</b> LLM agents developed</span>
-        <span class="chip"><b class="num">12</b> teaching experiences</span>
+        <span class="chip"><b class="num">14</b> teaching experiences</span>
         <span class="chip"><b class="num">1</b> journal reviewer</span>
       </div>
     </div>
@@ -1473,10 +1491,24 @@ div.row { cursor: default; }
             <svg class="icon icon-sm" aria-hidden="true"><use href="/pure/icons.svg#arrow-left"/></svg>Back
           </button>
           <h2>Teaching</h2>
-          <span class="eyebrow num">8 courses</span>
+          <span class="eyebrow num">10 courses</span>
         </div>
         <div class="pane-body">
           <div class="rows">
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Protein Modeling and Simulation: Translational Applications — XIV Journey of the Genetics and Molecular Biology Program (UFPE)</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2026</span>
+          </div>
+          <div class="row">
+            <span class="row-main">
+              <span class="row-title">Bioinformatics: A Theoretical-Practical Approach — 2nd Edition</span>
+              <span class="row-meta">Invited Teacher</span>
+            </span>
+            <span class="row-side mono">2026</span>
+          </div>
           <div class="row">
             <span class="row-main">
               <span class="row-title">Molecular Docking &amp; Dynamics: Breathing Motion into Life's Building Blocks — 2nd Edition</span>
@@ -1507,7 +1539,7 @@ div.row { cursor: default; }
           </div>
           <div class="row">
             <span class="row-main">
-              <span class="row-title">Bioinformatics: A Theoretical-Practical Approach</span>
+              <span class="row-title">Bioinformatics: A Theoretical-Practical Approach — 1st Edition</span>
               <span class="row-meta">Invited Teacher</span>
             </span>
             <span class="row-side mono">2024</span>
@@ -2035,6 +2067,17 @@ function showPane(name, record) {
       : p.dataset.pane === "grid" ? "left" : "right";
   });
   const open = panes.find((p) => p.dataset.state === "in");
+  /* painel escondido continua com geometria (visibility, nao display), e
+     o light.js mediria e escreveria nas linhas dele a cada quadro. Fora
+     do painel aberto o atributo dorme, e a luz so mede o que se ve. */
+  panes.forEach((p) => {
+    const on = p === open;
+    p.querySelectorAll(on ? "[data-lit-off]" : "[data-lit]").forEach((el) => {
+      el.removeAttribute(on ? "data-lit-off" : "data-lit");
+      el.setAttribute(on ? "data-lit" : "data-lit-off", "");
+    });
+  });
+  if (window.pureLight) window.pureLight.scan();
   const body = open.querySelector(".pane-body");
   if (body) body.scrollTop = 0;
   if (!record) return;

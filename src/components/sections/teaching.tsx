@@ -2,11 +2,13 @@ import { FadeIn } from "../fade-in";
 import { SectionHeader } from "../section-header";
 
 const classes = [
+  { id: 10, role: "Invited Teacher", title: "Protein Modeling and Simulation: Translational Applications — XIV Journey of the Genetics and Molecular Biology Program", org: "Federal University of Pernambuco", year: 2026 },
+  { id: 9, role: "Invited Teacher", title: "Bioinformatics: A Theoretical-Practical Approach — 2nd Edition", year: 2026 },
   { id: 8, role: "Invited Teacher", title: "Molecular Docking & Dynamics: Breathing Motion into Life's Building Blocks — 2nd Edition", year: 2025 },
   { id: 7, role: "Invited Teacher", title: "Molecular Modeling with Machine Learning Techniques — 2nd Edition", year: 2025 },
   { id: 6, role: "Invited Teacher", title: "Molecular Docking & Dynamics: Breathing Motion into Life's Building Blocks — 1st Edition", year: 2025 },
   { id: 5, role: "Invited Teacher", title: "Molecular Modeling with Machine Learning Techniques — 1st Edition", year: 2025 },
-  { id: 4, role: "Invited Teacher", title: "Bioinformatics: A Theoretical-Practical Approach", year: 2024 },
+  { id: 4, role: "Invited Teacher", title: "Bioinformatics: A Theoretical-Practical Approach — 1st Edition", year: 2024 },
   { id: 3, role: "Invited Teacher", title: "Introduction to Bioinformatics: From DNA to Proteins: Databases, Annotation and Protein Modeling Techniques", org: "Catholic University of Pernambuco", year: 2022 },
   { id: 2, role: "Teaching Assistant", title: "Human Genetics", org: "Federal University of Pernambuco", year: "2017–2018" },
   { id: 1, role: "Teaching Assistant", title: "Molecular Tools Applied to Clinical Diagnosis", org: "Federal University of Pernambuco", year: "2017–2018" },

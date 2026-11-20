@@ -176,11 +176,13 @@ export const AWARDS = [
 ];
 
 export const TEACHING = [
+  { title: "Protein Modeling and Simulation: Translational Applications, XIV Journey of the Genetics and Molecular Biology Program, Federal University of Pernambuco", year: "2026" },
+  { title: "Bioinformatics: A Theoretical-Practical Approach, 2nd Edition", year: "2026" },
   { title: "Molecular Docking & Dynamics: Breathing Motion into Life's Building Blocks, 2nd Edition", year: "2025" },
   { title: "Molecular Modeling with Machine Learning Techniques, 2nd Edition", year: "2025" },
   { title: "Molecular Docking & Dynamics: Breathing Motion into Life's Building Blocks, 1st Edition", year: "2025" },
   { title: "Molecular Modeling with Machine Learning Techniques, 1st Edition", year: "2025" },
-  { title: "Bioinformatics: A Theoretical-Practical Approach", year: "2024" },
+  { title: "Bioinformatics: A Theoretical-Practical Approach, 1st Edition", year: "2024" },
   { title: "Introduction to Bioinformatics, From DNA to Proteins: Databases, Annotation and Protein Modeling Techniques", year: "2022" },
   { title: "Human Genetics, Federal University of Pernambuco", year: "2017-2018" },
   { title: "Molecular Tools Applied to Clinical Diagnosis, Federal University of Pernambuco", year: "2017-2018" },
