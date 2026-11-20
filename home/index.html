@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0E0F13">
+<meta name="theme-color" content="#f4f6f9">
 <!-- Um ponto, e so isso. A marca do casaco tem traco fino e miolo
      vazado, e a 16px numa aba ela vira borrao. O ponto troca de cor com o
      tema da ABA, nao com o modo da pagina: favicon em SVG aceita consulta
@@ -44,10 +44,11 @@
 <link rel="stylesheet" href="/pure/motion.css">
 <link rel="stylesheet" href="/pure/agent.css">
 <script>
-/* O padrao e o escuro grafite. Ele entra ANTES da primeira pintura,
-   senao a pagina abre clara e pisca. Quem ja escolheu um modo tem a
-   escolha respeitada; quem nunca escolheu cai no escuro. */
-try{var m=localStorage.getItem("mode");if(m===null)m="dark";if(m&&m!=="light")document.documentElement.className=m}catch(e){document.documentElement.className="dark"}
+/* O padrao e o claro. O modo entra ANTES da primeira pintura, senao a
+   pagina pisca. So conta a escolha feita com clique, guardada em
+   "mode-choice": a chave antiga "mode" era gravada a cada visita, entao
+   todo visitante tinha o escuro salvo sem ter escolhido nada. */
+try{var m=localStorage.getItem("mode-choice");if(m&&m!=="light")document.documentElement.className=m}catch(e){}
 </script>
 <style>
 /* =========================================================
@@ -2027,7 +2028,8 @@ function resolve(name) {
 
 function applyMode(mode, record) {
   document.documentElement.className = mode;
-  try { localStorage.setItem("mode", mode || "light"); } catch (e) {}
+  /* so o clique grava: abrir a pagina nao e escolher um modo */
+  if (record) { try { localStorage.setItem("mode-choice", mode || "light"); } catch (e) {} }
   document.querySelectorAll(".mode-btn").forEach((b) =>
     b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
   themeMeta.setAttribute("content", resolve("--bg"));
@@ -2043,10 +2045,10 @@ document.querySelectorAll(".mode-btn").forEach((btn) =>
 /* o endereco vence o guardado, e o guardado vence o padrao */
 const asked = new URL(location.href).searchParams.get("mode");
 let stored = null;
-try { stored = localStorage.getItem("mode"); } catch (e) {}
+try { stored = localStorage.getItem("mode-choice"); } catch (e) {}
 const start = MODES.includes(asked) ? asked
   : stored !== null && MODES.includes(stored === "light" ? "" : stored) ? (stored === "light" ? "" : stored)
-  : "dark";
+  : "";
 applyMode(start, false);
 
 /* ---------- paineis ----------
